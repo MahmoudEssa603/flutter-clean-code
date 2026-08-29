@@ -1,0 +1,51 @@
+name: Finding quality
+description: The skill missed something, or reported something it should not have
+labels: [finding-quality]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What went wrong
+      options:
+        - Missed a finding it should have reported
+        - Reported something that is not a finding
+        - Treated out-of-scope work as if it were in scope
+        - Applied a change that was not behaviour-preserving
+        - Activated on code that is not Dart or Flutter
+    validations:
+      required: true
+  - type: input
+    id: mode
+    attributes:
+      label: Mode
+      placeholder: AUDIT / DIFF / REFACTOR
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model used
+      placeholder: Opus, Sonnet, Haiku, ...
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Minimal Dart snippet
+      description: The smallest code that reproduces it. Paste code, not a screenshot.
+      render: dart
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what you got
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Skill version
+      placeholder: the metadata.version in SKILL.md, e.g. 1.0.0
+    validations:
+      required: true

@@ -1,0 +1,21 @@
+{
+  "id": "02-refactor-without-tests",
+  "skills": ["flutter-clean-code"],
+  "mode": "REFACTOR",
+  "query": "refactor this file, it is unreadable",
+  "files": ["evals/fixtures/order_summary_page.dart"],
+  "expected_behavior": [
+    "Detects that the touched code has no tests and says so before touching anything",
+    "Chooses exactly one of the two allowed paths and names the choice: write characterization tests first, or emit the patch marked 'NOT APPLIED — requires approval'",
+    "If it writes characterization tests, the tests pin current behaviour including behaviour that looks wrong, and a comment says so",
+    "Applies one refactoring type per batch and never mixes a rename into an extraction batch",
+    "Runs flutter analyze and the test suite after each batch, or writes the skipped-verification line verbatim when no SDK is on PATH",
+    "Reports each batch with a 'Reason safe' line explaining why behaviour is preserved"
+  ],
+  "must_not": [
+    "Apply edits silently without stating the missing-tests decision",
+    "Claim that analyze or tests passed without having run them",
+    "Change the discount rule's value while deduplicating it",
+    "Mix a rename and an extraction into the same batch"
+  ]
+}

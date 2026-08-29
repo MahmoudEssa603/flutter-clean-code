@@ -1,0 +1,22 @@
+{
+  "id": "01-audit-fat-widget",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "راجع الملف ده حسب الكلين كود",
+  "files": ["evals/fixtures/order_summary_page.dart"],
+  "expected_behavior": [
+    "States the mode as AUDIT and the evidence level as Partial, because no tests were provided",
+    "Modifies no file on disk and answers inline, because the scope is a single file",
+    "Reports the 120-line build() method as a Flutter finding and recommends extracting named widget classes rather than private _buildX() methods, giving const, keys and DevTools identity as the reason",
+    "Reports getTotal() as a misleading name under Naming, because it also mutates _cachedTotal",
+    "Reports the inline EdgeInsets.all(17) and Color(0xFF3B5998) as magic values, while noting that choosing the replacement token values is design-system work and out of scope",
+    "Reports the duplicated discount rule under Errors & data as DRY on knowledge",
+    "Gives every finding an Impact, an Effort, a Confidence and a file:line location",
+    "Answers in Arabic because the request was in Arabic, while keeping identifiers, paths and code in English"
+  ],
+  "must_not": [
+    "Rewrite the widget or change any visible output",
+    "Report dart format or import ordering as findings",
+    "Name any other skill, plugin or tool as a destination for out-of-scope work"
+  ]
+}

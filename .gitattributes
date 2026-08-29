@@ -1,0 +1,12 @@
+# Normalize every text file to LF in the index and in the working tree,
+# so a Windows checkout does not rewrite the skill files to CRLF.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary

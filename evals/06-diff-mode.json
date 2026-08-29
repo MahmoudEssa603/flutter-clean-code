@@ -1,0 +1,20 @@
+{
+  "id": "06-diff-mode",
+  "skills": ["flutter-clean-code"],
+  "mode": "DIFF",
+  "query": "راجع التغييرات اللي على الفرع ده قبل ما أعمل PR",
+  "files": ["evals/fixtures/order_summary_page.dart"],
+  "expected_behavior": [
+    "Selects DIFF mode without being told the mode name, because the request is about the changes rather than the whole file",
+    "Gets the file list with git diff --name-only <base>...HEAD -- '*.dart' and audits only those files",
+    "Reads enough surrounding code to judge each finding fairly, rather than reporting on the diff hunks in isolation",
+    "Modifies no file, exactly as AUDIT would not",
+    "Emits the report with a Not checked line naming what fell outside the changed files",
+    "Answers in Arabic, keeping identifiers, paths and code in English"
+  ],
+  "must_not": [
+    "Audit the whole repository when only a branch was named",
+    "Report a finding in a file the diff never touched",
+    "Apply any edit"
+  ]
+}

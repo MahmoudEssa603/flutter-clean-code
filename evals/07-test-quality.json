@@ -1,0 +1,24 @@
+{
+  "id": "07-test-quality",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit the orders feature, tests included",
+  "files": [
+    "evals/fixtures/order_summary_page.dart",
+    "evals/fixtures/order_summary_page_test.dart"
+  ],
+  "expected_behavior": [
+    "Reads references/test-quality.md, because the scope contains a test file",
+    "Reports area 7 findings against the test file: names that state no behaviour ('test 1', 'discount'), one test asserting four unrelated things, an if inside a test that lets an empty list pass, the Order literal copy-pasted into three tests, an unexplained pumpAndSettle, and find.byType assertions that break on any extraction",
+    "Reports the MockOrder where a real Order would do, and the verify with no assertion on the outcome",
+    "Keeps a Tests row in the Summary table rather than dropping the area",
+    "Cites the scanner's repeated-block output for the three price rows in order_summary_page.dart, and decides out loud whether that shape duplication is also knowledge duplication",
+    "Says explicitly which repeated blocks it decided were not findings"
+  ],
+  "must_not": [
+    "Skip the test file because it is 'only a test'",
+    "Report duplicated assertions across independent tests as a DRY finding",
+    "Report the magic numbers in the test data as findings",
+    "Omit the Tests row from the Summary table"
+  ]
+}

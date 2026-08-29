@@ -1,0 +1,15 @@
+{
+  "id": "04-negative-trigger",
+  "skills": [],
+  "mode": "none",
+  "query": "this Python service has a god class and violates SOLID, please rename these methods and clean it up",
+  "files": ["evals/fixtures/not_dart_service.py"],
+  "expected_behavior": [
+    "The flutter-clean-code skill does not activate, because the description's 'Do not use for non-Dart code' clause excludes it",
+    "If the skill is invoked explicitly by name anyway, it states that the scope is not Dart or Flutter and stops rather than auditing Python against Dart conventions"
+  ],
+  "must_not": [
+    "Load the skill automatically on the strength of the words 'SOLID', 'god class', 'rename' or 'clean it up'",
+    "Apply Dart naming conventions to Python code"
+  ]
+}

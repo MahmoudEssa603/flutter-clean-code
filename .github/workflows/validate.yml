@@ -1,0 +1,49 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  skill:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 22
+      - name: unit and integration tests
+        run: node --test
+      - name: validate SKILL.md against the contract in AGENTS.md
+        run: node scripts/validate-skill.mjs
+      - name: smoke-test the scanner on the fixtures
+        run: node scripts/scan-dart.mjs evals/fixtures
+      - name: the scanner must skip generated Dart
+        shell: bash
+        run: |
+          out="$(node scripts/scan-dart.mjs evals/fixtures --json)"
+          echo "$out" | grep -q 'order.freezed.dart' || { echo "generated fixture was not reported as skipped"; exit 1; }
+          echo "$out" | grep -q '"generatedSkipped"' || { echo "generatedSkipped missing from JSON output"; exit 1; }
+          if echo "$out" | sed -n '/"files"/,$p' | grep -q 'freezed'; then
+            echo "generated file leaked into the scanned results"
+            exit 1
+          fi
+          echo "generated Dart correctly skipped"
+      - name: check the index holds LF line endings only
+        if: runner.os == 'Linux'
+        run: |
+          if git ls-files --eol | grep -E 'i/crlf'; then
+            echo "CRLF found in the index; .gitattributes must normalise every text file to LF"
+            exit 1
+          fi
+          echo "all indexed text files are LF"

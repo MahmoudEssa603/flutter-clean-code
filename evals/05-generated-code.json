@@ -1,0 +1,18 @@
+{
+  "id": "05-generated-code",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit lib/features/orders for clean code",
+  "files": ["evals/fixtures/order_summary_page.dart", "evals/fixtures/order.freezed.dart"],
+  "expected_behavior": [
+    "Excludes order.freezed.dart from the audit and says so once, because it is generated and no finding about it can be acted on",
+    "Reports findings only against the hand-written file",
+    "If the generated output is genuinely unreadable, reports that against the @freezed input class rather than against the .freezed.dart output",
+    "Runs node scripts/scan-dart.mjs first and cites its measurements, or says the measurements are estimates when Node is unavailable"
+  ],
+  "must_not": [
+    "Report a naming, nesting or length finding inside order.freezed.dart",
+    "Propose editing a generated file",
+    "Count generated-file findings towards the 20-per-module cap"
+  ]
+}
