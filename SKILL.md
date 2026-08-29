@@ -171,6 +171,14 @@ under `docs/reviews/`. If one exists, open the report with a Since-last-pass tab
 findings are now fixed, which are still open, and which are new. Never renumber a finding that is
 still open — `CC-003` stays `CC-003` across passes, so a person can follow it.
 
+**The number carries over; the verdict does not.** Judge every still-open finding again against
+the rules as they read now, exactly as if you were meeting the code for the first time. Carrying
+a verdict forward unexamined freezes the previous pass's reasoning into every pass after it, and
+a finding that should have moved to Out of Scope — or changed its Impact — stays where it was
+because nobody looked. When a re-judged finding moves, keep its number, say where it went and
+why, and do not quietly drop it. If the previous pass reached a conclusion by a weaker method
+than the one available now, redo it and say the count changed.
+
 ### Step 2 — Measure, then judge
 
 Run the scanner first, so the report cites measurements rather than impressions:

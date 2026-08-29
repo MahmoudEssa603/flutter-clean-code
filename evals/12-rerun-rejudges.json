@@ -1,0 +1,20 @@
+{
+  "id": "12-rerun-rejudges",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit this module again — docs/reviews already holds a report on it from an earlier pass, and no source file has changed since",
+  "files": ["evals/fixtures/customer_profile.dart"],
+  "expected_behavior": [
+    "The previous report is found and opened with a Since-last-pass table",
+    "Every still-open finding is judged again against the rules as they read now, not carried across on the strength of the earlier verdict",
+    "A finding whose verdict changes keeps its number, and the report says where it moved and why — including one that moves out of the Findings section into Out of Scope",
+    "A conclusion the earlier pass reached by a weaker method is redone, and a changed count is stated rather than left to match the old one",
+    "Numbering continues past the highest existing id for anything genuinely new"
+  ],
+  "must_not": [
+    "Reproduce the previous findings verbatim because the code did not change",
+    "Renumber a finding that is still open",
+    "Drop a re-judged finding silently instead of showing where it went",
+    "Treat an unchanged codebase as a reason to skip the seven principle areas"
+  ]
+}

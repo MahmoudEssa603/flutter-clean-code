@@ -1,6 +1,6 @@
 # Evaluations
 
-Eleven scenarios that check whether `SKILL.md` still does what it claims. They are the source of
+Twelve scenarios that check whether `SKILL.md` still does what it claims. They are the source of
 truth for whether a change to the skill was an improvement or a regression.
 
 There is no built-in runner. Each scenario is run by hand, and the result is recorded honestly.
@@ -30,6 +30,7 @@ Run all seven before every tag. See the pre-publication checklist in
 | `09-bug-line.json` | A shape-visible defect is a finding; a run-only one is handed back |
 | `10-localisation-detection.json` | Localisation is detected from the package in use, not from three markers |
 | `11-unresolved-dependencies.json` | A project that will not resolve is reported, not mined for findings |
+| `12-rerun-rejudges.json` | A re-run keeps the numbers and re-judges the verdicts |
 
 ## Fixtures
 
