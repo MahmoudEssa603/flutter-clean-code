@@ -17,7 +17,7 @@ compatibility: >-
   dart format, flutter test). Without an SDK the skill runs report-only and says so in the report.
   The agent must be able to read repository files, and to edit them for REFACTOR tasks.
   No network access is used.
-allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
+allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
   version: 1.0.0
 ---
@@ -160,9 +160,13 @@ still open — `CC-003` stays `CC-003` across passes, so a person can follow it.
 Run the scanner first, so the report cites measurements rather than impressions:
 
 ```bash
-node scripts/scan-dart.mjs <path-to-scope>
-node scripts/scan-dart.mjs <path-to-scope> --json   # when you want to quote exact numbers
+node <skill-dir>/scripts/scan-dart.mjs <path-to-scope>
+node <skill-dir>/scripts/scan-dart.mjs <path-to-scope> --json   # to quote exact numbers
 ```
+
+`<skill-dir>` is the directory this file was loaded from, typically
+`~/.claude/skills/flutter-clean-code`. The working directory during a run is the project under
+review, not the skill, so a path relative to it finds nothing.
 
 It reports build() and function lengths, nesting depth, positional and boolean parameter counts,
 `State` classes that create a disposable with no `dispose`, single-use widget classes small
@@ -179,7 +183,8 @@ settings rows is fine; a 30-line one mixing four concepts is not. Every signal s
 judged against the code, and a signal you decide is fine does not go in the report at all.
 
 If Node is unavailable, skip the scanner and read the code directly. Say in the report that the
-measurements are estimates.
+measurements are estimates. A scanner that is *not found* is a wrong `<skill-dir>`, not a missing
+Node: fix the path rather than falling back, or the report loses the numbers that justify it.
 
 Then work the checklist below. It is the judgment the scanner cannot do: intent, responsibility,
 and duplication. Check all seven areas every run. Concrete Dart before/after code for each is in

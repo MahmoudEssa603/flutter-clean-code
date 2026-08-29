@@ -59,6 +59,19 @@ git clone --branch v1.0.0 --depth 1 <repo-url> .claude/skills/flutter-clean-code
 الـ frontmatter بيستخدم الحقول الستة القابلة للنقل بس، فالسكيل بتترفع وتتحزم على أي أداة
 بتقرا صيغة Agent Skills من غير أي تعديل.
 
+**رول الصلاحية.** `allowed-tools` فيه شكلين لنداء الماسح: النسبي (لما تكون شغال جوه ريبو
+السكيل نفسها) ومسار التركيب الافتراضي `~/.claude/skills/flutter-clean-code`. لو ركّبتها في
+مكان تاني، المسار بيختلف من جهاز لجهاز فمحله إعداداتك الشخصية مش الـ frontmatter — كده السكيل
+تفضل محمولة:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(node <skill-dir>/scripts/scan-dart.mjs:*)"]
+  }
+}
+```
+
 ## 3. المدخلات
 
 ```
@@ -91,9 +104,12 @@ git clone --branch v1.0.0 --depth 1 <repo-url> .claude/skills/flutter-clean-code
 كل تشغيلة بتبدأ بالماسح، عشان التقرير يستشهد بأرقام مش بانطباع:
 
 ```bash
-node scripts/scan-dart.mjs lib/features/orders
-node scripts/scan-dart.mjs lib/features/orders --json
+node <skill-dir>/scripts/scan-dart.mjs lib/features/orders
+node <skill-dir>/scripts/scan-dart.mjs lib/features/orders --json
 ```
+
+`<skill-dir>` هو فولدر السكيل نفسها — الـ cwd وقت التشغيل هو المشروع تحت المراجعة مش السكيل،
+فالمسار النسبي مش هيلاقي الماسح.
 
 بيقيس: طول `build()` وطول الدوال، وعمق التداخل، وعدد الباراميترز الموضعية والبوليانية، وكلاسات
 `State` اللي بتعمل disposable من غير `dispose`، وwidget classes صغيرة مستخدمة مرة واحدة

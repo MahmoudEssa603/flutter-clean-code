@@ -4,6 +4,11 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, rmdirSync, symlinkSync, unlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   blankNonCode,
@@ -316,4 +321,49 @@ test('signalCount is zero for a clean file', () => {
   ].join('\n');
 
   assert.equal(signalCount(scanFile('lib/greeter.dart', source)), 0);
+});
+
+// --- reached through a symlinked install -------------------------------------
+// An installed skill is normally reached through a symlink or a Windows junction.
+// `import.meta.url` is the real path; `process.argv[1]` keeps the link. Comparing
+// them raw makes the CLI import and then run nothing: exit 0, no output, and a
+// report that quietly loses every measurement it was supposed to cite.
+
+test('the CLI still runs when the script is reached through a link', () => {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const dir = mkdtempSync(join(tmpdir(), 'scan-dart-link-'));
+  const link = join(dir, 'installed-skill');
+
+  try {
+    symlinkSync(root, link, 'junction');
+  } catch {
+    return; // this machine will not create links; nothing to assert
+  }
+
+  try {
+    const run = spawnSync(
+      process.execPath,
+      [join(link, 'scripts', 'scan-dart.mjs'), join(root, 'evals', 'fixtures')],
+      { encoding: 'utf8' },
+    );
+
+    assert.equal(run.status, 0);
+    assert.match(run.stdout, /Scanned \d+ Dart file/);
+  } finally {
+    // Never a recursive delete: the directory holds a link to the repository itself.
+    try {
+      unlinkSync(link);
+    } catch {
+      try {
+        rmdirSync(link);
+      } catch {
+        /* leave it to the OS temp sweeper */
+      }
+    }
+    try {
+      rmdirSync(dir);
+    } catch {
+      /* as above */
+    }
+  }
 });

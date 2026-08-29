@@ -15,7 +15,7 @@
 // Exit code is 0 whether or not signals were found. This is a measuring tool,
 // not a gate.
 
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import { join, basename, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -617,7 +617,18 @@ function main(argv) {
   return 0;
 }
 
-const invokedDirectly =
-  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+// Node resolves a module specifier to its real path, so `import.meta.url` never carries the
+// symlink or junction it was reached through — but `process.argv[1]` carries it verbatim. An
+// installed skill is usually reached through such a link, and comparing the two raw would make
+// this file import cleanly and then run nothing at all: exit 0, no output, no measurements.
+const invokedDirectly = (() => {
+  const entry = process.argv[1];
+  if (entry === undefined) return false;
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(entry)).href;
+  } catch {
+    return false;
+  }
+})();
 
 if (invokedDirectly) process.exit(main(process.argv.slice(2)));
