@@ -17,6 +17,7 @@
   "must_not": [
     "Rewrite the widget or change any visible output",
     "Report dart format or import ordering as findings",
-    "Name any other skill, plugin or tool as a destination for out-of-scope work"
+    "Name any other skill, plugin or tool as a destination for out-of-scope work",
+    "Write a scratch, probe or temporary file anywhere inside the repository under review, even one it deletes afterwards"
   ]
 }

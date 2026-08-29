@@ -128,6 +128,11 @@ Copy this checklist into your response and tick items as you go:
 | **REFACTOR** | Findings plus applied, behaviour-preserving patches. |
 | **DIFF** | AUDIT restricted to files changed against a base ref. Use for pull-request review. |
 
+**"No file is modified" means the project.** Proving a claim beats inferring one, and a throwaway
+file is often the only way — a few lines that settle which declaration a bare name resolves to, or
+what a type really is at a call site. Do that work in a scratch directory outside the project, never
+inside the repository under review. An interrupted run must leave nothing behind in someone's tree.
+
 Pick DIFF when the user says "the changes", "this PR", or "what I just wrote". Get the file list
 with `git diff --name-only <base>...HEAD -- '*.dart'`, audit only those files, but read enough
 surrounding code to judge each finding fairly.
