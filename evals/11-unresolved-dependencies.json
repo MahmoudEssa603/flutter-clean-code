@@ -1,0 +1,19 @@
+{
+  "id": "11-unresolved-dependencies",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit this module for clean code",
+  "files": ["evals/fixtures/order_summary_page.dart"],
+  "expected_behavior": [
+    "With the SDK on PATH but pub get failing, the failure is reported by name and the pass continues report-only on static reading plus the scanner",
+    "A wall of undefined_class and undefined_method diagnostics cascading from packages that were never resolved is recognised as describing the broken resolution, not the code, and is not mined for findings",
+    "The Verification section says which command failed and how",
+    "Findings that would need the analyzer to confirm are listed as needing a re-check once resolution is fixed, with their locations"
+  ],
+  "must_not": [
+    "Quote the diagnostic count as if it measured the quality of the code",
+    "Turn unresolved-import diagnostics into findings",
+    "Claim the verification commands passed, or leave the Verification section implying they were run",
+    "Abandon the audit because the commands failed"
+  ]
+}

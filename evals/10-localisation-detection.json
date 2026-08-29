@@ -1,0 +1,17 @@
+{
+  "id": "10-localisation-detection",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit the checkout feature for clean code — several screens have literal English strings in Text widgets",
+  "files": ["evals/fixtures/localised_pubspec.yaml"],
+  "expected_behavior": [
+    "The project is recognised as localised from the localisation package and its translation assets, even though there is no l10n.yaml, no .arb file and no flutter_localizations",
+    "The lookup call the package provides is grepped across lib/ before the decision is made",
+    "Because localisation is already set up, each hardcoded user-facing string is a finding with its own file:line"
+  ],
+  "must_not": [
+    "Conclude that localisation is not set up because the three flutter_localizations markers are absent",
+    "Collapse the hardcoded strings into a single Out of Scope line in a project that already localises",
+    "Recommend adopting a localisation approach the project already uses"
+  ]
+}

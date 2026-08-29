@@ -1,0 +1,22 @@
+# Fixture: a project that is fully localised and carries none of the markers a naive check
+# looks for. There is no `flutter_localizations`, no `l10n.yaml` and no `.arb` file anywhere —
+# the localisation package brings its own asset format and its own lookup call.
+
+name: storefront
+description: A fixture pubspec, not a real project.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  easy_localization: ^3.0.3
+  dio: ^5.4.0
+
+flutter:
+  assets:
+    - assets/lang/en.json
+    - assets/lang/ar.json

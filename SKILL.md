@@ -60,7 +60,7 @@ them inside a clean-code pass, and never silently absorb them.
 | State-management patterns, rebuild ownership, provider/bloc/riverpod structure | Different domain, different evidence |
 | Theme tokens, colour values, typography and spacing scales | Design-system decisions, not readability |
 | Runtime performance: jank, rebuild storms, memory growth | Needs profiling evidence this pass does not collect |
-| Bugs, crashes, wrong behaviour | Refactoring is not fixing |
+| Bugs only a run reveals — crashes, wrong output, a flow that does not work | Diagnosing them needs execution this pass does not do — see the bug line below |
 | Layer boundaries, dependency direction, entities/usecases/repositories, module structure | Clean Architecture, not Clean Code |
 
 **The analyzer rule.** Before reporting a finding, check whether the project's
@@ -68,6 +68,19 @@ them inside a clean-code pass, and never silently absorb them.
 the analyzer reports it on every build and this skill would only duplicate the noise. If such a
 lint exists in Dart but is not enabled, still drop the finding, and note once in the report that
 enabling that rule would cover the whole class of issue.
+
+The test is whether the analyzer *reports* it, not whether the rule is switched on. An enabled
+rule says nothing about a file the `analyzer: exclude:` list removes from analysis, and generated
+output usually sits there. A defect inside an excluded file will never be reported by anyone, so
+it stays yours — filed against the hand-written source that produced it.
+
+**Where the bug line falls.** Some defects are visible in the shape of the code: a field
+declared in `copyWith` and never passed to the constructor, a name that shadows a core type, two
+branches of a conditional with identical bodies, a flag parameter every call site passes the same
+value for. Those are yours. Report the cost to the reader, and name the silent bug when there is
+one — that is why the finding is High, not a reason to hand it back. A defect you can only reach
+by running the code — a wrong total, a screen that never loads — is not yours however plain it
+looks: one line under Out of Scope, and hand it back.
 
 **Clean Code is not Clean Architecture.** Clean Code is readability and maintainability *inside*
 the current design. Changing layer boundaries or dependency direction is out of scope unless the
@@ -85,7 +98,8 @@ Strongly recommended:
 
 - Its tests. Required for REFACTOR, see Rule Zero.
 - The project's conventions: `analysis_options.yaml`, `CONTRIBUTING.md`, or a style guide.
-  **Project conventions beat every generic preference in this skill.**
+  Check each path exists before reading it — an absent file is a normal answer, not a failed
+  command. **Project conventions beat every generic preference in this skill.**
 
 If no conventions file exists, proceed with standard Dart conventions and record in the report
 that project conventions were not verified.
@@ -136,7 +150,9 @@ first, reporting after each module rather than at the end.
 
 **Worst first has a definition.** Run the scanner over `lib/` with `--json`, group the files by
 feature directory, and rank the features by signals per file — not by total signals, or a large
-feature always wins on size alone. Take the top three in one pass and say which ones are queued.
+feature always wins on size alone. The denominator is every non-generated file the scanner read,
+the clean ones included; dividing by only the files that carry signals rewards a feature for
+having many clean files and reorders the ranking outright. Take the top three in one pass and say which ones are queued.
 Auditing eleven features in one reply produces a document nobody reads.
 
 **Package or app?** Read `pubspec.yaml` first. `publish_to: none` means an app: public API
@@ -274,9 +290,13 @@ and duplication. Check all seven areas every run. Concrete Dart before/after cod
 - `late` used to dodge nullability, and `!` used to silence the type system, are findings. The
   type should tell the truth instead.
 - Hardcoded user-facing strings: a finding **only when the project already has localisation set
-  up** — an `l10n.yaml`, `.arb` files, or `flutter_localizations` in `pubspec.yaml`. If it has
-  none, adopting localisation is a project decision, so report it once as out of scope rather
-  than as a finding per string.
+  up** — and that is three questions, not one. `flutter_localizations` with `l10n.yaml` and
+  `.arb` files is the first. A localisation package in `pubspec.yaml` is the second: several
+  popular ones carry their own asset format and produce no `.arb` at all, so the first check
+  misses them entirely. Translation assets plus a lookup call already used across `lib/` is the
+  third — grep for the call before you decide. If the project genuinely has none, adopting
+  localisation is a project decision, so report it once as out of scope rather than as a finding
+  per string.
 
 #### 5. Comments and dead weight
 
@@ -374,15 +394,24 @@ Run these after every batch in REFACTOR mode, and once at the start of AUDIT so 
 failure is not attributed to the code under review.
 
 ```bash
-flutter analyze                    # or: dart analyze   (pure Dart package)
-dart format --set-exit-if-changed .
-flutter test                       # or: dart test
+flutter analyze <path>             # or: dart analyze   (pure Dart package)
+dart format --set-exit-if-changed <path>
+flutter test <path>                # or: dart test
 ```
+
+In AUDIT and DIFF, pass the path under review. A whole-project run on a large repository buries
+this module's result under drift that predates it, and none of that drift belongs to this report.
 
 **If neither `flutter` nor `dart` is on PATH:** do not guess, and do not claim the checks passed.
 Continue report-only and write this line into the report verbatim:
 
 > Verification skipped: no Dart or Flutter SDK found on PATH. Findings are static-reading only.
+
+**If the SDK is there but the project will not resolve** — `pub get` fails, or the analyzer
+returns a wall of `undefined_class` and `undefined_method` cascading from packages it could not
+find — those diagnostics describe the broken resolution, not the code. Do not mine them for
+findings, and never quote the count as if it measured quality. Name the command, say how it
+failed, and continue report-only.
 
 If `dart format` reports changes in files this pass never touched, leave them alone. That is
 pre-existing formatting drift and it belongs to the analyzer, not to this report.
@@ -405,6 +434,10 @@ findings dropped by the cap. A report without its own limits reads as complete w
   `docs/reviews/CLEAN-CODE-<AUDIT|REFACTOR>-<module>-<YYYY-MM-DD>.md`, creating `docs/reviews/`
   if needed, and say the path in your reply.
 - If the user asked for an inline answer, honour that regardless of scope.
+
+If `docs/reviews/` already holds reports under a different naming scheme, follow the one that is
+already there and say so in your reply. A directory carrying two conventions is worse than either
+of them.
 
 Re-running on the same module the same day overwrites that file instead of adding a second one.
 

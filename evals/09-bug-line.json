@@ -1,0 +1,19 @@
+{
+  "id": "09-bug-line",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "review this file for clean code",
+  "files": ["evals/fixtures/customer_profile.dart"],
+  "expected_behavior": [
+    "copyWith declaring nickname and never passing it is reported as a High-impact finding, because the defect is visible in the shape of the code and the bug it causes is silent",
+    "The finding states the cost to the reader and names the silent bug as the reason for the impact, rather than withholding the finding because a bug is involved",
+    "reload() returning early on a cached profile is handed back in one line under Out of Scope: reaching it means following the flow at runtime, which this pass does not do",
+    "The two are separated explicitly, so the reader can see where the line was drawn"
+  ],
+  "must_not": [
+    "Withhold the copyWith finding on the grounds that bugs are out of scope",
+    "Present the run-only defect as a clean-code finding with an Impact, Effort and Confidence",
+    "Lead the report with a list of silent bugs, turning a clean-code audit into a defect hunt",
+    "Propose a behaviour-changing patch in AUDIT mode"
+  ]
+}

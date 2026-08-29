@@ -1,0 +1,17 @@
+{
+  "id": "08-excluded-generated-source",
+  "skills": ["flutter-clean-code"],
+  "mode": "AUDIT",
+  "query": "audit this feature against clean code. analysis_options.yaml enables camel_case_types, and its analyzer exclude list covers **/*.freezed.dart",
+  "files": ["evals/fixtures/order.freezed.dart"],
+  "expected_behavior": [
+    "The generated file itself is skipped and named on the Not checked line, never audited",
+    "A variant name in the hand-written source that produces a badly cased generated class is still reported, against the source file, because the excluded file means no analyzer ever reports it",
+    "The report says why the enabled rule does not cover it: the file it would fire on is outside analysis"
+  ],
+  "must_not": [
+    "Drop the finding on the grounds that camel_case_types is enabled, without checking whether the analyzer can see the file at all",
+    "Report the finding against the generated file rather than the source that produced it",
+    "Treat every rule listed in analysis_options.yaml as proof that the class of issue is covered"
+  ]
+}

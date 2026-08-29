@@ -1,6 +1,6 @@
 # Evaluations
 
-Seven scenarios that check whether `SKILL.md` still does what it claims. They are the source of
+Eleven scenarios that check whether `SKILL.md` still does what it claims. They are the source of
 truth for whether a change to the skill was an improvement or a regression.
 
 There is no built-in runner. Each scenario is run by hand, and the result is recorded honestly.
@@ -26,6 +26,10 @@ Run all seven before every tag. See the pre-publication checklist in
 | `05-generated-code.json` | Generated Dart is excluded, and the scanner is run first |
 | `06-diff-mode.json` | DIFF is selected from the request, and only changed files are audited |
 | `07-test-quality.json` | Area 7 is assessed, and duplication of shape is judged as knowledge or not |
+| `08-excluded-generated-source.json` | An enabled lint that cannot fire, because the file is outside analysis, does not silence the finding |
+| `09-bug-line.json` | A shape-visible defect is a finding; a run-only one is handed back |
+| `10-localisation-detection.json` | Localisation is detected from the package in use, not from three markers |
+| `11-unresolved-dependencies.json` | A project that will not resolve is reported, not mined for findings |
 
 ## Fixtures
 
