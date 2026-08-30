@@ -117,8 +117,10 @@ what this particular class costs them.
   re-runs the data-layer tests and risks the caching path."
 
 **Every principle row stays in the table, even at zero.** A row missing from the Summary reads
-as an area nobody looked at. If an area genuinely could not be assessed — no test files in
-scope, for instance — put an em dash in its row and say why on the `Not checked:` line.
+as an area nobody looked at. If an area genuinely could not be assessed — the tests live outside
+the path you were given, say, or the file does not parse — put an em dash in its row and say why
+on the `Not checked:` line. A scope with no tests in it is not that case: that is assessed, and
+the answer is one finding. See area 7.
 
 **Every finding has a `file:line`.** A finding without a location is an opinion.
 

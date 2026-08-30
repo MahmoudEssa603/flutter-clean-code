@@ -438,6 +438,10 @@ failed, and continue report-only.
 If `dart format` reports changes in files this pass never touched, leave them alone. That is
 pre-existing formatting drift and it belongs to the analyzer, not to this report.
 
+These commands write build artefacts — `.dart_tool/`, a lockfile — and that is the SDK doing its
+job, not you modifying the project. Leave whatever they leave. Deleting a lockfile to tidy up is
+the one way this step can do real harm.
+
 ### Step 6 — Report
 
 Emit the report in the format defined by

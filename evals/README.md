@@ -99,7 +99,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 |---|---|---|
 | `01-audit-fat-widget` | 2026-08-30 | passed — all eight expectations and all four must_nots, inline with no file written, and the analyzer note dropped four classes an unenabled lint would own |
 | `02-refactor-without-tests` | 2026-08-30 | **partial** on a re-run. Nine batches, one type each, and the deviation from the split declared rather than hidden — but the artifact still bundled seven of them into one file, one of which changes behaviour. The run's reason was sound and is now the rule: batches over the same lines are a stack, delivered as ordered diffs. Needs a third run |
-| `03-out-of-scope-routing` | — | not run |
+| `03-out-of-scope-routing` | 2026-08-30 | passed — both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented |
 | `04-negative-trigger` | 2026-08-30 | passed — four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions |
 | `05-generated-code` | — | not run |
 | `06-diff-mode` | 2026-08-30 | passed — DIFF chosen without the mode being named, scope taken from `main...HEAD`, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed |
@@ -131,9 +131,9 @@ instead of raising a finding per string.
 
 One open question the runs disagree on, left open deliberately. When a project will not resolve,
 the analyzer reports nothing to anyone — so does its ownership of a class of finding still hold?
-Scenario 11 said no and reported an unused private class itself; scenario 01 said yes and put the
-same kind of thing in Out of Scope. Both reasoned it out in the report, both are defensible, and
-the items in question were Low either way. Watch it; do not legislate it on two data points.
+Scenario 11 said no and reported an unused private class itself; 01 and 03 said yes and gave the
+same kind of thing to the analyzer. Each reasoned it out in the report, all three are defensible,
+and the items were Low either way. Two to one is still not a rule. Watch it.
 
 Do not clean up the fixtures. Their whole value is being dirty.
 
