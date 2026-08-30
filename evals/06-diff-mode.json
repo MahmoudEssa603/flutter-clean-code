@@ -14,7 +14,7 @@
   ],
   "must_not": [
     "Audit the whole repository when only a branch was named",
-    "Report a finding in a file the diff never touched",
+    "Report a finding in a file the diff never touched — a numbered entry carrying Impact, Effort, Confidence and a location. Noting in one Out of Scope line that an untouched neighbour has known defects, and that they are outside this diff, is not that and is worth saying",
     "Apply any edit"
   ]
 }

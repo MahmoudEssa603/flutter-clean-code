@@ -102,7 +102,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `03-out-of-scope-routing` | — | not run |
 | `04-negative-trigger` | — | not run |
 | `05-generated-code` | — | not run |
-| `06-diff-mode` | — | not run |
+| `06-diff-mode` | 2026-08-30 | passed — DIFF chosen without the mode being named, scope taken from `main...HEAD`, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed |
 | `07-test-quality` | — | not run |
 | `08-excluded-generated-source` | 2026-08-30 | passed |
 | `09-bug-line` | 2026-08-30 | passed |
