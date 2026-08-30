@@ -7,10 +7,32 @@ There is no built-in runner. Each scenario is run by hand, and the result is rec
 
 ## How to run one
 
-1. Start a fresh session with this skill installed and nothing else loaded from this repository.
-2. Paste the scenario's `query`, attaching the files listed in `files`.
+Build the projects once, somewhere outside this repository:
+
+```bash
+node scripts/make-eval-projects.mjs <target-dir>          # all twelve
+node scripts/make-eval-projects.mjs <target-dir> --only 06-diff-mode
+```
+
+Attaching the files named in `files` is not enough, which is why this exists. The analyzer rule
+needs an `analysis_options.yaml` with a rule enabled and an exclude list that hides the file it
+would fire on. DIFF needs a repository with a base branch and one changed file sitting beside an
+untouched one that carries far more defects. The unresolved-dependency scenario needs a dependency
+that genuinely cannot be fetched. The re-run scenario needs an older report already in
+`docs/reviews/`. None of that is a file you can attach.
+
+The generator deletes what it rebuilds, and refuses any directory holding an entry it does not
+manage. Then:
+
+1. Start a fresh session **in the scenario's directory**, with this skill installed and nothing
+   else loaded from this repository.
+2. Paste the scenario's `query`.
 3. Read the answer against `expected_behavior` and `must_not`, item by item.
 4. Record the outcome in the table below.
+
+Some scenarios leave their project dirty — `04` ends with the fixture rewritten, and any pass
+that reaches `flutter analyze` leaves `.dart_tool` and a lockfile. Rebuild before running one
+again rather than tidying by hand.
 
 Run all twelve before every tag. See the pre-publication checklist in
 [AGENTS.md](../AGENTS.md).
