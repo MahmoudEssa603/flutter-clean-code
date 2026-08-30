@@ -1,12 +1,3 @@
-// Fixture: two defects that sit on opposite sides of the bug line.
-//
-//   Shape-visible — `copyWith` declares `nickname` and never passes it on. Reading the
-//   signature next to the body is enough to see it, so it belongs to this skill.
-//
-//   Run-only — `reload()` returns early whenever a profile is already cached, so the retry
-//   button that calls it does nothing on the second press. Nothing in the shape of the code
-//   says that; you have to follow the flow at runtime. It belongs to whoever fixes bugs.
-
 class CustomerProfile {
   const CustomerProfile({
     required this.id,

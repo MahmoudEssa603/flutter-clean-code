@@ -1,10 +1,5 @@
-# Eval fixture for 04-negative-trigger.json.
-# The words "god class", "SOLID" and "rename" appear here on purpose: this file
-# exists to confirm that flutter-clean-code does NOT activate on non-Dart code.
-
-
 class OrderManager:
-    """A god class that violates SOLID, in Python, on purpose."""
+    """A god class: persistence, mail and PDF rendering behind one door."""
 
     def __init__(self, db, mailer, pdf):
         self.db = db

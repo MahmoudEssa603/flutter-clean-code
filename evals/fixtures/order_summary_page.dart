@@ -1,17 +1,3 @@
-// Eval fixture. Deliberately unclean: every problem here is planted so the evals in
-// evals/*.json can check whether the skill finds it. Do not "fix" this file.
-//
-// Planted findings:
-//   Naming        getTotal() mutates; d/tmp locals; mixed fetch/get/load verbs
-//   Functions     render() takes a boolean flag; nested if pyramid
-//   SOLID         OrderSummaryPage holds data access, formatting and a business rule
-//   Flutter       ~120-line build(); magic 17 and 0xFF3B5998; no dispose; late abuse
-//   Comments      "what" comments and a commented-out line; ownerless TODO
-//   Errors        catch-and-ignore; discount rule duplicated from invoice_service
-//   Duplication   three near-identical price rows in build()
-//   Over-extract  _SectionGap: a one-line widget class nothing ever builds
-//   Collections   OrderSnapshot.== compares a List by identity
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -242,7 +228,6 @@ class _OrderSummaryPageState extends State<OrderSummaryPage> {
   }
 }
 
-// Planted for the over-extraction signal: a widget class that earns nothing.
 class _SectionGap extends StatelessWidget {
   const _SectionGap();
 
@@ -252,8 +237,6 @@ class _SectionGap extends StatelessWidget {
   }
 }
 
-// Planted for the collection-equality signal: two snapshots holding equal items
-// never compare equal, so nothing downstream rebuilds.
 class OrderSnapshot {
   const OrderSnapshot(this.id, this.items);
 

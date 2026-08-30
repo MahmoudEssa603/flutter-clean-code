@@ -1,15 +1,3 @@
-// Eval fixture for area 7. Deliberately bad tests: every problem here is planted
-// so 07-test-quality.json can check whether the skill finds it. Do not "fix" it.
-//
-// Planted findings:
-//   Names         'test 1', 'discount', 'ProfilePage' — none states a behaviour
-//   One reason    a single test asserting four unrelated things
-//   Logic         an if inside a test, so an empty list passes having tested nothing
-//   Setup         the same Order literal copy-pasted into three tests
-//   pumpAndSettle used with no reason, to make a flaky test pass
-//   find.byType   asserting on Padding count, which breaks on any extraction
-//   Mocks         MockOrder where a real Order would do; a verify with no outcome
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

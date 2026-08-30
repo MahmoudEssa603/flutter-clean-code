@@ -41,8 +41,6 @@ class _Shipped implements OrderStatus {
   final String trackingId;
 }
 
-// The casing here is not a choice this file made. It mirrors the redirect target written in
-// order.dart, and regenerating without fixing the source brings it straight back.
 class _orderCancelled implements OrderStatus {
   const _orderCancelled(this.reason);
 

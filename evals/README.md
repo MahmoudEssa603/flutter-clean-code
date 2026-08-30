@@ -39,20 +39,54 @@ is worse than an empty row.
 
 ## Fixtures
 
-`fixtures/order_summary_page.dart` carries one planted finding per principle area, plus a
-repeated price row, an over-extracted `_SectionGap`, and an `OrderSnapshot` whose `==`
-compares a `List` by identity. The header comment lists them, and every signal
-`scan-dart.mjs` emits has a case there.
-`fixtures/order_summary_page_test.dart` carries one bad test per rule in `test-quality.md`.
-`fixtures/not_dart_service.py` carries the language-neutral trigger words that used to cause
-false activation. `fixtures/order.freezed.dart` is real generated output, and must be skipped
-without being named; `fixtures/order.dart` is the hand-written source it belongs to, carrying one
-variant whose redirect breaks the casing its five siblings keep.
-`fixtures/customer_profile.dart` holds one defect on each side of the bug line and nothing else.
+**A fixture never says it is one.** These files used to open with a banner naming the planted
+defects, telling the reader not to fix them, and pointing at this directory. Every run stopped at
+it, one went and read the scenarios, and the banner was itself reported as a comment documenting
+a defect instead of fixing it. A file that announces it is being graded cannot measure anything,
+so the inventory lives here now and the fixtures read as ordinary code. Keep it that way: when
+you plant a defect, describe it below, not in the file.
+
+`fixtures/order_summary_page.dart` — one defect per principle area:
+
+| Area | Planted |
+|---|---|
+| Naming | `getTotal()` mutates while reading; `d` and `tmp` locals, with `d` reused for a date; `fetch`/`get`/`load`/`watch` for one concept |
+| Functions | `render()` takes a positional boolean whose other branch has no call site; `describe()` is a three-deep if pyramid |
+| SOLID | the State class holds data access, date formatting, status copy and a pricing rule |
+| Flutter | a 118-line `build()`; `EdgeInsets.all(17)` ten times and `0xFF3B5998` twice; a controller and a subscription with no `dispose`; `late Order` over a real absence |
+| Comments | two "what" comments, a commented-out fold that computes a different number, an ownerless TODO |
+| Errors | `catch (e) { // ignore }` that also leaves `loading` true forever; a discount rule whose comment claims a duplicate in a file that is not in the repository |
+| Duplication | three price rows sharing one shape and one concept |
+| Over-extraction | `_SectionGap`, a one-line widget class nothing ever builds — dead weight, not an extraction that went too far |
+| Collections | `OrderSnapshot.==` compares its `List` by identity, and `Object.hash` repeats the mistake |
+
+`fixtures/order_summary_page_test.dart` — one bad test per rule in `test-quality.md`: names that
+state a method rather than a behaviour; one test asserting four unrelated things; an `if` that
+lets an empty list pass having proved nothing; the same `Order` literal copy-pasted three times;
+`pumpAndSettle` used to settle a flake; an assertion on `find.byType(Padding)` that any
+extraction breaks; a mock where the real object would do.
+
+`fixtures/not_dart_service.py` carries the language-neutral trigger words — god class, SOLID,
+rename — that used to cause false activation.
+
+`fixtures/order.dart` and `fixtures/order.freezed.dart` are a source and its real generated
+output. Five variants redirect to an UpperCamelCase class and the sixth to `_orderCancelled`, so
+the generated class breaks the casing its siblings keep — and an analyzer that excludes generated
+files can never report it.
+
+`fixtures/customer_profile.dart` holds one defect on each side of the bug line and nothing else:
+a `copyWith` that declares `nickname` and never passes it, visible in the shape of the code; and
+a `reload()` that returns early on a cached value, which only a run reveals.
+
 `fixtures/localised_pubspec.yaml` and `fixtures/checkout_screen.dart` are a project that
-localises through a package rather than through `.arb` files, with three user-facing strings that
-never reach the lookup call. `fixtures/previous_report.md` is an earlier pass over
-`customer_profile.dart`, written so that two of its three findings should not survive a re-judge.
+localises through a package rather than through `.arb` files. The dependency is invented on
+purpose: naming a real one invites matching on the name instead of asking the three questions.
+Three user-facing strings never reach the lookup call.
+
+`fixtures/previous_report.md` is an earlier pass over `customer_profile.dart`, written so that
+two of its three findings should not survive a re-judge — one belongs in Out of Scope, and one was
+reached by a method the file cannot support. Its line references track the fixture; if you edit
+one, fix the other.
 
 None of the four newer fixtures produce a single scanner signal. That is deliberate: they test
 the judgment the scanner cannot do, and a pass that leans on the measurements will not find them.

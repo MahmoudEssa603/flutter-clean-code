@@ -1,13 +1,5 @@
-# Fixture: a project that is fully localised and carries none of the markers a naive check
-# looks for. There is no `flutter_localizations`, no `l10n.yaml` and no `.arb` file anywhere.
-#
-# The dependency below is invented. It stands in for the whole class of localisation package
-# that ships its own asset format and its own lookup call — the point of the scenario is the
-# shape, never one package, and naming a real one would only invite matching on the name
-# instead of on the three questions the rule actually asks.
-
 name: storefront
-description: A fixture pubspec, not a real project.
+description: A storefront app.
 publish_to: "none"
 version: 1.0.0+1
 
