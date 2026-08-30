@@ -3,7 +3,7 @@
   "skills": ["flutter-clean-code"],
   "mode": "AUDIT",
   "query": "audit the checkout feature for clean code — several screens have literal English strings in Text widgets",
-  "files": ["evals/fixtures/localised_pubspec.yaml"],
+  "files": ["evals/fixtures/localised_pubspec.yaml", "evals/fixtures/checkout_screen.dart"],
   "expected_behavior": [
     "The project is recognised as localised from the localisation package and its translation assets, even though there is no l10n.yaml, no .arb file and no flutter_localizations",
     "The lookup call the package provides is grepped across lib/ before the decision is made",

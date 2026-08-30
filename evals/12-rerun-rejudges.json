@@ -3,7 +3,7 @@
   "skills": ["flutter-clean-code"],
   "mode": "AUDIT",
   "query": "audit this module again — docs/reviews already holds a report on it from an earlier pass, and no source file has changed since",
-  "files": ["evals/fixtures/customer_profile.dart"],
+  "files": ["evals/fixtures/customer_profile.dart", "evals/fixtures/previous_report.md"],
   "expected_behavior": [
     "The previous report is found and opened with a Since-last-pass table",
     "Every still-open finding is judged again against the rules as they read now, not carried across on the strength of the earlier verdict",

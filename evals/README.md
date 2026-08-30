@@ -12,8 +12,13 @@ There is no built-in runner. Each scenario is run by hand, and the result is rec
 3. Read the answer against `expected_behavior` and `must_not`, item by item.
 4. Record the outcome in the table below.
 
-Run all seven before every tag. See the pre-publication checklist in
+Run all twelve before every tag. See the pre-publication checklist in
 [AGENTS.md](../AGENTS.md).
+
+Step 1 is not a formality. Whoever wrote the rule under test cannot grade it from the session
+they wrote it in: the answer is already in their context, and so is the verdict they expect. A
+result recorded from such a session says nothing, and saying nothing while looking like a pass
+is worse than an empty row.
 
 ## Scenarios
 
@@ -41,7 +46,39 @@ compares a `List` by identity. The header comment lists them, and every signal
 `fixtures/order_summary_page_test.dart` carries one bad test per rule in `test-quality.md`.
 `fixtures/not_dart_service.py` carries the language-neutral trigger words that used to cause
 false activation. `fixtures/order.freezed.dart` is real generated output, and must be skipped
-without being named.
+without being named; `fixtures/order.dart` is the hand-written source it belongs to, carrying one
+variant whose redirect breaks the casing its five siblings keep.
+`fixtures/customer_profile.dart` holds one defect on each side of the bug line and nothing else.
+`fixtures/localised_pubspec.yaml` and `fixtures/checkout_screen.dart` are a project that
+localises through a package rather than through `.arb` files, with three user-facing strings that
+never reach the lookup call. `fixtures/previous_report.md` is an earlier pass over
+`customer_profile.dart`, written so that two of its three findings should not survive a re-judge.
+
+None of the four newer fixtures produce a single scanner signal. That is deliberate: they test
+the judgment the scanner cannot do, and a pass that leans on the measurements will not find them.
+
+## Results
+
+Recorded per the rule above: only a run from a session that did not author the rule counts.
+
+| Scenario | Last run | Result |
+|---|---|---|
+| `01-audit-fat-widget` | — | not run |
+| `02-refactor-without-tests` | — | not run |
+| `03-out-of-scope-routing` | — | not run |
+| `04-negative-trigger` | — | not run |
+| `05-generated-code` | — | not run |
+| `06-diff-mode` | — | not run |
+| `07-test-quality` | — | not run |
+| `08-excluded-generated-source` | — | not run |
+| `09-bug-line` | — | not run |
+| `10-localisation-detection` | — | not run |
+| `11-unresolved-dependencies` | — | not run |
+| `12-rerun-rejudges` | — | not run |
+
+Scenarios 06 to 12 were written from defects observed while auditing unrelated Flutter projects,
+and the behaviour each one describes was seen in those audits before it was written down. That is
+evidence the rule matters. It is not a run of the scenario, and it does not fill a row above.
 
 Do not clean up the fixtures. Their whole value is being dirty.
 
