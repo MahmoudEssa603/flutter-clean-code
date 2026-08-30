@@ -457,6 +457,13 @@ findings dropped by the cap. A report without its own limits reads as complete w
   if needed, and say the path in your reply.
 - If the user asked for an inline answer, honour that regardless of scope.
 
+**The markdown in the repository is the report.** Rendering it somewhere else — a page, a slide,
+a ticket — is a thing the user may ask for afterwards, never a substitute and never your call:
+the audit of someone's code is theirs to circulate. And no medium relaxes the contract. A finding
+keeps its `CC-` number, its Impact, its Effort, its Confidence and its `file:line` wherever it is
+shown, the `Not checked:` line travels with it, and the cap still holds at twenty. A prettier
+format that quietly drops half of those has published something that is no longer this report.
+
 If `docs/reviews/` already holds reports under a different naming scheme, follow the one that is
 already there and say so in your reply. A directory carrying two conventions is worse than either
 of them.
