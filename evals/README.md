@@ -73,7 +73,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `08-excluded-generated-source` | 2026-08-30 | passed |
 | `09-bug-line` | 2026-08-30 | passed |
 | `10-localisation-detection` | 2026-08-30 | passed |
-| `11-unresolved-dependencies` | 2026-08-30 | passed — one expectation partial: the failed resolution was reported and never mined, but the findings awaiting a re-check once it is fixed were not listed with their locations |
+| `11-unresolved-dependencies` | 2026-08-30 | passed on a re-run after the two fixes; the first run left one expectation partial |
 | `12-rerun-rejudges` | 2026-08-30 | passed |
 
 Scenarios 06 to 12 were written from defects observed while auditing unrelated Flutter projects,
@@ -87,6 +87,13 @@ reformat it had caused — and that `findTrivialWidgets` counted a constructor a
 widget class nobody builds reported as used once while one with a single call site was filtered
 out as reuse. Neither defect was reachable from the fixtures alone. A scenario earns its place by
 being run somewhere the skill can actually misbehave.
+
+Re-running 11 after those two fixes confirmed both: the pass reported the file as unformatted and
+left it byte-identical, and it called `_SectionGap` dead code to delete rather than an extraction
+to inline. It also closed a gap nothing else had: this is the only scenario whose project has no
+localisation at all, so it is where the rule's other half gets exercised — asking all three
+questions, finding no package and no lookup call, and handing localisation back in one line
+instead of raising a finding per string.
 
 Do not clean up the fixtures. Their whole value is being dirty.
 
