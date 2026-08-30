@@ -64,7 +64,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | Scenario | Last run | Result |
 |---|---|---|
 | `01-audit-fat-widget` | — | not run |
-| `02-refactor-without-tests` | — | not run |
+| `02-refactor-without-tests` | 2026-08-30 | **failed** — Rule Zero handled correctly and the patch was left unapplied, but the whole thing arrived as one batch labelled "Rename · Extract · Inline", against both the expectation and the must_not. Rule tightened; needs a re-run |
 | `03-out-of-scope-routing` | — | not run |
 | `04-negative-trigger` | — | not run |
 | `05-generated-code` | — | not run |

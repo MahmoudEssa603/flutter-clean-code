@@ -389,7 +389,11 @@ count per principle so nothing looks hidden.
 **Refactor is not rewrite.** Do not rewrite the feature, change business rules, change UI output,
 switch the state-management pattern, or alter API contracts unless explicitly asked.
 
-- One refactoring type per batch. Rename, extract, and restructure never share a batch.
+- One refactoring type per batch. Rename, extract, and restructure never share a batch. This
+  binds a patch you propose without applying just as hard. Nothing is revertable there, which is
+  the point: the reviewer is approving work they have not watched happen, and they need to take
+  the renames and leave the restructure. One combined patch answering sixteen findings is a
+  single yes to sixteen decisions.
 - A rename touches every reference, including overrides and string-based lookups.
 - A public API rename in a package ships a deprecation alias first.
 - Anything needing a behaviour change, discovered mid-refactor → **stop that batch**, report it
