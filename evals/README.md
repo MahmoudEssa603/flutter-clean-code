@@ -101,10 +101,16 @@ file cannot produce a finding that lives between two.
 
 Recorded per the rule above: only a run from a session that did not author the rule counts.
 
+All twelve pass as of 2026-08-30. Three needed a second or third run, and each of those runs paid
+for itself: 02 produced the batch-split rule and then the stack rule, 07 produced the rule that a
+report keeps its contract in whatever medium it is shown, and 11 confirmed two scanner and command
+fixes at once. Six scenarios changed the skill on their first run. A suite that passes on the
+first attempt everywhere has usually been written to agree with the thing it tests.
+
 | Scenario | Last run | Result |
 |---|---|---|
 | `01-audit-fat-widget` | 2026-08-30 | passed — all eight expectations and all four must_nots, inline with no file written, and the analyzer note dropped four classes an unenabled lint would own |
-| `02-refactor-without-tests` | 2026-08-30 | **partial** on a re-run. Nine batches, one type each, and the deviation from the split declared rather than hidden — but the artifact still bundled seven of them into one file, one of which changes behaviour. The run's reason was sound and is now the rule: batches over the same lines are a stack, delivered as ordered diffs. Needs a third run |
+| `02-refactor-without-tests` | 2026-08-30 | passed on a third run. Eight batches, one type each, shipped as ordered files v1–v8 beside the untouched original so a reviewer can take a prefix; the two behaviour-affecting batches sit last and say plainly that behaviour is not preserved. Nothing applied, proven by MD5 |
 | `03-out-of-scope-routing` | 2026-08-30 | passed — both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented |
 | `04-negative-trigger` | 2026-08-30 | passed — four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions |
 | `05-generated-code` | 2026-08-30 | passed — generated file excluded and named once, the badly cased variant reported against the source, and the report written to `docs/reviews/` as Step 6 asks |
