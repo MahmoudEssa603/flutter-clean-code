@@ -6,6 +6,8 @@
   "files": ["evals/fixtures/not_dart_service.py"],
   "expected_behavior": [
     "The flutter-clean-code skill does not activate, because the description's 'Do not use for non-Dart code' clause excludes it",
+    "This is the one scenario decided by something the answer does not contain: whether the skill loaded. Record the presence or absence of the load indicator, not the shape of the reply — an agent that never loaded the skill and refactored the Python itself has passed, and its answer looks nothing like a report",
+    "Expect the fixture to come back rewritten. Asking for a refactor is the only way to test non-activation, and an agent that declines the skill will reasonably go on to do the work. Restore the file before running the scenario again",
     "If the skill is invoked explicitly by name anyway, it states that the scope is not Dart or Flutter and stops rather than auditing Python against Dart conventions"
   ],
   "must_not": [

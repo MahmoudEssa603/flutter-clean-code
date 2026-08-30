@@ -100,7 +100,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `01-audit-fat-widget` | — | not run |
 | `02-refactor-without-tests` | 2026-08-30 | **partial** on a re-run. Nine batches, one type each, and the deviation from the split declared rather than hidden — but the artifact still bundled seven of them into one file, one of which changes behaviour. The run's reason was sound and is now the rule: batches over the same lines are a stack, delivered as ordered diffs. Needs a third run |
 | `03-out-of-scope-routing` | — | not run |
-| `04-negative-trigger` | — | not run |
+| `04-negative-trigger` | 2026-08-30 | passed — four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions |
 | `05-generated-code` | — | not run |
 | `06-diff-mode` | 2026-08-30 | passed — DIFF chosen without the mode being named, scope taken from `main...HEAD`, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed |
 | `07-test-quality` | — | not run |
