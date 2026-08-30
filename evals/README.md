@@ -91,6 +91,12 @@ one, fix the other.
 None of the four newer fixtures produce a single scanner signal. That is deliberate: they test
 the judgment the scanner cannot do, and a pass that leans on the measurements will not find them.
 
+Adding `order.dart` paid for itself the first time it ran. With the union and the screen in scope
+together, a pass found what neither file shows alone: the union is referenced by nothing, the
+screen matches on strings instead, and the two vocabularies disagree — the screen tests for a
+status that is not a variant, so four of the six render as "Unknown". A fixture that is only a
+file cannot produce a finding that lives between two.
+
 ## Results
 
 Recorded per the rule above: only a run from a session that did not author the rule counts.
@@ -101,7 +107,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `02-refactor-without-tests` | 2026-08-30 | **partial** on a re-run. Nine batches, one type each, and the deviation from the split declared rather than hidden — but the artifact still bundled seven of them into one file, one of which changes behaviour. The run's reason was sound and is now the rule: batches over the same lines are a stack, delivered as ordered diffs. Needs a third run |
 | `03-out-of-scope-routing` | 2026-08-30 | passed — both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented |
 | `04-negative-trigger` | 2026-08-30 | passed — four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions |
-| `05-generated-code` | — | not run |
+| `05-generated-code` | 2026-08-30 | passed — generated file excluded and named once, the badly cased variant reported against the source, and the report written to `docs/reviews/` as Step 6 asks |
 | `06-diff-mode` | 2026-08-30 | passed — DIFF chosen without the mode being named, scope taken from `main...HEAD`, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed |
 | `07-test-quality` | 2026-08-30 | **failed on form, and the substance was the best yet.** Area 7 was assessed properly for the first time, and a dead test turned out to be right about a real off-by-one. But the report was published as an HTML page instead of written to `docs/reviews/`, and the contract went with the medium: no `CC-` numbers, no Effort, no Confidence, no Not checked line, 28 findings against a cap of 20. Rule added; needs a re-run |
 | `08-excluded-generated-source` | 2026-08-30 | passed |
