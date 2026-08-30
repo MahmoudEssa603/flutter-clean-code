@@ -125,6 +125,22 @@ Rules:
 Each batch is independently revertable. If the project uses git, one batch is one commit, so a
 single `git revert` undoes it without touching the others.
 
+**Batches over the same lines are a stack, not a set.** A rename and an extraction across the
+same function do not commute: the second is written against the text the first produced. Say so,
+order them, and be honest about what that costs — a revert then comes off the top, and dropping
+a batch from the middle means redoing the ones above it. What it never licenses is collapsing
+them into one change. The reviewer's question is still "do I take the renames and leave the
+restructure", and a stack answers it by being an ordered sequence of small diffs, each applying
+to the result of the last.
+
+**An unapplied patch is delivered the same way.** One file carrying every batch at once is a
+single yes to all of them, which is the thing the split exists to prevent, and the reviewer has
+less to go on than usual because they never watched it happen. Ship the ordered diffs.
+
+**Never bundle a behaviour-changing batch with preserving ones.** The moment one is inside the
+bundle, "behaviour is preserved" stops being true of the whole and the reviewer has to take the
+change to get the cleanups. It goes last, on its own, marked, and separately refusable.
+
 If the working tree was dirty before the pass started, say so in the report and keep every batch
 in separate, clearly listed file sets so the user can unpick them by hand.
 

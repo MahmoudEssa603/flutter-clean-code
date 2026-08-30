@@ -98,7 +98,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | Scenario | Last run | Result |
 |---|---|---|
 | `01-audit-fat-widget` | — | not run |
-| `02-refactor-without-tests` | 2026-08-30 | **failed** — Rule Zero handled correctly and the patch was left unapplied, but the whole thing arrived as one batch labelled "Rename · Extract · Inline", against both the expectation and the must_not. Rule tightened; needs a re-run |
+| `02-refactor-without-tests` | 2026-08-30 | **partial** on a re-run. Nine batches, one type each, and the deviation from the split declared rather than hidden — but the artifact still bundled seven of them into one file, one of which changes behaviour. The run's reason was sound and is now the rule: batches over the same lines are a stack, delivered as ordered diffs. Needs a third run |
 | `03-out-of-scope-routing` | — | not run |
 | `04-negative-trigger` | — | not run |
 | `05-generated-code` | — | not run |
