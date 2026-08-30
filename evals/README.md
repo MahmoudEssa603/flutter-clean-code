@@ -70,15 +70,23 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `05-generated-code` | — | not run |
 | `06-diff-mode` | — | not run |
 | `07-test-quality` | — | not run |
-| `08-excluded-generated-source` | — | not run |
-| `09-bug-line` | — | not run |
-| `10-localisation-detection` | — | not run |
-| `11-unresolved-dependencies` | — | not run |
-| `12-rerun-rejudges` | — | not run |
+| `08-excluded-generated-source` | 2026-08-30 | passed |
+| `09-bug-line` | 2026-08-30 | passed |
+| `10-localisation-detection` | 2026-08-30 | passed |
+| `11-unresolved-dependencies` | 2026-08-30 | passed — one expectation partial: the failed resolution was reported and never mined, but the findings awaiting a re-check once it is fixed were not listed with their locations |
+| `12-rerun-rejudges` | 2026-08-30 | passed |
 
 Scenarios 06 to 12 were written from defects observed while auditing unrelated Flutter projects,
 and the behaviour each one describes was seen in those audits before it was written down. That is
 evidence the rule matters. It is not a run of the scenario, and it does not fill a row above.
+
+The 2026-08-30 runs were done from fresh sessions against a copy of each scenario's files laid out
+as a small standalone project, and they were worth more than their five passes. They found that
+`dart format --set-exit-if-changed` rewrites the files it checks — twice, an AUDIT had to undo a
+reformat it had caused — and that `findTrivialWidgets` counted a constructor as a call site, so a
+widget class nobody builds reported as used once while one with a single call site was filtered
+out as reuse. Neither defect was reachable from the fixtures alone. A scenario earns its place by
+being run somewhere the skill can actually misbehave.
 
 Do not clean up the fixtures. Their whole value is being dirty.
 

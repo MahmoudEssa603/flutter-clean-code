@@ -9,7 +9,7 @@
 //   Comments      "what" comments and a commented-out line; ownerless TODO
 //   Errors        catch-and-ignore; discount rule duplicated from invoice_service
 //   Duplication   three near-identical price rows in build()
-//   Over-extract  _SectionGap: a one-line widget class used once
+//   Over-extract  _SectionGap: a one-line widget class nothing ever builds
 //   Collections   OrderSnapshot.== compares a List by identity
 
 import 'dart:async';

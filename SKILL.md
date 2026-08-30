@@ -408,12 +408,17 @@ failure is not attributed to the code under review.
 
 ```bash
 flutter analyze <path>             # or: dart analyze   (pure Dart package)
-dart format --set-exit-if-changed <path>
+dart format --output=none --set-exit-if-changed <path>
 flutter test <path>                # or: dart test
 ```
 
 In AUDIT and DIFF, pass the path under review. A whole-project run on a large repository buries
 this module's result under drift that predates it, and none of that drift belongs to this report.
+
+`--output=none` is not optional. `--set-exit-if-changed` only changes the exit code: on its own,
+`dart format` still rewrites every file it finds badly formatted, which in AUDIT breaks the one
+promise the mode makes. Reformatting a file and putting it back afterwards is not the same as
+never having touched it — an interrupted run leaves the rewrite behind.
 
 **If neither `flutter` nor `dart` is on PATH:** do not guess, and do not claim the checks passed.
 Continue report-only and write this line into the report verbatim:

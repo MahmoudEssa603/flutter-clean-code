@@ -296,12 +296,19 @@ export function findTrivialWidgets(source, code = blankNonCode(source)) {
     );
     if (!build || build.length > TRIVIAL_WIDGET_LINES) continue;
 
-    // Used once means: the class name appears once as a declaration and once as
-    // a call site. More than that is genuine reuse and not over-extraction.
-    const uses = (code.match(new RegExp(`\\b${name}\\b`, 'g')) ?? []).length;
-    if (uses > 2) continue;
+    // Count only the mentions outside the class body. Everything inside it — the class name
+    // and the constructor that repeats it — is declaration, not use, and counting those made
+    // a widget with one call site look reused while one nobody builds looked used once.
+    // Those two want opposite fixes, so the number has to be the call sites and nothing else.
+    const mention = new RegExp(`\\b${name}\\b`, 'g');
+    let callSites = 0;
+    let hit;
+    while ((hit = mention.exec(code)) !== null) {
+      if (hit.index < match.index || hit.index > end) callSites += 1;
+    }
+    if (callSites > 1) continue;
 
-    results.push({ name, line: lineOf(source, match.index), buildLines: build.length });
+    results.push({ name, line: lineOf(source, match.index), buildLines: build.length, callSites });
   }
 
   return results;
@@ -584,7 +591,13 @@ function main(argv) {
     for (const f of file.manyPositional) console.log(`  params      ${f.name}() line ${f.line}, ${f.positional} positional`);
     for (const f of file.boolFlagParams) console.log(`  bool flag   ${f.name}() line ${f.line}, ${f.count} bool parameter${f.count === 1 ? '' : 's'} — consider two functions`);
     for (const f of file.builderMethods) console.log(`  _build      ${f.name}() line ${f.line}, ${f.length} lines — consider a widget class`);
-    for (const w of file.trivialWidgets) console.log(`  tiny widget ${w.name} line ${w.line}, ${w.buildLines}-line build(), used once — possible over-extraction`);
+    for (const w of file.trivialWidgets) {
+      const usage =
+        w.callSites === 0
+          ? 'never built — dead weight, not over-extraction'
+          : 'used once — possible over-extraction';
+      console.log(`  tiny widget ${w.name} line ${w.line}, ${w.buildLines}-line build(), ${usage}`);
+    }
     for (const c of file.missingDispose) console.log(`  dispose     ${c.name} line ${c.line} creates ${c.evidence} with no dispose()`);
     for (const m of file.lateFields) console.log(`  late        line ${m.line}: ${m.text}`);
     for (const m of file.bareCatch) console.log(`  catch       line ${m.line}: ${m.text}`);

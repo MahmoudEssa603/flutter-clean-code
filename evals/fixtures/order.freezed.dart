@@ -8,33 +8,49 @@ T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError('It seems like you constructed your class using `MyClass._()`.');
 
-mixin _$Order {
-  String get id => throw _privateConstructorUsedError;
-  List<Item> get items => throw _privateConstructorUsedError;
-  User get user => throw _privateConstructorUsedError;
-
-  @JsonKey(ignore: true)
-  $OrderCopyWith<Order> get copyWith => throw _privateConstructorUsedError;
+mixin _$OrderStatus {
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() draft,
+    required TResult Function() submitted,
+    required TResult Function(String receiptId) paid,
+    required TResult Function(String trackingId) shipped,
+    required TResult Function(String reason) cancelled,
+    required TResult Function(String reason) refunded,
+  }) =>
+      throw _privateConstructorUsedError;
 }
 
-abstract class $OrderCopyWith<$Res> {
-  factory $OrderCopyWith(Order value, $Res Function(Order) then) = _$OrderCopyWithImpl<$Res, Order>;
-  @useResult
-  $Res call({String id, List<Item> items, User user});
+class _Draft implements OrderStatus {
+  const _Draft();
 }
 
-class _$OrderCopyWithImpl<$Res, $Val extends Order> implements $OrderCopyWith<$Res> {
-  _$OrderCopyWithImpl(this._value, this._then);
+class _Submitted implements OrderStatus {
+  const _Submitted();
+}
 
-  final $Val _value;
-  final $Res Function($Val) _then;
+class _Paid implements OrderStatus {
+  const _Paid(this.receiptId);
 
-  @override
-  $Res call({Object? id = null, Object? items = null, Object? user = null}) {
-    return _then(_value.copyWith(
-      id: null == id ? _value.id : id as String,
-      items: null == items ? _value.items : items as List<Item>,
-      user: null == user ? _value.user : user as User,
-    ) as $Val);
-  }
+  final String receiptId;
+}
+
+class _Shipped implements OrderStatus {
+  const _Shipped(this.trackingId);
+
+  final String trackingId;
+}
+
+// The casing here is not a choice this file made. It mirrors the redirect target written in
+// order.dart, and regenerating without fixing the source brings it straight back.
+class _orderCancelled implements OrderStatus {
+  const _orderCancelled(this.reason);
+
+  final String reason;
+}
+
+class _Refunded implements OrderStatus {
+  const _Refunded(this.reason);
+
+  final String reason;
 }

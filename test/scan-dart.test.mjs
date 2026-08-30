@@ -367,3 +367,43 @@ test('the CLI still runs when the script is reached through a link', () => {
     }
   }
 });
+
+// --- a trivial widget nobody builds ------------------------------------------
+// The declaration counts as an occurrence, so one call site reads as two. Treating
+// "no more than two" as "used once" labelled a class nobody builds as over-extraction,
+// which points the reader at the wrong fix: inline it, when it should be deleted.
+
+test('findTrivialWidgets separates a widget used once from one never built', () => {
+  const used = [
+    'class Page extends StatelessWidget {',
+    '  const Page();',
+    '  @override',
+    '  Widget build(BuildContext context) {',
+    '    return const Gap();',
+    '  }',
+    '}',
+    '',
+    'class Gap extends StatelessWidget {',
+    '  const Gap();',
+    '  @override',
+    '  Widget build(BuildContext context) {',
+    '    return const SizedBox(height: 24);',
+    '  }',
+    '}',
+  ].join('\n');
+
+  const gap = findTrivialWidgets(used).find((w) => w.name === 'Gap');
+  assert.equal(gap.callSites, 1);
+
+  const orphan = [
+    'class Gap extends StatelessWidget {',
+    '  const Gap();',
+    '  @override',
+    '  Widget build(BuildContext context) {',
+    '    return const SizedBox(height: 24);',
+    '  }',
+    '}',
+  ].join('\n');
+
+  assert.equal(findTrivialWidgets(orphan)[0].callSites, 0);
+});
