@@ -175,6 +175,11 @@ expect(find.text('Done'), findsOneWidget);
 If the wait is genuinely for an animation of unknown length, `pumpAndSettle` is right — and a
 `why` comment saying which animation makes it right.
 
+The finding is the unexplained call, and you can see that without running anything. Whether it
+hangs on a particular screen is a timing claim that does need a run — that part is out of scope,
+and it is not what is being reported. Do not hand the whole thing back because the second half is
+unknowable.
+
 **`find.byType` breaks on refactoring.** It couples the test to the widget tree's shape, so
 extracting a widget — exactly what this skill recommends — turns the suite red for no behavioural
 reason.

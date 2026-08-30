@@ -109,7 +109,7 @@ Recorded per the rule above: only a run from a session that did not author the r
 | `04-negative-trigger` | 2026-08-30 | passed — four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions |
 | `05-generated-code` | 2026-08-30 | passed — generated file excluded and named once, the badly cased variant reported against the source, and the report written to `docs/reviews/` as Step 6 asks |
 | `06-diff-mode` | 2026-08-30 | passed — DIFF chosen without the mode being named, scope taken from `main...HEAD`, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed |
-| `07-test-quality` | 2026-08-30 | **failed on form, and the substance was the best yet.** Area 7 was assessed properly for the first time, and a dead test turned out to be right about a real off-by-one. But the report was published as an HTML page instead of written to `docs/reviews/`, and the contract went with the medium: no `CC-` numbers, no Effort, no Confidence, no Not checked line, 28 findings against a cap of 20. Rule added; needs a re-run |
+| `07-test-quality` | 2026-08-30 | passed on a re-run. Everything the first run dropped came back: the report in `docs/reviews/`, `CC-` numbers, all three judgements, the Not checked line, and 20 findings with the other 10 counted by principle. Two of six expectations partial — `pumpAndSettle` went to Out of Scope rather than becoming a finding, and the repeated-block decision was folded into another finding instead of made out loud |
 | `08-excluded-generated-source` | 2026-08-30 | passed |
 | `09-bug-line` | 2026-08-30 | passed |
 | `10-localisation-detection` | 2026-08-30 | passed |
