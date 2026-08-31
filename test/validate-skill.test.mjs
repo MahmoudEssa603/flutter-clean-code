@@ -90,9 +90,16 @@ test('a name that is not lowercase-hyphen fails', () => {
 });
 
 test('a version that is not MAJOR.MINOR.PATCH fails', () => {
-  const { status, output } = runValidatorOn((dir) =>
-    patch(dir, 'SKILL.md', '  version: 1.0.0', '  version: v1'),
-  );
+  // Match whatever version the skill currently declares. Hardcoding one made this test fail on
+  // the first release that bumped it, which says nothing about the rule under test.
+  const patchVersion = (dir) => {
+    const path = join(dir, 'SKILL.md');
+    const text = readFileSync(path, 'utf8');
+    assert.match(text, /^ {2}version: \d+\.\d+\.\d+$/m, 'test setup: no version line in SKILL.md');
+    writeFileSync(path, text.replace(/^ {2}version: \d+\.\d+\.\d+$/m, '  version: v1'), 'utf8');
+  };
+
+  const { status, output } = runValidatorOn(patchVersion);
   assert.equal(status, 1);
   assert.match(output, /MAJOR\.MINOR\.PATCH/);
 });

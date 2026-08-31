@@ -98,6 +98,28 @@ different job.
 Findings carry Impact, Effort, Confidence and a `file:line`, ordered by impact with quick wins
 first, capped at 20 per module with the remainder counted rather than hidden.
 
+## Other tools
+
+The instructions are portable; the packaging is not. Claude Code reaches a skill by matching its
+`description`, and reads a reference file only when a step asks for one. Other tools each do that
+differently, or not at all, so an adapter writes the entry file their format expects from this one
+source:
+
+```bash
+node scripts/make-adapter.mjs cursor <your-project>
+```
+
+For Cursor that is `.cursor/rules/flutter-clean-code.mdc` with `alwaysApply: false` and the
+description — the mode where the agent decides from it — plus the reference files and the scanner
+beside it, and the paths rewritten to match. The rule says in its own footer what the packaging
+does and does not give you, including that `allowed-tools` has no equivalent there.
+
+One adapter exists so far, and it has been generated and tested but not yet driven through a real
+Cursor session. Two constraints are worth knowing before more are added: Antigravity caps a rules
+file at 12,000 characters against this skill's 28,478, so its adapter has to split rather than
+copy; and Codex loads `AGENTS.md` on every turn with no way to make it conditional, which is a
+different bargain entirely.
+
 ## Requirements
 
 The Dart or Flutter SDK on PATH, for `flutter analyze`, `dart format` and `flutter test`. Without
