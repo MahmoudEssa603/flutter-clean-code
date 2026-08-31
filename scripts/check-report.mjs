@@ -79,6 +79,18 @@ export function checkReport(text, label = 'report') {
     }
   }
 
+  // --- the measuring step --------------------------------------------------
+  // Two passes skipped the scanner and said nothing about it, which reads as a report built on
+  // measurements it never took. Running it is not required — an agent that cannot find it, or has
+  // no Node, is expected to read the code instead. Saying which happened is required.
+  const scannerMentioned =
+    /scan-dart|scanner/i.test(text) ||
+    /\b(estimate|estimates|estimated|signals?)\b/i.test(text) ||
+    /تقدير|إشار(ة|ات)|الماسح/.test(text);
+  if (!scannerMentioned) {
+    fail('the report never says whether the scanner ran; measured or estimated, it has to say which');
+  }
+
   // --- findings ------------------------------------------------------------
   const ids = [...text.matchAll(/^###\s+(CC-\d+)/gm)].map((m) => m[1]);
   if (ids.length === 0) {

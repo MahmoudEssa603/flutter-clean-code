@@ -27,7 +27,19 @@ const HEADER = [
   '',
 ].join('\n');
 
-const TAIL = ['', '## Out of Scope', '', '| Observation | Why |', '|---|---|', '', '## Verification', ''].join('\n');
+// A report states the scanner's outcome, so the fixture of a valid one states it too.
+const TAIL = [
+  '',
+  '## Out of Scope',
+  '',
+  '| Observation | Why |',
+  '|---|---|',
+  '',
+  '## Verification',
+  '',
+  '- [x] scanner run — 12 signals',
+  '',
+].join('\n');
 
 const finding = (n, { impact = 'High', effort = 'XS', confidence = 'High', location = '`a/b.dart:12`' } = {}) =>
   [
@@ -99,4 +111,16 @@ test('an Arabic header is read, because the template lets those labels translate
     .replace('**Verification:**', '**التحقق:**')
     .replace('**Not checked:**', '**لم يُفحَص:**');
   assert.deepEqual(checkReport(arabic).failures, []);
+});
+
+test('a report silent about the scanner fails', () => {
+  // Two real passes skipped the measuring step and said nothing, so a reader could not tell
+  // whether the numbers were measured or eyeballed. Running it is optional; saying is not.
+  const silent = report([finding(1)]).replace('- [x] scanner run — 12 signals', '');
+  assert.match(checkReport(silent).failures.join('\n'), /never says whether the scanner ran/);
+
+  for (const said of ['node scripts/scan-dart.mjs lib/', 'measurements are estimates', 'القياسات تقديرية']) {
+    const withNote = silent.replace('## Verification', `## Verification\n\n${said}\n`);
+    assert.deepEqual(checkReport(withNote).failures, [], said);
+  }
 });

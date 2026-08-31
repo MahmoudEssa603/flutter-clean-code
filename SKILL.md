@@ -19,7 +19,7 @@ compatibility: >-
   No network access is used.
 allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 # Flutter Clean Code
@@ -193,9 +193,9 @@ node <skill-dir>/scripts/scan-dart.mjs <path-to-scope>
 node <skill-dir>/scripts/scan-dart.mjs <path-to-scope> --json   # to quote exact numbers
 ```
 
-`<skill-dir>` is the folder holding this file — resolve it from this file's own path, never
-from a guess: installs differ by tool (`~/.claude/skills/…`, `~/.agents/skills/…`,
-`~/.gemini/config/skills/…`). The working directory is the project, so a relative path finds nothing.
+`<skill-dir>` is the folder holding this file. If your host does not tell you where that is,
+search for `flutter-clean-code/scripts/scan-dart.mjs` under `~/.claude/skills`, `~/.agents/skills`
+and `~/.gemini/config/skills`. **Whether it ran or not, the report says so** — never in silence.
 
 It reports build() and function lengths, nesting depth, positional and boolean parameter counts,
 `State` classes that create a disposable with no `dispose`, single-use widget classes small

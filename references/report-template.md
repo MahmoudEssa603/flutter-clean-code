@@ -96,6 +96,7 @@ Findings are numbered `CC-001` upward, ordered by Impact then by lower Effort.
 
 ## Verification
 
+- [ ] Scanner run and its count cited, or the report says the measurements are estimates
 - [ ] `flutter analyze` — zero new diagnostics
 - [ ] `dart format` applied to touched files only
 - [ ] Full suite green after the final batch, same test count as before
