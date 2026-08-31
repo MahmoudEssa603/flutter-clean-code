@@ -92,6 +92,25 @@ different job.
 Findings carry Impact, Effort, Confidence and a `file:line`, ordered by impact with quick wins
 first, capped at 20 per module with the remainder counted rather than hidden.
 
+## Checking a report
+
+Half of judging a pass needs no judgment. Whether every finding carries an Impact, an Effort, a
+Confidence and a location; whether the summary table still has all seven principle areas; whether
+the cap held; whether the numbering runs — all of that is mechanical, and reading for it by hand
+is how it gets missed.
+
+```bash
+node scripts/check-report.mjs docs/reviews/CLEAN-CODE-AUDIT-orders-2026-08-30.md
+```
+
+It checks the contract, not the reading. Whether a finding is *correct*, and whether something was
+*rightly* handed back as out of scope, stays yours — the script says so every time it runs, so
+nobody mistakes a pass for a verdict on the audit.
+
+It reads the contract rather than the tool, so a report from any agent is checked the same way,
+and it reads Arabic reports too: the template translates prose, headings and the header labels,
+and both spellings are accepted.
+
 ## Other tools
 
 No adapter, no second copy. [Agent Skills](https://agentskills.io) is an open standard, and the
