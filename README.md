@@ -113,8 +113,17 @@ What does not travel is `allowed-tools`, which pre-approves the scanner and the 
 verification commands in Claude Code. Elsewhere those commands run under whatever approval mode
 you have set. They are the same commands.
 
-Only Claude Code has been driven through the twelve scenarios. The format is shared; the runs are
-not yet.
+Antigravity's global path is `~/.gemini/config/skills/` — its own bundled guide says so, and the
+`~/.gemini/antigravity/` folder some write-ups name is the product's internal state, not a place
+to install anything.
+
+Claude Code is the one that has been through the twelve scenarios. A single run on Antigravity
+against a real module produced a conforming report — right filename and location, numbered
+findings with all three judgements, generated files skipped, a blocked verification declared
+rather than mined — and reproduced nine of the fifteen findings Claude Code had made on the same
+code. It also found two things worth fixing, both since fixed: it could not resolve where the
+scanner lived and skipped measuring without saying so, and it handed back a name that shadows a
+core type as needing a run to confirm. Confirming was never the test.
 
 ## Requirements
 

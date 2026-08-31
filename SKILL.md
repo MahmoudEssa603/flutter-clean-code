@@ -19,7 +19,7 @@ compatibility: >-
   No network access is used.
 allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 # Flutter Clean Code
@@ -77,10 +77,10 @@ it stays yours — filed against the hand-written source that produced it.
 **Where the bug line falls.** Some defects are visible in the shape of the code: a field
 declared in `copyWith` and never passed to the constructor, a name that shadows a core type, two
 branches of a conditional with identical bodies, a flag parameter every call site passes the same
-value for. Those are yours. Report the cost to the reader, and name the silent bug when there is
-one — that is why the finding is High, not a reason to hand it back. A defect you can only reach
-by running the code — a wrong total, a screen that never loads — is not yours however plain it
-looks: one line under Out of Scope, and hand it back.
+value for. Those are yours, and the test is whether the defect is visible — not whether you have
+watched it bite. Name the silent bug it causes: that is why the finding is High, not a reason to
+hand it back. A defect you can only reach by running the code — a wrong total, a screen that never
+loads — is not yours however plain it looks: one line under Out of Scope, and hand it back.
 
 **Clean Code is not Clean Architecture.** Clean Code is readability and maintainability *inside*
 the current design. Changing layer boundaries or dependency direction is out of scope unless the
@@ -193,9 +193,9 @@ node <skill-dir>/scripts/scan-dart.mjs <path-to-scope>
 node <skill-dir>/scripts/scan-dart.mjs <path-to-scope> --json   # to quote exact numbers
 ```
 
-`<skill-dir>` is the directory this file was loaded from, typically
-`~/.claude/skills/flutter-clean-code`. The working directory during a run is the project under
-review, not the skill, so a path relative to it finds nothing.
+`<skill-dir>` is the folder holding this file — resolve it from this file's own path, never
+from a guess: installs differ by tool (`~/.claude/skills/…`, `~/.agents/skills/…`,
+`~/.gemini/config/skills/…`). The working directory is the project, so a relative path finds nothing.
 
 It reports build() and function lengths, nesting depth, positional and boolean parameter counts,
 `State` classes that create a disposable with no `dispose`, single-use widget classes small
