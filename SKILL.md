@@ -19,7 +19,7 @@ compatibility: >-
   No network access is used.
 allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Flutter Clean Code

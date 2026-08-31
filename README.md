@@ -13,25 +13,19 @@ skill drops any finding an enabled lint already reports.
 ## Install
 
 ```bash
-# Claude Code — project scope
-git clone <repo-url> .claude/skills/flutter-clean-code
+# Every project, on any agent that reads the Agent Skills standard
+git clone https://github.com/MahmoudEssa603/flutter-clean-code.git   ~/.agents/skills/flutter-clean-code
 
-# Claude Code — personal scope, available in every project
-git clone <repo-url> ~/.claude/skills/flutter-clean-code
+# Claude Code reads its own path as well
+git clone https://github.com/MahmoudEssa603/flutter-clean-code.git   ~/.claude/skills/flutter-clean-code
 ```
 
-Pin to a release rather than tracking the branch:
-
-```bash
-git clone --branch v1.0.0 --depth 1 <repo-url> .claude/skills/flutter-clean-code
-```
+Project scope instead of personal: clone into `.agents/skills/flutter-clean-code` inside the
+repository. Pin to a release rather than tracking the branch by adding
+`--branch v1.2.0 --depth 1`.
 
 The directory must keep the name `flutter-clean-code`, with `SKILL.md` directly inside it — the
 directory name is the command you type.
-
-Any other agent that reads the [Agent Skills](https://agentskills.io) format works too: the
-frontmatter uses only the six portable fields, so the skill also uploads and packages without
-modification.
 
 ## Use
 
@@ -100,25 +94,27 @@ first, capped at 20 per module with the remainder counted rather than hidden.
 
 ## Other tools
 
-The instructions are portable; the packaging is not. Claude Code reaches a skill by matching its
-`description`, and reads a reference file only when a step asks for one. Other tools each do that
-differently, or not at all, so an adapter writes the entry file their format expects from this one
-source:
+No adapter, no second copy. [Agent Skills](https://agentskills.io) is an open standard, and the
+frontmatter here uses only its portable fields, so the same folder is read by Cursor, Codex,
+Antigravity, Gemini CLI, GitHub Copilot, VS Code and a long list of others — each one discovering
+it by name and description, then reading the full instructions when a task matches, exactly as
+Claude Code does.
 
-```bash
-node scripts/make-adapter.mjs cursor <your-project>
-```
+`~/.agents/skills/` is the path they share. Clone there once and every one of them sees it.
 
-For Cursor that is `.cursor/rules/flutter-clean-code.mdc` with `alwaysApply: false` and the
-description — the mode where the agent decides from it — plus the reference files and the scanner
-beside it, and the paths rewritten to match. The rule says in its own footer what the packaging
-does and does not give you, including that `allowed-tools` has no equivalent there.
+| Tool | Reads it from |
+|---|---|
+| Claude Code | `~/.claude/skills/` · `.claude/skills/` |
+| Cursor | `~/.agents/skills/` · `~/.cursor/skills/` · `.agents/skills/` |
+| Codex | `~/.agents/skills/` · `.agents/skills/` |
+| Antigravity | `~/.agents/skills/` · `.agents/skills/` |
 
-One adapter exists so far, and it has been generated and tested but not yet driven through a real
-Cursor session. Two constraints are worth knowing before more are added: Antigravity caps a rules
-file at 12,000 characters against this skill's 28,478, so its adapter has to split rather than
-copy; and Codex loads `AGENTS.md` on every turn with no way to make it conditional, which is a
-different bargain entirely.
+What does not travel is `allowed-tools`, which pre-approves the scanner and the three
+verification commands in Claude Code. Elsewhere those commands run under whatever approval mode
+you have set. They are the same commands.
+
+Only Claude Code has been driven through the twelve scenarios. The format is shared; the runs are
+not yet.
 
 ## Requirements
 
