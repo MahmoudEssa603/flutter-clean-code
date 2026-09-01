@@ -59,34 +59,28 @@ way.
 
 ## How a pass works
 
-```
-   your request
-        │
-        ▼
-   Step 0 · 1     mode chosen · scope fixed · generated Dart excluded · previous report read
-        │
-        ▼
-   Step 2         scan-dart.mjs measures  ─────►  signals: where to look, never what to report
-        │
-        ▼
-   Step 2 · 3     seven principle areas judged · ordered by impact · capped at 20
-        │
-        ▼
-   Step 4         REFACTOR only — ordered batches, one refactoring type each,
-        │                        suite green before and after every one
-        ▼
-   Step 5 · 6     flutter analyze · dart format · flutter test  ─────►  report
-        │
-        ▼
-   docs/reviews/CLEAN-CODE-<MODE>-<module>-<YYYY-MM-DD>.md
-        │
-        ▼
-   check-report.mjs  ─────►  the contract holds, or exactly what is missing
+```mermaid
+flowchart TD
+    A["your request"] --> B["<b>Step 0 · 1</b><br/>mode chosen · scope fixed<br/>generated Dart excluded · previous report read"]
+    B --> C["<b>Step 2</b><br/>scan-dart.mjs measures"]
+    C -->|"signals: where to look,<br/>never what to report"| D["<b>Step 2 · 3</b><br/>seven principle areas judged<br/>ordered by impact · capped at 20"]
+    D --> M{"mode"}
+    M -->|"REFACTOR"| F["<b>Step 4</b><br/>ordered batches, one refactoring type each<br/>suite green before and after every one"]
+    M -->|"AUDIT · DIFF"| V
+    F --> V["<b>Step 5 · 6</b><br/>flutter analyze · dart format · flutter test"]
+    V --> S{"scope"}
+    S -->|"a feature or a module"| R["docs/reviews/<br/>CLEAN-CODE-MODE-module-DATE.md"]
+    S -->|"a single file"| I["answered inline<br/>no file created"]
+    R --> K["check-report.mjs<br/>the contract holds,<br/>or exactly what is missing"]
+
+    style C fill:#1f6feb,stroke:#1f6feb,color:#fff
+    style K fill:#238636,stroke:#238636,color:#fff
+    style F stroke-dasharray: 5 5
 ```
 
-A single file in scope answers inline instead, and creates no file. Steps are never skipped in
-silence: if the scanner could not run, or the project would not resolve, or the suite does not
-exist, the report says so rather than implying a check it never made.
+Steps are never skipped in silence. If the scanner could not run, or the project would not
+resolve, or there is no suite to run, the report says which — a pass that measured nothing and a
+pass that measured everything must not read the same.
 
 ## Commands
 
