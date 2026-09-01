@@ -22,10 +22,23 @@ git clone https://github.com/MahmoudEssa603/flutter-clean-code.git   ~/.claude/s
 
 Project scope instead of personal: clone into `.agents/skills/flutter-clean-code` inside the
 repository. Pin to a release rather than tracking the branch by adding
-`--branch v1.2.0 --depth 1`.
+`--branch v1.3.1 --depth 1`.
 
 The directory must keep the name `flutter-clean-code`, with `SKILL.md` directly inside it — the
 directory name is the command you type.
+
+### Updating
+
+A clone does not update itself, and an agent reads whatever version is on disk. Two passes were
+run here against a copy that was two releases behind before anyone noticed, so:
+
+```bash
+cd ~/.agents/skills/flutter-clean-code && git pull
+```
+
+Check what you are actually running with `grep -A1 '^metadata:' SKILL.md`, and restart the agent
+afterwards — a skill is discovered when a conversation begins, not while one is open. If you
+installed to more than one path, every copy needs its own pull.
 
 ## Use
 
