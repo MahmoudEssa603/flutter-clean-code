@@ -284,7 +284,7 @@ for (const file of ['references/report-template.md', 'references/example-report.
 }
 
 // --- self-containment and vocabulary ----------------------------------------
-const authored = ['SKILL.md', 'README.md', 'AGENTS.md', 'CONTRIBUTING.md', 'PROJECT-SETUP.md']
+const authored = ['SKILL.md', 'README.md', 'AGENTS.md', 'CONTRIBUTING.md']
   .map((f) => join(ROOT, f))
   .filter((p) => existsSync(p))
   .concat(

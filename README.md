@@ -233,14 +233,15 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── report-template.md     the output format
 │   ├── example-report.md      a full worked audit, for calibration
 │   └── test-quality.md        judging test code, the larger half of most projects
-├── evals/                     seven scenarios and their fixtures
+├── evals/                     twelve scenarios, their fixtures, and results
 ├── test/                      unit and integration suites, node --test
 ├── scripts/
-│   ├── validate-skill.mjs     the contract validator
-│   └── scan-dart.mjs          the Dart measurement scanner
+│   ├── validate-skill.mjs     checks SKILL.md against the contract in AGENTS.md
+│   ├── scan-dart.mjs          the Dart measurement scanner
+│   ├── check-report.mjs       checks a finished report against the contract
+│   └── make-eval-projects.mjs lays the scenarios out as runnable projects
 ├── AGENTS.md                  governance: vocabulary, conventions, releases
-├── CONTRIBUTING.md            how a change gets merged
-└── PROJECT-SETUP.md           setup guide (Arabic)
+└── CONTRIBUTING.md            how a change gets merged
 ```
 
 Reference files are loaded only when a step calls for them, so the checklist costs nothing until
