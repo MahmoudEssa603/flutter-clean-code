@@ -42,20 +42,63 @@ installed to more than one path, every copy needs its own pull.
 
 ## Use
 
+Ask in the words you would use anyway — *clean this up*, *split this function*, *review the
+changes on this branch*. The skill is reached by its description, so naming it is optional;
+`/flutter-clean-code` invokes it directly when you want to be certain.
+
+Three things decide how much the answer is worth:
+
+| Give it | Why it matters |
+|---|---|
+| **The scope** — a file, a feature, or a module | A whole project is taken module by module, worst first, three per pass, so the scope you name is the scope you get |
+| **Its tests** | Required for REFACTOR. Without them the patch is proposed and left unapplied, never applied blind |
+| **The conventions** — `analysis_options.yaml`, a style guide | They beat every generic preference in the skill, and a finding an enabled lint already reports is dropped |
+
+Arabic in → Arabic out. English in → English out. Code, identifiers and paths stay English either
+way.
+
+## How a pass works
+
 ```
-"نضف الكود ده حسب الكلين كود"
-"refactor this file — it's unreadable"
-"راجع الموديول ده ضد قواعد SOLID"
-"الدالة دي طويلة — قسمها صح"
-"review the changes on this branch for readability"
+   your request
+        │
+        ▼
+   Step 0 · 1     mode chosen · scope fixed · generated Dart excluded · previous report read
+        │
+        ▼
+   Step 2         scan-dart.mjs measures  ─────►  signals: where to look, never what to report
+        │
+        ▼
+   Step 2 · 3     seven principle areas judged · ordered by impact · capped at 20
+        │
+        ▼
+   Step 4         REFACTOR only — ordered batches, one refactoring type each,
+        │                        suite green before and after every one
+        ▼
+   Step 5 · 6     flutter analyze · dart format · flutter test  ─────►  report
+        │
+        ▼
+   docs/reviews/CLEAN-CODE-<MODE>-<module>-<YYYY-MM-DD>.md
+        │
+        ▼
+   check-report.mjs  ─────►  the contract holds, or exactly what is missing
 ```
 
-Or invoke it directly with `/flutter-clean-code`.
+A single file in scope answers inline instead, and creates no file. Steps are never skipped in
+silence: if the scanner could not run, or the project would not resolve, or the suite does not
+exist, the report says so rather than implying a check it never made.
 
-Attach the code in scope, its tests — required for REFACTOR — and the project's conventions file
-if you have one. **Project conventions beat every generic preference in the skill.**
+## Commands
 
-Arabic in → Arabic out. English in → English out. Code and identifiers stay English either way.
+Everything here is Node built-ins and needs no install step.
+
+| Command | What it does |
+|---|---|
+| `node scripts/scan-dart.mjs <path>` | Measures a Dart tree. `--json` for exact numbers, `--top N` to list more files |
+| `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
+| `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
+| `node scripts/make-eval-projects.mjs <dir>` | Lays the twelve evaluation scenarios out as runnable projects |
+| `node --test` | The repository's own suites |
 
 ## Modes
 
@@ -97,32 +140,29 @@ scales, runtime performance, bug fixing, and any change to layer boundaries or d
 direction. Clean Code is readability *inside* the current design; Clean Architecture is a
 different job.
 
-## Output
+## The report
 
-- A single file in scope → answered inline.
-- A feature or a module → `docs/reviews/CLEAN-CODE-<AUDIT|REFACTOR>-<module>-<YYYY-MM-DD>.md`.
+A single file in scope is answered inline and creates no file. A feature or a module is written
+to `docs/reviews/`, and a second pass on the same module the same day overwrites it rather than
+leaving two.
 
-Findings carry Impact, Effort, Confidence and a `file:line`, ordered by impact with quick wins
-first, capped at 20 per module with the remainder counted rather than hidden.
+Every finding carries an Impact, an Effort, a Confidence and a `file:line`, ordered by impact
+with the quick wins first. Twenty per module is the cap, and anything past it is counted by
+principle rather than quietly dropped. The header states what was *not* checked — generated files,
+queued modules, a verification that could not run — so a report never reads as more complete than
+it is.
 
-## Checking a report
-
-Half of judging a pass needs no judgment. Whether every finding carries an Impact, an Effort, a
-Confidence and a location; whether the summary table still has all seven principle areas; whether
-the cap held; whether the numbering runs — all of that is mechanical, and reading for it by hand
-is how it gets missed.
+Half of judging one needs no judgment at all, and that half is where the misses happen:
 
 ```bash
 node scripts/check-report.mjs docs/reviews/CLEAN-CODE-AUDIT-orders-2026-08-30.md
 ```
 
 It checks the contract, not the reading. Whether a finding is *correct*, and whether something was
-*rightly* handed back as out of scope, stays yours — the script says so every time it runs, so
-nobody mistakes a pass for a verdict on the audit.
-
-It reads the contract rather than the tool, so a report from any agent is checked the same way,
-and it reads Arabic reports too: the template translates prose, headings and the header labels,
-and both spellings are accepted.
+*rightly* handed back as out of scope, stays yours — the script prints that every run, so nobody
+mistakes a pass for a verdict on the audit. It reads the contract rather than the tool, so a
+report from any agent is checked the same way, Arabic ones included: the template translates
+prose, headings and the header labels, and both spellings are accepted.
 
 ## Other tools
 
