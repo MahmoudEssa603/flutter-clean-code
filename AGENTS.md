@@ -217,9 +217,19 @@ git push origin v1.0.0
 
 | Bump | When |
 |---|---|
-| **major** | A frontmatter field is added or removed; the repository shape changes; a mode is removed or renamed |
+| **major** | A frontmatter field is added or removed; a mode is removed or renamed; the installed shape changes — `SKILL.md`, `references/` or `scripts/` moving, being renamed, or going away |
 | **minor** | A new mode, a new principle area, a new reference file, a new checklist item, a new script or signal |
-| **patch** | Wording, examples, typos, a clarified rule that changes no behaviour |
+| **patch** | Wording, examples, typos, a clarified rule that changes no behaviour, and documentation that does not touch `SKILL.md` |
+
+**"Installed shape" means what a consumer depends on**, not every file in the repository.
+Deleting a stale guide nobody imports is a patch; renaming `references/` is major. The question
+that settles it: after this change, does a clone still behave the same way?
+
+**A release is cut when it is worth installing, not only when `SKILL.md` changes.** Corrected
+install instructions are a reason to tag even though the skill file is byte-identical, because
+whoever pinned the last release is stuck with the wrong ones until you do. When `SKILL.md` is
+unchanged, bump `metadata.version` anyway so it and the tag still agree, and say in the tag
+message that the skill itself did not change.
 
 `metadata.version` in `SKILL.md` and the git tag always agree. A release with no tag is not a
 release.
