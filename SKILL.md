@@ -129,9 +129,8 @@ Copy this checklist into your response and tick items as you go:
 | **DIFF** | AUDIT restricted to files changed against a base ref. Use for pull-request review. |
 
 **"No file is modified" means the project.** Proving a claim beats inferring one, and a throwaway
-file is often the only way — a few lines that settle which declaration a bare name resolves to, or
-what a type really is at a call site. Do that work in a scratch directory outside the project, never
-inside the repository under review. An interrupted run must leave nothing behind in someone's tree.
+file settling which declaration a bare name resolves to is often the only way. Write it in a
+scratch directory outside the project: an interrupted run leaves nothing behind in someone's tree.
 
 Pick DIFF when the user says "the changes", "this PR", or "what I just wrote". Get the file list
 with `git diff --name-only <base>...HEAD -- '*.dart'`, audit only those files, but read enough
@@ -160,9 +159,10 @@ the clean ones included; dividing by only the files that carry signals rewards a
 having many clean files and reorders the ranking outright. Take the top three in one pass and say which ones are queued.
 Auditing eleven features in one reply produces a document nobody reads.
 
-**Package or app?** Read `pubspec.yaml` first. `publish_to: none` means an app: public API
-surface, `///` doc comments and deprecation aliases do not apply, so do not report them.
-Anything else is a package, and those rules are High-impact because other people depend on them.
+**Package or app?** `publish_to: none` only means unpublishable; internal packages carry it and
+their consumers are real. Platform folders with an entrypoint say application; a `lib/<name>.dart`
+barrel others import says package, where an undocumented public member is High. Unsure is a third
+answer — ask it as a Low-confidence question rather than dropping or asserting it.
 
 **Never audit generated code.** It is not written by hand, so no finding about it can be acted
 on. Exclude a file when its name ends in `.g.dart`, `.freezed.dart`, `.mocks.dart`, `.gr.dart`,
