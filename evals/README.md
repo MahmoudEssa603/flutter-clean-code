@@ -145,27 +145,32 @@ table used to hide, and `scripts/check-evals.mjs` now refuses it.
 
 **11 PASS** · **1 PARTIAL** · **4 NOT_RUN** across 16 scenarios.
 
+> **12 of these verdicts were graded against 1.3.1, not 1.4.0.**
+> Run `node scripts/check-evals.mjs` to see whether anything the model reads has changed
+> since. A verdict is a claim about one skill surface; once that moves it is unverified,
+> not wrong — and unverified looks identical to verified in a table.
+
 Generated from `evals/results/` by `scripts/generate-eval-summary.mjs`. Edit the records,
 not this table.
 
-| Scenario | Last run | Verdict | Expectations | Note |
-|---|---|---|---|---|
-| `01-audit-fat-widget` | 2026-08-30 | **PASS** | 8/8 expectations | All eight expectations and all four must_nots. Answered inline with no file written, and the analyzer note dropped four classes an unenabled lint would own. |
-| `02-refactor-without-tests` | 2026-08-30 | **PASS** | not enumerated | Third run. Eight batches, one refactoring type each, shipped as ordered files v1-v8 beside the untouched original; the two behaviour-affecting batches sit last and say plainly that behaviour is not preserved. Nothing applied, proven by MD5. |
-| `03-out-of-scope-routing` | 2026-08-30 | **PASS** | not enumerated | Both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented. |
-| `04-negative-trigger` | 2026-08-30 | **PASS** | not enumerated | Four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions. |
-| `05-generated-code` | 2026-08-30 | **PASS** | not enumerated | Generated file excluded and named once, the badly cased variant reported against the source, and the report written to docs/reviews/ as Step 6 asks. |
-| `06-diff-mode` | 2026-08-30 | **PASS** | not enumerated | DIFF chosen without the mode being named, scope taken from main...HEAD, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed. |
-| `07-test-quality` | 2026-08-30 | **PARTIAL** | 4/6 expectations | Re-run. Everything the first run dropped came back: the report in docs/reviews/, CC- numbers, all three judgements, the Not checked line, and 20 findings with the other 10 counted by principle. Two of six expectations only partly met — pumpAndSettle went to Out of Scope rather than becoming a finding, and the repeated-block decision was folded into another finding instead of made out loud. Recorded as passed until the verdict model made that impossible. |
-| `08-excluded-generated-source` | 2026-08-30 | **PASS** | not enumerated | Generated file skipped and named, the badly cased variant reported against the hand-written source, with the reason the enabled lint cannot fire on it. |
-| `09-bug-line` | 2026-08-30 | **PASS** | not enumerated | copyWith dropping a field reported as High; the run-only defect handed back in one Out of Scope line, with the two separated explicitly. |
-| `10-localisation-detection` | 2026-08-30 | **PASS** | not enumerated | Recognised the project as localised from the package and its assets, grepped the lookup call, and reported each hardcoded string with its own location. |
-| `11-unresolved-dependencies` | 2026-08-30 | **PASS** | not enumerated | Re-run after the format and scanner fixes confirmed both: the file was reported unformatted and left byte-identical, and the trivial widget was called dead code to delete rather than an extraction to inline. The first run left one expectation partial. |
-| `12-rerun-rejudges` | 2026-08-30 | **PASS** | not enumerated | Ids carried, one verdict moved to Out of Scope keeping its number, and a conclusion the earlier pass reached by a weaker method was redone with the changed count stated. |
-| `13-architecture-and-clean-code` | 2026-09-07 | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
-| `14-performance-and-clean-code` | 2026-09-07 | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
-| `15-state-migration-and-clean-code` | 2026-09-07 | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
-| `16-runtime-bug-and-clean-code` | 2026-09-07 | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
+| Scenario | Last run | Graded against | Verdict | Expectations | Note |
+|---|---|---|---|---|---|
+| `01-audit-fat-widget` | 2026-08-30 | `1.3.1` | **PASS** | 8/8 expectations | All eight expectations and all four must_nots. Answered inline with no file written, and the analyzer note dropped four classes an unenabled lint would own. |
+| `02-refactor-without-tests` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Third run. Eight batches, one refactoring type each, shipped as ordered files v1-v8 beside the untouched original; the two behaviour-affecting batches sit last and say plainly that behaviour is not preserved. Nothing applied, proven by MD5. |
+| `03-out-of-scope-routing` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented. |
+| `04-negative-trigger` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions. |
+| `05-generated-code` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Generated file excluded and named once, the badly cased variant reported against the source, and the report written to docs/reviews/ as Step 6 asks. |
+| `06-diff-mode` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | DIFF chosen without the mode being named, scope taken from main...HEAD, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed. |
+| `07-test-quality` | 2026-08-30 | `1.3.1` | **PARTIAL** | 4/6 expectations | Re-run. Everything the first run dropped came back: the report in docs/reviews/, CC- numbers, all three judgements, the Not checked line, and 20 findings with the other 10 counted by principle. Two of six expectations only partly met — pumpAndSettle went to Out of Scope rather than becoming a finding, and the repeated-block decision was folded into another finding instead of made out loud. Recorded as passed until the verdict model made that impossible. |
+| `08-excluded-generated-source` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Generated file skipped and named, the badly cased variant reported against the hand-written source, with the reason the enabled lint cannot fire on it. |
+| `09-bug-line` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | copyWith dropping a field reported as High; the run-only defect handed back in one Out of Scope line, with the two separated explicitly. |
+| `10-localisation-detection` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Recognised the project as localised from the package and its assets, grepped the lookup call, and reported each hardcoded string with its own location. |
+| `11-unresolved-dependencies` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Re-run after the format and scanner fixes confirmed both: the file was reported unformatted and left byte-identical, and the trivial widget was called dead code to delete rather than an extraction to inline. The first run left one expectation partial. |
+| `12-rerun-rejudges` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Ids carried, one verdict moved to Out of Scope keeping its number, and a conclusion the earlier pass reached by a weaker method was redone with the changed count stated. |
+| `13-architecture-and-clean-code` | 2026-09-07 | `1.3.2` | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
+| `14-performance-and-clean-code` | 2026-09-07 | `1.3.2` | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
+| `15-state-migration-and-clean-code` | 2026-09-07 | `1.3.2` | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
+| `16-runtime-bug-and-clean-code` | 2026-09-07 | `1.3.2` | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
 
 <!-- /generated: eval-summary -->
 

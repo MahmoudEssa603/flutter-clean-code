@@ -19,7 +19,16 @@ the last one is holding whatever it shipped until the next. See the bump table i
   findings the analyzer never reports. Its `exclude:` globs resolve against the directory that
   declares them, which is the same mistake in the other direction.
 
+- `scripts/check-evals.mjs` reports which verdicts were graded against an older version, and asks
+  git whether any model-facing file actually changed since — so a stale PASS says so instead of
+  reading like a fresh one. It compares content rather than filenames, because every release moves
+  the version line and a warning that fires every time is a warning nobody reads.
+
 ### Fixed
+- `allowed-tools` named only `~/.claude/skills/` while the README documented four install paths.
+  Anyone who installed under `~/.agents/skills/` or `~/.gemini/config/skills/` had the scanner
+  refused by permissions, which the skill would then report as "scanner did not run". It landed in
+  the tree before 1.3.2 was tagged but was never written down; it ships here.
 - Two places still promised every batch reverts on its own, contradicting the stack rule added in
   1.2.0 three paragraphs below one of them.
 - Step 3 stated the 20-finding cap twice, and only the second copy carried the "state the

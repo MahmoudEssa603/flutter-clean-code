@@ -9,6 +9,7 @@
 // Usage: node scripts/check-evals.mjs [--quiet]
 // Exit code 0 = the registry holds together, 1 = it does not.
 
+import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -19,6 +20,10 @@ const RESULTS_DIR = join(ROOT, 'evals', 'results');
 
 export const VERDICTS = ['PASS', 'PARTIAL', 'FAIL', 'NOT_RUN'];
 const REQUIRED = ['scenario', 'verdict', 'date', 'skillVersion', 'generatedBy', 'gradedBy'];
+
+// What the model actually reads. A change anywhere in here can change what a scenario produces;
+// a change anywhere else — a script, the README, this file — cannot.
+export const MODEL_FACING = ['SKILL.md', 'references/'];
 
 export function checkRegistry({ scenarios, results }) {
   const failures = [];
@@ -89,6 +94,67 @@ export function checkRegistry({ scenarios, results }) {
   return failures;
 }
 
+/**
+ * Which recorded verdicts were graded against a version other than the one in the tree.
+ *
+ * A verdict is a claim about a specific skill surface. Once that surface moves the claim is not
+ * wrong, it is unverified — and unverified reads exactly like verified in a table. NOT_RUN makes
+ * no claim, so it cannot go stale; it is only ever out of date about which version was skipped.
+ */
+export function findStale({ results, currentVersion }) {
+  return results
+    .filter((r) => r.verdict !== 'NOT_RUN' && r.skillVersion && r.skillVersion !== currentVersion)
+    .map((r) => ({ scenario: r.scenario, verdict: r.verdict, gradedAgainst: r.skillVersion }));
+}
+
+// Every release moves the version line, and no scenario has ever depended on it. Comparing raw
+// bytes would therefore mark all twelve verdicts stale on any release at all, which is a warning
+// that fires every time and so gets read as noise. Line endings are normalised for the same
+// reason: git stores LF, a Windows checkout may hold CRLF, and neither changes what the model reads.
+const normalise = (path, text) =>
+  (path === 'SKILL.md' ? text.replace(/^ {2}version: \d+\.\d+\.\d+$/m, '  version: -') : text)
+    .replace(/\r\n/g, '\n');
+
+const git = (args, cwd) => spawnSync('git', args, { cwd, encoding: 'utf8' });
+
+/**
+ * Whether any model-facing file differs in content between tag `v<version>` and the working tree.
+ *
+ * Returns the changed paths, or null when the question cannot be answered here — no git, no such
+ * tag, a shallow clone. Null is reported as "cannot tell", never as "nothing changed": a check
+ * that goes quiet when it fails is the thing this repository keeps removing.
+ */
+export function surfaceChangedSince(version, { cwd = ROOT } = {}) {
+  const ref = `v${version}`;
+  const listed = git(['ls-tree', '-r', '--name-only', ref, '--', ...MODEL_FACING], cwd);
+  if (listed.error || listed.status !== 0) return null;
+
+  const thenFiles = listed.stdout.split('\n').map((l) => l.trim()).filter(Boolean);
+  const nowFiles = ['SKILL.md', ...readdirSync(join(cwd, 'references'))
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => `references/${f}`)];
+
+  const changed = [];
+  for (const path of [...new Set([...thenFiles, ...nowFiles])].sort()) {
+    let before = null;
+    if (thenFiles.includes(path)) {
+      const shown = git(['show', `${ref}:${path}`], cwd);
+      if (shown.error || shown.status !== 0) return null;
+      before = normalise(path, shown.stdout);
+    }
+    const after = nowFiles.includes(path)
+      ? normalise(path, readFileSync(join(cwd, path), 'utf8'))
+      : null;
+    if (before !== after) changed.push(path);
+  }
+  return changed;
+}
+
+export function currentSkillVersion() {
+  const match = readFileSync(join(ROOT, 'SKILL.md'), 'utf8').match(/^ {2}version: (\d+\.\d+\.\d+)$/m);
+  return match?.[1] ?? null;
+}
+
 function read() {
   const scenarios = readdirSync(SCENARIOS_DIR)
     .filter((f) => f.endsWith('.json'))
@@ -102,6 +168,30 @@ function read() {
     : [];
 
   return { scenarios, results };
+}
+
+// Printed, never fatal. Whether stale verdicts are worth 16 fresh sessions is the maintainer's
+// call; hiding that they are stale is not.
+function reportStale(results, currentVersion) {
+  if (!currentVersion) return;
+  const stale = findStale({ results, currentVersion });
+  if (stale.length === 0) return;
+
+  const versions = [...new Set(stale.map((s) => s.gradedAgainst))].sort();
+  console.log('');
+  console.log(`  ${stale.length} verdict(s) graded against ${versions.join(', ')}; the tree is ${currentVersion}.`);
+
+  for (const version of versions) {
+    const changed = surfaceChangedSince(version);
+    if (changed === null) {
+      console.log(`  v${version}: cannot tell what changed since — no such tag here, or no git.`);
+    } else if (changed.length === 0) {
+      console.log(`  v${version}: no model-facing file changed since. Those verdicts still hold.`);
+    } else {
+      const list = changed.length > 3 ? `${changed.slice(0, 3).join(', ')} +${changed.length - 3} more` : changed.join(', ');
+      console.log(`  v${version}: ${list} changed since. Re-run those scenarios, or say why not.`);
+    }
+  }
 }
 
 function main(argv) {
@@ -121,6 +211,7 @@ function main(argv) {
       .map(([v, n]) => `${n} ${v}`)
       .join(' · ');
     console.log(`evals/results/: ${results.length} of ${scenarios.length} scenarios — ${tally}`);
+    reportStale(results, currentSkillVersion());
   }
   return 0;
 }

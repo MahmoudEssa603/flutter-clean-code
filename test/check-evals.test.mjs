@@ -4,8 +4,12 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
-import { checkRegistry, read } from '../scripts/check-evals.mjs';
+import { checkRegistry, findStale, read, surfaceChangedSince } from '../scripts/check-evals.mjs';
 import { renderSummary } from '../scripts/generate-eval-summary.mjs';
 
 const record = (over = {}) => ({
@@ -76,10 +80,101 @@ test('the summary counts what the records say, not what the prose used to', () =
     results: [record(), record({ scenario: '02-b', verdict: 'PARTIAL', note: 'two of six' })],
   });
   assert.match(rendered, /\*\*1 PASS\*\* · \*\*1 PARTIAL\*\*/);
-  assert.match(rendered, /\| `02-b` \| 2026-08-30 \| \*\*PARTIAL\*\*/);
+  assert.match(rendered, /\| `02-b` \| 2026-08-30 \| `1\.3\.2` \| \*\*PARTIAL\*\*/);
 });
 
 test('a scenario the generator finds no record for is shown as missing, not omitted', () => {
   const rendered = renderSummary({ scenarios: ['01-a', '99-z'], results: [record()] });
   assert.match(rendered, /`99-z`.*NOT_RECORDED/);
+});
+
+// --- staleness ---------------------------------------------------------------
+// A verdict is a claim about one skill surface. These tests exist because the registry could
+// carry twelve PASSes graded against a version nobody can install and read exactly like twelve
+// fresh ones.
+
+test('a verdict graded against another version is reported stale', () => {
+  const stale = findStale({
+    results: [record({ skillVersion: '1.3.1' }), record({ scenario: '02-b' })],
+    currentVersion: '1.3.2',
+  });
+  assert.deepEqual(stale, [{ scenario: '01-a', verdict: 'PASS', gradedAgainst: '1.3.1' }]);
+});
+
+test('NOT_RUN never goes stale, because it claims nothing', () => {
+  const stale = findStale({
+    results: [record({ verdict: 'NOT_RUN', skillVersion: '1.0.0', note: 'not run' })],
+    currentVersion: '9.9.9',
+  });
+  assert.deepEqual(stale, []);
+});
+
+test('an unknown tag reports "cannot tell", not "nothing changed"', () => {
+  // Null and [] mean opposite things here, and collapsing them would turn a shallow clone into
+  // a clean bill of health.
+  assert.equal(surfaceChangedSince('9.9.9'), null);
+});
+
+test('it can answer for a tag this repository really has', () => {
+  // Deliberately not asserting the list is empty. An edit to SKILL.md before the next tag is
+  // cut is the normal state of this repository mid-release, and a suite that goes red for it
+  // would be turned off inside a week. What matters here is that a real tag yields an answer
+  // rather than the null that means "cannot tell" — the semantics are pinned by the test below.
+  assert.ok(Array.isArray(surfaceChangedSince('1.3.1')));
+});
+
+test('a release that only moved the version line is not a reason to re-run anything', () => {
+  // Built as a throwaway repo rather than asserted against this one, so it proves the rule
+  // instead of restating today's history. Comparing raw bytes would call every scenario stale on
+  // every release, and a warning that always fires is not a warning.
+  const dir = mkdtempSync(join(tmpdir(), 'fcc-surface-'));
+  const git = (...args) => {
+    const r = spawnSync('git', args, { cwd: dir, encoding: 'utf8' });
+    assert.equal(r.status, 0, `git ${args.join(' ')}: ${r.stderr}`);
+  };
+  try {
+    const skillMd = (version) => ['metadata:', `  version: ${version}`, '---', 'body', ''].join('\n');
+
+    mkdirSync(join(dir, 'references'));
+    writeFileSync(join(dir, 'SKILL.md'), skillMd('1.0.0'));
+    writeFileSync(join(dir, 'references/a.md'), 'one\n');
+    git('init', '-q');
+    git('config', 'user.email', 't@t');
+    git('config', 'user.name', 't');
+    git('add', '-A');
+    git('commit', '-qm', 'v1');
+    git('tag', 'v1.0.0');
+
+    writeFileSync(join(dir, 'SKILL.md'), skillMd('1.0.1'));
+    assert.deepEqual(surfaceChangedSince('1.0.0', { cwd: dir }), []);
+
+    writeFileSync(join(dir, 'references/a.md'), 'one, changed\n');
+    assert.deepEqual(surfaceChangedSince('1.0.0', { cwd: dir }), ['references/a.md']);
+
+    writeFileSync(join(dir, 'references/b.md'), 'new file\n');
+    assert.deepEqual(surfaceChangedSince('1.0.0', { cwd: dir }), [
+      'references/a.md',
+      'references/b.md',
+    ]);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the summary warns when the table describes a version nobody can install', () => {
+  const rendered = renderSummary({
+    scenarios: ['01-a'],
+    results: [record({ skillVersion: '1.3.1' })],
+    currentVersion: '1.4.0',
+  });
+  assert.match(rendered, /1 of these verdicts were graded against 1\.3\.1, not 1\.4\.0/);
+});
+
+test('no warning when every verdict matches the tree', () => {
+  const rendered = renderSummary({
+    scenarios: ['01-a'],
+    results: [record()],
+    currentVersion: '1.3.2',
+  });
+  assert.doesNotMatch(rendered, /graded against/);
 });
