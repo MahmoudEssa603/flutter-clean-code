@@ -407,3 +407,76 @@ test('findTrivialWidgets separates a widget used once from one never built', () 
 
   assert.equal(findTrivialWidgets(orphan)[0].callSites, 0);
 });
+
+// --- code-shaped text inside strings ----------------------------------------
+// Detectors that look for code read the source with strings blanked; detectors whose subject is
+// a comment read it with comments kept and strings still blanked. Reading the raw text made a
+// Dart string quoting an example report as the thing it quoted.
+
+test('code quoted inside a string produces no signals', () => {
+  const source = [
+    'class Docs {',
+    "  static const usage = '''",
+    'catch (e) {}',
+    '// TODO: fix this',
+    'late User user;',
+    'padding: const EdgeInsets.all(17),',
+    "''';",
+    '}',
+  ].join('\n');
+
+  const file = scanFile('lib/docs.dart', source);
+  assert.deepEqual(file.bareCatch, []);
+  assert.deepEqual(file.ownerlessTodo, []);
+  assert.deepEqual(file.lateFields, []);
+  assert.deepEqual(file.magicLiterals, []);
+  assert.equal(signalCount(file), 0);
+});
+
+test('the same constructs outside a string are still found', () => {
+  const source = [
+    'class Real {',
+    '  // TODO: fix this later',
+    '  // final old = compute();',
+    '  late User user;',
+    '  void go() {',
+    '    try { risky(); } catch (e) { }',
+    '  }',
+    '}',
+  ].join('\n');
+
+  const file = scanFile('lib/real.dart', source);
+  assert.equal(file.ownerlessTodo.length, 1);
+  assert.equal(file.commentedOutCode.length, 1);
+  assert.equal(file.lateFields.length, 1);
+  assert.equal(file.bareCatch.length, 1);
+});
+
+test('keepComments still skips a comment whole, so an apostrophe in one is inert', () => {
+  // Without skipping the comment as a unit, the apostrophe in "don't" opens a string scan that
+  // swallows the rest of the file — and the late field after it would vanish.
+  const source = ["// don't touch this", 'late User user;', "const a = 'x';"].join('\n');
+  const withComments = blankNonCode(source, { keepComments: true });
+
+  assert.match(withComments, /don't touch this/);
+  assert.equal(scanFile('lib/a.dart', source).lateFields.length, 1);
+});
+
+test('keepComments preserves every offset, so reported lines stay true', () => {
+  const source = ["const a = 'hi';", '// TODO: later', 'late User user;'].join('\n');
+  const withComments = blankNonCode(source, { keepComments: true });
+
+  assert.equal(withComments.length, source.length);
+  assert.equal(withComments.split('\n').length, source.split('\n').length);
+  assert.doesNotMatch(withComments, /hi/, 'strings are blanked even when comments are kept');
+
+  const file = scanFile('lib/a.dart', source);
+  assert.equal(file.ownerlessTodo[0].line, 2);
+  assert.equal(file.lateFields[0].line, 3);
+});
+
+test('a reported line is quoted from the source, not from the blanked copy', () => {
+  const source = ["  late String name = 'Sara';"].join('\n');
+  const [hit] = scanFile('lib/a.dart', source).lateFields;
+  assert.equal(hit.text, "late String name = 'Sara';");
+});

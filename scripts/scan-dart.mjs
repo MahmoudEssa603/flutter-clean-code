@@ -86,7 +86,13 @@ const DISPOSABLE = /\b(TextEditingController|ScrollController|AnimationControlle
 // --- source cleaning ---------------------------------------------------------
 // Blank out comments and string literals while preserving length and newlines,
 // so every offset still maps to its original line and brace counting is safe.
-export function blankNonCode(source) {
+//
+// `keepComments` leaves comment text in place for the detectors whose subject *is* a comment —
+// an ownerless TODO, a commented-out line. Those still need string literals gone, or a Dart
+// string containing the words of a comment reports as one. Comments are skipped as a unit in
+// both modes even when they are not blanked: without that, the apostrophe in `// don't` opens a
+// string scan that swallows everything to the next quote in the file.
+export function blankNonCode(source, { keepComments = false } = {}) {
   const out = source.split('');
   const len = source.length;
   let i = 0;
@@ -103,7 +109,7 @@ export function blankNonCode(source) {
     if (two === '//') {
       let end = source.indexOf('\n', i);
       if (end === -1) end = len;
-      blankTo(end);
+      if (!keepComments) blankTo(end);
       i = end;
       continue;
     }
@@ -111,7 +117,7 @@ export function blankNonCode(source) {
     if (two === '/*') {
       let end = source.indexOf('*/', i + 2);
       end = end === -1 ? len : end + 2;
-      blankTo(end);
+      if (!keepComments) blankTo(end);
       i = end;
       continue;
     }
@@ -319,10 +325,16 @@ export function isGenerated(path, source) {
   return GENERATED_HEADER.test(source.split(/\r?\n/).slice(0, 20).join('\n'));
 }
 
-function lineMatches(source, regex) {
+// Matches against `haystack` but reports the line as the reader will see it. The two differ
+// because the haystack has string literals blanked out — a line may match on what is left of it
+// and still need to be quoted in full.
+function lineMatches(source, regex, haystack = source) {
+  const original = source.split(/\r?\n/);
   const hits = [];
-  source.split(/\r?\n/).forEach((text, index) => {
-    if (regex.test(text)) hits.push({ line: index + 1, text: text.trim().slice(0, 90) });
+  haystack.split(/\r?\n/).forEach((text, index) => {
+    if (regex.test(text)) {
+      hits.push({ line: index + 1, text: (original[index] ?? text).trim().slice(0, 90) });
+    }
   });
   return hits;
 }
@@ -420,6 +432,7 @@ export function scanFile(path, source = readFileSync(path, 'utf8'), { includeGen
   if (generated && !includeGenerated) return { path, generated: true, skipped: true };
 
   const code = blankNonCode(source);
+  const commentsVisible = blankNonCode(source, { keepComments: true });
   const functions = findFunctions(source, code);
   const build = functions.find((f) => f.name === 'build') ?? null;
 
@@ -447,18 +460,28 @@ export function scanFile(path, source = readFileSync(path, 'utf8'), { includeGen
       .map((f) => ({ name: f.name, line: f.line, count: f.boolParams })),
     missingDispose: findStateClasses(source, code),
     trivialWidgets: findTrivialWidgets(source, code),
+    // These five look for code, so they read the source with strings and comments gone. A Dart
+    // string that quotes an example — a doc comment, a README embedded in a constant — is not a
+    // `late` field or a bare `catch`, and reading the raw text reported it as one.
     // A literal number or ARGB colour sitting inside a layout constructor.
     magicLiterals: lineMatches(
       source,
       /(EdgeInsets\.\w+\(\s*\d|Duration\(\s*\w+:\s*\d|Color\(0x|SizedBox\((width|height):\s*\d{2,})/,
+      code,
     ),
-    lateFields: lineMatches(source, /^\s*late\s+(?!final\b)/),
-    bareCatch: lineMatches(source, /\bcatch\s*\(\s*[\w$]+\s*\)/),
+    lateFields: lineMatches(source, /^\s*late\s+(?!final\b)/, code),
+    bareCatch: lineMatches(source, /\bcatch\s*\(\s*[\w$]+\s*\)/, code),
     // A collection field compared with == compares by identity, so two equal
     // lists are never equal — SKILL.md > Classes, the listEquals rule.
-    collectionEquality: lineMatches(source, /other\.\w+\s*==\s*\w+.*\b(items|list|values|entries|tags|ids)\b/i),
-    ownerlessTodo: lineMatches(source, /\/\/\s*TODO(?!\s*\()/i),
-    commentedOutCode: lineMatches(source, /^\s*\/\/\s*[\w$]+.*[;{)]\s*$/),
+    collectionEquality: lineMatches(
+      source,
+      /other\.\w+\s*==\s*\w+.*\b(items|list|values|entries|tags|ids)\b/i,
+      code,
+    ),
+    // These two are about comments, so comments are what they need to see — with string
+    // literals still gone, or a string containing "// TODO" reports as a TODO.
+    ownerlessTodo: lineMatches(source, /\/\/\s*TODO(?!\s*\()/i, commentsVisible),
+    commentedOutCode: lineMatches(source, /^\s*\/\/\s*[\w$]+.*[;{)]\s*$/, commentsVisible),
   };
 }
 
