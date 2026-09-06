@@ -92,6 +92,9 @@ Everything here is Node built-ins and needs no install step.
 | `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
 | `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
 | `node scripts/make-eval-projects.mjs <dir>` | Lays the sixteen evaluation scenarios out as runnable projects |
+| `node scripts/check-evals.mjs` | Checks the eval registry — no PASS sitting over a partial expectation |
+| `node scripts/generate-eval-summary.mjs` | Renders the results table from `evals/results/`; `--check` in CI |
+| `node scripts/make-baseline.mjs` | Records what the deterministic tooling reports; `--check` compares |
 | `node --test` | The repository's own suites |
 
 ## Modes
@@ -242,6 +245,7 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── check-report.mjs       checks a finished report against the contract
 │   └── make-eval-projects.mjs lays the scenarios out as runnable projects
 ├── AGENTS.md                  governance: vocabulary, conventions, releases
+├── CHANGELOG.md               one entry per tag, checked against metadata.version
 └── CONTRIBUTING.md            how a change gets merged
 ```
 

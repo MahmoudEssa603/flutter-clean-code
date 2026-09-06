@@ -185,6 +185,24 @@ if (!version) {
   fail('metadata.version', `"${version}" is not MAJOR.MINOR.PATCH`);
 }
 
+// AGENTS.md > Releases: the declared version, the newest changelog heading and the tag all name
+// the same release. Two of the three are checkable here; the tag is checked when one is cut.
+// Work in progress lives under an "Unreleased" heading, which is skipped.
+const changelogPath = join(ROOT, 'CHANGELOG.md');
+if (!existsSync(changelogPath)) {
+  fail('CHANGELOG.md', 'missing; AGENTS.md requires a release to be written down');
+} else if (version) {
+  const headings = [...readFileSync(changelogPath, 'utf8').matchAll(/^## \[?(\d+\.\d+\.\d+)\]?/gm)];
+  if (headings.length === 0) {
+    fail('CHANGELOG.md', 'has no released version heading');
+  } else if (headings[0][1] !== version) {
+    fail(
+      'CHANGELOG.md',
+      `newest release heading is ${headings[0][1]}, but metadata.version is ${version}`,
+    );
+  }
+}
+
 if (!fields.license) fail('license', 'missing');
 
 // --- body checks -------------------------------------------------------------

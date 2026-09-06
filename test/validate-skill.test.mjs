@@ -217,3 +217,21 @@ test('a malformed evaluation file fails', () => {
   assert.equal(status, 1);
   assert.match(output, /not valid JSON/);
 });
+
+test('a changelog whose newest release disagrees with metadata.version fails', () => {
+  // AGENTS.md requires the declared version, the newest changelog heading and the tag to name
+  // the same release. Two of the three are checkable without cutting one.
+  const { status, output } = runValidatorOn((dir) => {
+    const path = join(dir, 'CHANGELOG.md');
+    const text = readFileSync(path, 'utf8');
+    writeFileSync(path, text.replace(/^## \[?\d+\.\d+\.\d+\]?/m, '## [9.9.9]'), 'utf8');
+  });
+  assert.equal(status, 1);
+  assert.match(output, /newest release heading is 9\.9\.9/);
+});
+
+test('a missing changelog fails, because a release nobody wrote down is not one', () => {
+  const { status, output } = runValidatorOn((dir) => rmSync(join(dir, 'CHANGELOG.md')));
+  assert.equal(status, 1);
+  assert.match(output, /CHANGELOG\.md: missing/);
+});

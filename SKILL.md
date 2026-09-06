@@ -17,7 +17,7 @@ compatibility: >-
   dart format, flutter test). Without an SDK the skill runs report-only and says so in the report.
   The agent must be able to read repository files, and to edit them for REFACTOR tasks.
   No network access is used.
-allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
+allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node ~/.agents/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node ~/.gemini/config/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node .agents/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
   version: 1.3.2
 ---
