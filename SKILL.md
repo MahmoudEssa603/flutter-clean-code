@@ -373,14 +373,12 @@ cannot see. Report Low-confidence findings as questions, not verdicts.
 > agree today. Ask: "are these the same rule? If yes, CC-007 applies; if no, say so in a
 > comment so the next reader does not merge them."
 
-**Budget.** At most three modules in one pass, at most 20 findings per module. Past that, say
-what is queued and stop. A report nobody finishes is a report that changed nothing.
+**Budget.** At most three modules in one pass, at most 20 findings per module. Past either, report
+the top 20, state the count left over per principle so nothing looks hidden, say which modules are
+queued, and stop. A report nobody finishes is a report that changed nothing.
 
 Order by Impact, then by lower Effort inside the same Impact, so quick wins come first. No
 numeric score is emitted.
-
-**Cap:** at most 20 findings per module. If more exist, report the top 20 and state the remaining
-count per principle so nothing looks hidden.
 
 ### Step 4 — Refactor (REFACTOR mode only)
 
@@ -473,11 +471,6 @@ already there and say so in your reply. A directory carrying two conventions is 
 of them.
 
 Re-running on the same module the same day overwrites that file instead of adding a second one.
-
-**When the user asks for a machine-readable result** — to gate a build, or to feed a dashboard
-— write `<same-name>.json` beside the markdown: an array of findings carrying `id`,
-`principle`, `impact`, `effort`, `confidence`, `file`, `line` and `title`. Write it only on
-request; nobody wants a JSON file they did not ask for.
 
 ---
 
