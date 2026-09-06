@@ -28,6 +28,12 @@ jobs:
         run: node scripts/validate-skill.mjs
       - name: smoke-test the scanner on the fixtures
         run: node scripts/scan-dart.mjs evals/fixtures
+      - name: the eval registry holds together — no PASS over a partial expectation
+        run: node scripts/check-evals.mjs
+      - name: the results table matches the records it is generated from
+        run: node scripts/generate-eval-summary.mjs --check
+      - name: the deterministic tooling still reports what the baseline recorded
+        run: node scripts/make-baseline.mjs --check
       - name: the scanner must skip generated Dart
         shell: bash
         run: |

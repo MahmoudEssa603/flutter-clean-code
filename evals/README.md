@@ -121,6 +121,121 @@ file cannot produce a finding that lives between two.
 
 ## Results
 
+`evals/results/` is the source of truth — one JSON record per scenario, carrying the verdict,
+the date, the skill version, who generated the output and who graded it. The table below is
+rendered from those records and must not be edited by hand.
+
+Verdicts are `PASS`, `PARTIAL`, `FAIL` or `NOT_RUN`. A scenario whose expectations were only
+partly met is `PARTIAL`, never `PASS` — that combination is what the prose version of this
+table used to hide, and `scripts/check-evals.mjs` now refuses it.
+
+`NOT_RUN` is a decision, not an omission: a scenario untouched by a change set is recorded as
+`NOT_RUN` with a reason rather than left blank, because a blank row reads like a pass.
+
+<!-- generated: eval-summary -->
+
+**11 PASS** · **1 PARTIAL** across 12 scenarios.
+
+Generated from `evals/results/` by `scripts/generate-eval-summary.mjs`. Edit the records,
+not this table.
+
+| Scenario | Last run | Verdict | Expectations | Note |
+|---|---|---|---|---|
+| `01-audit-fat-widget` | 2026-08-30 | **PASS** | 8/8 expectations | All eight expectations and all four must_nots. Answered inline with no file written, and the analyzer note dropped four classes an unenabled lint would own. |
+| `02-refactor-without-tests` | 2026-08-30 | **PASS** | not enumerated | Third run. Eight batches, one refactoring type each, shipped as ordered files v1-v8 beside the untouched original; the two behaviour-affecting batches sit last and say plainly that behaviour is not preserved. Nothing applied, proven by MD5. |
+| `03-out-of-scope-routing` | 2026-08-30 | **PASS** | not enumerated | Both things the request asked for went to Out of Scope with their own reason, the repeated colour literal stayed a finding, and no palette or state design was invented. |
+| `04-negative-trigger` | 2026-08-30 | **PASS** | not enumerated | Four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions. |
+| `05-generated-code` | 2026-08-30 | **PASS** | not enumerated | Generated file excluded and named once, the badly cased variant reported against the source, and the report written to docs/reviews/ as Step 6 asks. |
+| `06-diff-mode` | 2026-08-30 | **PASS** | not enumerated | DIFF chosen without the mode being named, scope taken from main...HEAD, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed. |
+| `07-test-quality` | 2026-08-30 | **PARTIAL** | 4/6 expectations | Re-run. Everything the first run dropped came back: the report in docs/reviews/, CC- numbers, all three judgements, the Not checked line, and 20 findings with the other 10 counted by principle. Two of six expectations only partly met — pumpAndSettle went to Out of Scope rather than becoming a finding, and the repeated-block decision was folded into another finding instead of made out loud. Recorded as passed until the verdict model made that impossible. |
+| `08-excluded-generated-source` | 2026-08-30 | **PASS** | not enumerated | Generated file skipped and named, the badly cased variant reported against the hand-written source, with the reason the enabled lint cannot fire on it. |
+| `09-bug-line` | 2026-08-30 | **PASS** | not enumerated | copyWith dropping a field reported as High; the run-only defect handed back in one Out of Scope line, with the two separated explicitly. |
+| `10-localisation-detection` | 2026-08-30 | **PASS** | not enumerated | Recognised the project as localised from the package and its assets, grepped the lookup call, and reported each hardcoded string with its own location. |
+| `11-unresolved-dependencies` | 2026-08-30 | **PASS** | not enumerated | Re-run after the format and scanner fixes confirmed both: the file was reported unformatted and left byte-identical, and the trivial widget was called dead code to delete rather than an extraction to inline. The first run left one expectation partial. |
+| `12-rerun-rejudges` | 2026-08-30 | **PASS** | not enumerated | Ids carried, one verdict moved to Out of Scope keeping its number, and a conclusion the earlier pass reached by a weaker method was redone with the changed count stated. |
+
+<!-- /generated: eval-summary -->
+
+Scenarios 06 to 12 were written from defects observed while auditing unrelated Flutter projects,
+and the behaviour each one describes was seen in those audits before it was written down. That is
+evidence the rule matters. It is not a run of the scenario, and it does not fill a row above.
+
+The 2026-08-30 runs were done from fresh sessions against a copy of each scenario's files laid out
+as a small standalone project, and they were worth more than their verdicts. They found that
+`dart format --set-exit-if-changed` rewrites the files it checks — twice, an AUDIT had to undo a
+reformat it had caused — and that `findTrivialWidgets` counted a constructor as a call site, so a
+widget class nobody builds reported as used once while one with a single call site was filtered
+out as reuse. Neither defect was reachable from the fixtures alone. A scenario earns its place by
+being run somewhere the skill can actually misbehave.
+
+One open question the runs disagree on, left open deliberately. When a project will not resolve,
+the analyzer reports nothing to anyone — so does its ownership of a class of finding still hold?
+Scenario 11 said no and reported an unused private class itself; 01 and 03 said yes and gave the
+same kind of thing to the analyzer. Each reasoned it out in the report, all three are defensible,
+and the items were Low either way. Two to one is still not a rule. Watch it.
+
+## Fixtures
+
+**A fixture never says it is one.** These files used to open with a banner naming the planted
+defects, telling the reader not to fix them, and pointing at this directory. Every run stopped at
+it, one went and read the scenarios, and the banner was itself reported as a comment documenting
+a defect instead of fixing it. A file that announces it is being graded cannot measure anything,
+so the inventory lives here now and the fixtures read as ordinary code. Keep it that way: when
+you plant a defect, describe it below, not in the file.
+
+`fixtures/order_summary_page.dart` — one defect per principle area:
+
+| Area | Planted |
+|---|---|
+| Naming | `getTotal()` mutates while reading; `d` and `tmp` locals, with `d` reused for a date; `fetch`/`get`/`load`/`watch` for one concept |
+| Functions | `render()` takes a positional boolean whose other branch has no call site; `describe()` is a three-deep if pyramid |
+| SOLID | the State class holds data access, date formatting, status copy and a pricing rule |
+| Flutter | a 118-line `build()`; `EdgeInsets.all(17)` ten times and `0xFF3B5998` twice; a controller and a subscription with no `dispose`; `late Order` over a real absence |
+| Comments | two "what" comments, a commented-out fold that computes a different number, an ownerless TODO |
+| Errors | `catch (e) { // ignore }` that also leaves `loading` true forever; a discount rule whose comment claims a duplicate in a file that is not in the repository |
+| Duplication | three price rows sharing one shape and one concept |
+| Over-extraction | `_SectionGap`, a one-line widget class nothing ever builds — dead weight, not an extraction that went too far |
+| Collections | `OrderSnapshot.==` compares its `List` by identity, and `Object.hash` repeats the mistake |
+
+`fixtures/order_summary_page_test.dart` — one bad test per rule in `test-quality.md`: names that
+state a method rather than a behaviour; one test asserting four unrelated things; an `if` that
+lets an empty list pass having proved nothing; the same `Order` literal copy-pasted three times;
+`pumpAndSettle` used to settle a flake; an assertion on `find.byType(Padding)` that any
+extraction breaks; a mock where the real object would do.
+
+`fixtures/not_dart_service.py` carries the language-neutral trigger words — god class, SOLID,
+rename — that used to cause false activation.
+
+`fixtures/order.dart` and `fixtures/order.freezed.dart` are a source and its real generated
+output. Five variants redirect to an UpperCamelCase class and the sixth to `_orderCancelled`, so
+the generated class breaks the casing its siblings keep — and an analyzer that excludes generated
+files can never report it.
+
+`fixtures/customer_profile.dart` holds one defect on each side of the bug line and nothing else:
+a `copyWith` that declares `nickname` and never passes it, visible in the shape of the code; and
+a `reload()` that returns early on a cached value, which only a run reveals.
+
+`fixtures/localised_pubspec.yaml` and `fixtures/checkout_screen.dart` are a project that
+localises through a package rather than through `.arb` files. The dependency is invented on
+purpose: naming a real one invites matching on the name instead of asking the three questions.
+Three user-facing strings never reach the lookup call.
+
+`fixtures/previous_report.md` is an earlier pass over `customer_profile.dart`, written so that
+two of its three findings should not survive a re-judge — one belongs in Out of Scope, and one was
+reached by a method the file cannot support. Its line references track the fixture; if you edit
+one, fix the other.
+
+None of the four newer fixtures produce a single scanner signal. That is deliberate: they test
+the judgment the scanner cannot do, and a pass that leans on the measurements will not find them.
+
+Adding `order.dart` paid for itself the first time it ran. With the union and the screen in scope
+together, a pass found what neither file shows alone: the union is referenced by nothing, the
+screen matches on strings instead, and the two vocabularies disagree — the screen tests for a
+status that is not a variant, so four of the six render as "Unknown". A fixture that is only a
+file cannot produce a finding that lives between two.
+
+## Results
+
 Recorded per the rule above: only a run from a session that did not author the rule counts.
 
 All twelve pass as of 2026-08-30. Three needed a second or third run, and each of those runs paid

@@ -1,0 +1,19 @@
+{
+  "scenario": "06-diff-mode",
+  "verdict": "PASS",
+  "date": "2026-08-30",
+  "skillVersion": "1.3.1",
+  "commitSha": null,
+  "generatedBy": "fresh agent session, tool not recorded per run",
+  "gradedBy": "maintainer session reading the output against the scenario",
+  "gradingMethod": "independent_fresh_session",
+  "expectations": {
+    "recorded": false
+  },
+  "mustNot": {
+    "recorded": "all held",
+    "fail": 0
+  },
+  "outputFile": null,
+  "note": "DIFF chosen without the mode being named, scope taken from main...HEAD, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed."
+}
