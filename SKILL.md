@@ -509,7 +509,7 @@ then explicitly asks for one; if they do, label it as generic and untested again
 **REFACTOR** — everything above, plus:
 
 - Every verification command run, or the skipped-verification line written.
-- Each batch independently revertable.
+- Batches ordered and revertable from the top down, per the stack rule.
 - No unrelated files changed. Characterization tests are not unrelated.
 - No new lint suppression added without a written justification.
 - UI output unchanged unless the user explicitly approved a change.

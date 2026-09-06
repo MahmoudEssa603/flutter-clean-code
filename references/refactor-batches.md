@@ -122,8 +122,9 @@ Rules:
 
 ## Rollback
 
-Each batch is independently revertable. If the project uses git, one batch is one commit, so a
-single `git revert` undoes it without touching the others.
+One batch is one commit. Batches that touch different code are independently revertable — a
+single `git revert` undoes one without disturbing the others. Batches that touch the same lines
+are not, and the next paragraph is about them.
 
 **Batches over the same lines are a stack, not a set.** A rename and an extraction across the
 same function do not commute: the second is written against the text the first produced. Say so,
