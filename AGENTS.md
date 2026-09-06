@@ -162,7 +162,7 @@ Hard limits, enforced by `node scripts/validate-skill.mjs`:
 | `description` | non-empty, ≤ 1024 characters, third person, no XML tags |
 | `compatibility` | ≤ 500 characters |
 | `metadata.version` | `MAJOR.MINOR.PATCH`, matching the newest git tag |
-| body | < 500 lines |
+| body | ≤ 500 lines |
 
 The `description` must contain, in this order: what the skill does, when to use it including its
 Arabic trigger phrases, and an explicit `Do not use for` clause. The negative clause is not

@@ -7,6 +7,32 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
+## [1.4.0] — 2026-09-07
+
+### Added
+- `references/monorepo-scope.md`, and a Step 1 trigger that reaches it. A repository holding
+  several packages gets a rung above module, one scanner run per package, and a report path
+  carrying the package name so two modules called `auth` do not overwrite each other.
+- The per-package analyzer rule. The Dart analyzer uses the **nearest** `analysis_options.yaml`
+  and does not merge the ones it passed walking up, so a package with its own file is governed by
+  that file alone even under a stricter root. Reading the root file for such a package drops
+  findings the analyzer never reports. Its `exclude:` globs resolve against the directory that
+  declares them, which is the same mistake in the other direction.
+
+### Fixed
+- Two places still promised every batch reverts on its own, contradicting the stack rule added in
+  1.2.0 three paragraphs below one of them.
+- Step 3 stated the 20-finding cap twice, and only the second copy carried the "state the
+  remaining count" clause, so the rule was complete only if you read both.
+
+### Removed
+- The machine-readable JSON paragraph in Step 6, which repeated `references/report-template.md`
+  in full and was a second copy to keep in sync.
+
+### Changed
+- `AGENTS.md` records the body cap as ≤ 500 lines, which is what the validator has always
+  enforced and what it prints.
+
 ## [1.3.2] — 2026-09-01
 
 `SKILL.md` byte-identical to 1.3.1. Released for the documentation, because 1.3.1 shipped install

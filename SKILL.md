@@ -19,7 +19,7 @@ compatibility: >-
   No network access is used.
 allowed-tools: Read, Grep, Glob, Bash(node scripts/scan-dart.mjs:*), Bash(node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node ~/.agents/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node ~/.gemini/config/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(node .agents/skills/flutter-clean-code/scripts/scan-dart.mjs:*), Bash(flutter analyze:*), Bash(dart analyze:*), Bash(dart format:*), Bash(flutter test:*), Bash(dart test:*)
 metadata:
-  version: 1.3.2
+  version: 1.4.0
 ---
 
 # Flutter Clean Code
@@ -40,6 +40,7 @@ Read these when the step says so, not before.
 - The report format to emit: [references/report-template.md](references/report-template.md)
 - A full worked report, for the level of detail expected: [references/example-report.md](references/example-report.md)
 - Judging test code, which is most of a real project: [references/test-quality.md](references/test-quality.md)
+- Scoping a repository that holds several packages: [references/monorepo-scope.md](references/monorepo-scope.md)
 
 ---
 
@@ -151,6 +152,11 @@ file changes.
 
 **Scope ladder:** file → feature → module. A whole-project request runs module by module, worst
 first, reporting after each module rather than at the end.
+
+**More than one package here?** A root `pubspec.yaml` with `workspace:` or `melos:`, a
+`melos.yaml`, or several `pubspec.yaml` files under `packages/` with no root `lib/` — any of
+those adds a rung above module and changes which `analysis_options.yaml` governs each finding.
+Read [references/monorepo-scope.md](references/monorepo-scope.md) before scoping.
 
 **Worst first has a definition.** Run the scanner over `lib/` with `--json`, group the files by
 feature directory, and rank the features by signals per file — not by total signals, or a large
