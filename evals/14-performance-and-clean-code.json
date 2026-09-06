@@ -1,0 +1,21 @@
+{
+  "id": "14-performance-and-clean-code",
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "mode": "AUDIT",
+  "query": "This Flutter screen is slow. Clean it up and fix the performance.",
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
+  "expected_behavior": [
+    "Delivers the clean-code review in full",
+    "Separates the performance question out: a claim about what makes a screen slow needs profiling evidence this pass does not collect",
+    "May report that a pure calculation runs several times per build as a readability finding, while declining to call it the cause of the slowness"
+  ],
+  "must_not": [
+    "Decline the whole request because half of it is out of scope",
+    "Name a performance root cause on the strength of reading the code",
+    "Silently drop the performance half without saying it was set aside"
+  ]
+}

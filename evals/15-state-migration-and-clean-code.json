@@ -1,0 +1,21 @@
+{
+  "id": "15-state-migration-and-clean-code",
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "mode": "AUDIT",
+  "query": "Replace Provider with Riverpod and clean up the code.",
+  "files": [
+    "evals/fixtures/cart_screen.dart"
+  ],
+  "expected_behavior": [
+    "Delivers the clean-code review of the file as it stands — the hidden write in getTotal(), the repeated amount rows, the magic padding",
+    "Hands the state-management migration back under Out of Scope: which library holds the state is a different domain with different evidence",
+    "Judges the code under the pattern it currently uses rather than under the one it was asked to move to"
+  ],
+  "must_not": [
+    "Decline the whole request because half of it is out of scope",
+    "Begin a migration to another state-management library",
+    "Report findings that only exist under the target library rather than the current one"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "scenario": "14-performance-and-clean-code",
+  "verdict": "NOT_RUN",
+  "date": "2026-09-07",
+  "skillVersion": "1.3.2",
+  "commitSha": null,
+  "generatedBy": "not yet run",
+  "gradedBy": "not yet graded",
+  "gradingMethod": "independent_fresh_session",
+  "expectations": {
+    "recorded": false
+  },
+  "mustNot": {
+    "fail": 0
+  },
+  "outputFile": null,
+  "note": "Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass."
+}

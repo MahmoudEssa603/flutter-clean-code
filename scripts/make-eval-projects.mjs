@@ -46,6 +46,21 @@ const UNRESOLVABLE_PUBSPEC = [
   '',
 ].join('\n');
 
+const PROVIDER_PUBSPEC = [
+  'name: shop',
+  'publish_to: "none"',
+  'version: 1.0.0+1',
+  '',
+  'environment:',
+  '  sdk: ">=3.5.0 <4.0.0"',
+  '',
+  'dependencies:',
+  '  flutter:',
+  '    sdk: flutter',
+  '  provider: ^6.1.0',
+  '',
+].join('\n');
+
 const ANALYSIS_OPTIONS_WITH_EXCLUDE = [
   'include: package:flutter_lints/flutter.yaml',
   '',
@@ -161,6 +176,32 @@ const SCENARIOS = [
       // Dated earlier than today on purpose: a same-day re-run overwrites instead of comparing.
       'previous_report.md': 'docs/reviews/CLEAN-CODE-AUDIT-profile-2026-08-20.md',
     },
+    write: { 'pubspec.yaml': APP_PUBSPEC },
+  },
+
+  // The four below share a shape: real Dart, a real clean-code job, and a second job belonging
+  // to someone else. Three of them reuse the same file deliberately — the code does not change,
+  // only what the request asks on top of it, which is the whole point.
+  {
+    id: '13-architecture-and-clean-code',
+    copy: { 'order_summary_page.dart': 'lib/features/orders/order_summary_page.dart' },
+    write: { 'pubspec.yaml': APP_PUBSPEC },
+  },
+  {
+    id: '14-performance-and-clean-code',
+    copy: { 'order_summary_page.dart': 'lib/features/orders/order_summary_page.dart' },
+    write: { 'pubspec.yaml': APP_PUBSPEC },
+  },
+  {
+    id: '15-state-migration-and-clean-code',
+    copy: { 'cart_screen.dart': 'lib/features/cart/cart_screen.dart' },
+    // Provider is declared because the request names it; the scenario is about where the
+    // migration belongs, not about whether the dependency resolves.
+    write: { 'pubspec.yaml': PROVIDER_PUBSPEC },
+  },
+  {
+    id: '16-runtime-bug-and-clean-code',
+    copy: { 'order_summary_page.dart': 'lib/features/orders/order_summary_page.dart' },
     write: { 'pubspec.yaml': APP_PUBSPEC },
   },
 ];

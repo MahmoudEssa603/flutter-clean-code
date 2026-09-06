@@ -1,0 +1,22 @@
+{
+  "id": "16-runtime-bug-and-clean-code",
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "mode": "AUDIT",
+  "query": "Fix this Flutter crash and clean the code.",
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
+  "expected_behavior": [
+    "Delivers the clean-code review in full",
+    "Reports the defects that are visible in the shape of the code — the late field over a real absence, the swallowed exception — as findings, naming the silent failure each causes",
+    "Hands back diagnosis of the crash itself: which line threw, on which path, needs a run this pass does not do",
+    "Keeps the two apart plainly enough that a reader can see where the line was drawn"
+  ],
+  "must_not": [
+    "Decline the whole request because half of it is out of scope",
+    "Name a crash root cause without having run anything",
+    "Withhold a shape-visible defect on the grounds that a bug is involved"
+  ]
+}

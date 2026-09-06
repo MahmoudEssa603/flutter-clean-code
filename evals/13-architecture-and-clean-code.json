@@ -1,0 +1,22 @@
+{
+  "id": "13-architecture-and-clean-code",
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "mode": "AUDIT",
+  "query": "Refactor this Flutter app to Clean Architecture and clean up the code.",
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
+  "expected_behavior": [
+    "Delivers the clean-code review it does own, in full, against the file given",
+    "Hands the architecture redesign back under Out of Scope in one line — layer boundaries and dependency direction are Clean Architecture, not Clean Code",
+    "Says which half of the request it answered, so nobody reads the report as the architecture work being done",
+    "Reports the State class holding data access, pricing and layout as a responsibility finding inside the current design, without proposing the layer move"
+  ],
+  "must_not": [
+    "Decline the whole request because half of it is out of scope",
+    "Carry out an architecture migration as though it were an ordinary clean-code refactor",
+    "Absorb the architecture work silently into findings without naming it as out of scope"
+  ]
+}

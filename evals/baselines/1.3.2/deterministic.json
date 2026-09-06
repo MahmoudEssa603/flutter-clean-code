@@ -1,11 +1,11 @@
 {
   "skillVersion": "1.3.2",
-  "commitSha": "8798750459e00332b58048b0bdd9ea8249bf3a1f",
+  "commitSha": "e3532d54dbec5e953f9fbe2e2ee9a7c94aeafc26",
   "date": "2026-09-06",
   "scanner": {
-    "filesScanned": 6,
-    "totalSignals": 27,
-    "signalsPerFile": 4.5,
+    "filesScanned": 7,
+    "totalSignals": 32,
+    "signalsPerFile": 4.57,
     "generatedSkipped": [
       "order.freezed.dart"
     ],
@@ -13,6 +13,18 @@
       {
         "lines": 6,
         "occurrences": [
+          {
+            "path": "cart_screen.dart",
+            "line": 49
+          },
+          {
+            "path": "cart_screen.dart",
+            "line": 59
+          },
+          {
+            "path": "cart_screen.dart",
+            "line": 69
+          },
           {
             "path": "order_summary_page.dart",
             "line": 186
@@ -161,6 +173,46 @@
             "text": "// final oldTotal = order.items.fold(0.0, (a, b) => a + b.price);"
           }
         ]
+      },
+      {
+        "path": "cart_screen.dart",
+        "lines": 84,
+        "signals": 5,
+        "build": {
+          "name": "build",
+          "line": 39,
+          "length": 44,
+          "nesting": 0,
+          "positional": 1,
+          "boolParams": 0
+        },
+        "longFunctions": [],
+        "deepNesting": [],
+        "missingDispose": [],
+        "trivialWidgets": [],
+        "magicLiterals": [
+          {
+            "line": 46,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 50,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 60,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 70,
+            "text": "padding: const EdgeInsets.all(17),"
+          }
+        ],
+        "lateFields": [],
+        "bareCatch": [],
+        "collectionEquality": [],
+        "ownerlessTodo": [],
+        "commentedOutCode": []
       },
       {
         "path": "order_filters.dart",

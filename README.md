@@ -91,7 +91,7 @@ Everything here is Node built-ins and needs no install step.
 | `node scripts/scan-dart.mjs <path>` | Measures a Dart tree. `--json` for exact numbers, `--top N` to list more files |
 | `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
 | `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
-| `node scripts/make-eval-projects.mjs <dir>` | Lays the twelve evaluation scenarios out as runnable projects |
+| `node scripts/make-eval-projects.mjs <dir>` | Lays the sixteen evaluation scenarios out as runnable projects |
 | `node --test` | The repository's own suites |
 
 ## Modes
@@ -234,7 +234,7 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── report-template.md     the output format
 │   ├── example-report.md      a full worked audit, for calibration
 │   └── test-quality.md        judging test code, the larger half of most projects
-├── evals/                     twelve scenarios, their fixtures, and results
+├── evals/                     sixteen scenarios, fixtures, results and baselines
 ├── test/                      unit and integration suites, node --test
 ├── scripts/
 │   ├── validate-skill.mjs     checks SKILL.md against the contract in AGENTS.md
