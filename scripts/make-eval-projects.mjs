@@ -6,10 +6,21 @@
 // fetched, and the re-run scenario wants an older report already sitting in docs/reviews.
 //
 // Node built-ins only: no install step, no network, no dependencies.
-// Usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--quiet]
+// Usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--verify] [--quiet]
+//   --verify  report which laid-out projects a run has already changed, and build nothing
 // Exit code 0 = every requested scenario was written, 1 = something was refused or failed.
 
-import { cpSync, existsSync, mkdirSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  realpathSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -208,6 +219,21 @@ const SCENARIOS = [
 
 const KNOWN_IDS = new Set(SCENARIOS.map((s) => s.id));
 
+/**
+ * Clears a scenario directory without removing the directory itself.
+ *
+ * On Windows a directory cannot be deleted while any process holds it as a working directory,
+ * and a terminal left sitting in the scenario folder after a run is the normal case rather than
+ * the exception. Its contents delete fine, so empty it and keep the inode: rebuilding a scenario
+ * must not depend on where somebody's shell happens to be parked.
+ */
+function emptyDirectory(dir) {
+  if (!existsSync(dir)) return;
+  for (const entry of readdirSync(dir)) {
+    rmSync(join(dir, entry), { recursive: true, force: true });
+  }
+}
+
 function writeFile(target, relative, contents) {
   const path = join(target, relative);
   mkdirSync(dirname(path), { recursive: true });
@@ -220,6 +246,51 @@ function copyFixture(target, fixture, relative) {
   const path = join(target, relative);
   mkdirSync(dirname(path), { recursive: true });
   cpSync(source, path);
+}
+
+const MANIFEST = '.eval-manifest.json';
+
+// Everything a run legitimately leaves behind. A pass that reaches the SDK writes these, and
+// none of them changes what the next run reads.
+const RUN_ARTEFACTS = /^(\.dart_tool[\\/]|\.git[\\/]|build[\\/]|docs[\\/]reviews[\\/]|pubspec\.lock$|\.flutter-plugins)/;
+
+function projectFiles(dir) {
+  const out = [];
+  const walk = (sub) => {
+    for (const entry of readdirSync(join(dir, sub), { withFileTypes: true })) {
+      const rel = sub ? `${sub}/${entry.name}` : entry.name;
+      if (rel === MANIFEST || RUN_ARTEFACTS.test(rel)) continue;
+      if (entry.isDirectory()) walk(rel);
+      else out.push(rel);
+    }
+  };
+  walk('');
+  return out.sort();
+}
+
+const digest = (dir, rel) => createHash('sha256').update(readFileSync(join(dir, rel))).digest('hex').slice(0, 16);
+
+function writeManifest(dir, scenarioId) {
+  const files = Object.fromEntries(projectFiles(dir).map((rel) => [rel, digest(dir, rel)]));
+  writeFileSync(join(dir, MANIFEST), `${JSON.stringify({ scenario: scenarioId, files }, null, 2)}\n`);
+}
+
+/**
+ * How a laid-out project differs from what the generator wrote.
+ *
+ * A scenario that has already been run is not the scenario any more: 13 was answered once by
+ * restructuring the fixture into four layers, and the next run read those layers and reported,
+ * correctly and uselessly, that the work was already done. Nothing about that reply looked wrong.
+ */
+export function projectDrift(dir) {
+  const path = join(dir, MANIFEST);
+  if (!existsSync(path)) return { known: false };
+
+  const { files } = JSON.parse(readFileSync(path, 'utf8'));
+  const present = new Set(projectFiles(dir));
+  const changed = Object.keys(files).filter((rel) => !present.has(rel) || digest(dir, rel) !== files[rel]);
+  const added = [...present].filter((rel) => !(rel in files));
+  return { known: true, changed, added };
 }
 
 function git(cwd, args) {
@@ -259,6 +330,30 @@ function main(argv) {
 
   const target = resolve(targetArg);
 
+  // A scenario that has already been answered is not the scenario any more. Say so before the
+  // next session reads a project the last one rewrote and reports, correctly, on the wrong thing.
+  if (argv.includes('--verify')) {
+    const dirty = [];
+    const untracked = [];
+    for (const id of only ? [only] : KNOWN_IDS) {
+      const dir = join(target, id);
+      if (!existsSync(dir)) continue;
+      const drift = projectDrift(dir);
+      if (!drift.known) untracked.push(id);
+      else if (drift.changed.length + drift.added.length > 0) {
+        dirty.push(`${id} — ${drift.changed.length} changed, ${drift.added.length} added`);
+      }
+    }
+    for (const line of dirty) console.error(`DIRTY  ${line}`);
+    for (const id of untracked) console.error(`UNKNOWN  ${id} — built before manifests; rebuild it`);
+    if (dirty.length + untracked.length === 0) {
+      if (!quiet) console.log('every laid-out scenario matches what the generator wrote');
+      return 0;
+    }
+    console.error('\nRebuild before running these, or the session reads the last run\'s output.');
+    return 1;
+  }
+
   // Rebuilding means deleting, so refuse a directory holding anything this script did not put
   // there. Pointing it at a real project should cost nothing.
   if (existsSync(target)) {
@@ -277,7 +372,7 @@ function main(argv) {
 
   for (const scenario of wanted) {
     const dir = join(target, scenario.id);
-    rmSync(dir, { recursive: true, force: true });
+    emptyDirectory(dir);
     mkdirSync(dir, { recursive: true });
 
     for (const [fixture, relative] of Object.entries(scenario.copy)) {
@@ -290,6 +385,7 @@ function main(argv) {
       buildRepository(dir, scenario.git);
       repositories += 1;
     }
+    writeManifest(dir, scenario.id);
     if (!quiet) console.log(`  ${scenario.id}`);
   }
 

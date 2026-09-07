@@ -5,12 +5,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SCENARIOS, main } from '../scripts/make-eval-projects.mjs';
+import { SCENARIOS, main, projectDrift } from '../scripts/make-eval-projects.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -76,5 +76,79 @@ test('the diff scenario leaves exactly one changed file against its base', () =>
     assert.deepEqual(changed.stdout.trim().split('\n'), [
       'lib/features/orders/order_filters.dart',
     ]);
+  });
+});
+
+// --- drift ---------------------------------------------------------------------
+// Scenario 13 was answered once by restructuring the fixture into four layers. The next run
+// read those layers and reported, correctly and uselessly, that the work was already done —
+// and nothing about that reply looked wrong. A run over a project a previous run rewrote is
+// not a run of the scenario, and only the generator can tell.
+
+test('a project a run has edited is reported as drifted', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '13-architecture-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 0, 'fresh must be clean');
+
+    const scenario = join(target, only);
+    writeFileSync(join(scenario, 'lib/features/orders/order_summary_page.dart'), 'class Rewritten {}\n');
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 1);
+
+    const drift = projectDrift(scenario);
+    assert.deepEqual(drift.changed, ['lib/features/orders/order_summary_page.dart']);
+    assert.deepEqual(drift.added, []);
+  });
+});
+
+test('a file a run adds counts as drift too', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '13-architecture-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const scenario = join(target, only);
+    mkdirSync(join(scenario, 'lib/domain'), { recursive: true });
+    writeFileSync(join(scenario, 'lib/domain/order.dart'), 'class Order {}\n');
+
+    assert.deepEqual(projectDrift(scenario).added, ['lib/domain/order.dart']);
+  });
+});
+
+test('what a legitimate pass leaves behind is not drift', () => {
+  // A report in docs/reviews is the scenario succeeding, and .dart_tool, build/ and a lockfile
+  // are the SDK doing its job. If those counted, the check would fire after every clean run and
+  // be ignored within a day.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '13-architecture-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const scenario = join(target, only);
+    mkdirSync(join(scenario, 'docs/reviews'), { recursive: true });
+    mkdirSync(join(scenario, '.dart_tool'), { recursive: true });
+    mkdirSync(join(scenario, 'build'), { recursive: true });
+    writeFileSync(join(scenario, 'docs/reviews/CLEAN-CODE-AUDIT-orders-2026-09-07.md'), '# report\n');
+    writeFileSync(join(scenario, '.dart_tool/version'), '3.5.0\n');
+    writeFileSync(join(scenario, 'build/x'), 'artefact\n');
+    writeFileSync(join(scenario, 'pubspec.lock'), 'locked\n');
+
+    const drift = projectDrift(scenario);
+    assert.deepEqual(drift.changed, []);
+    assert.deepEqual(drift.added, []);
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 0);
+  });
+});
+
+test('a project built before manifests is reported, not assumed clean', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '13-architecture-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+    rmSync(join(target, only, '.eval-manifest.json'));
+
+    assert.equal(projectDrift(join(target, only)).known, false);
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 1);
   });
 });

@@ -91,7 +91,7 @@ Everything here is Node built-ins and needs no install step.
 | `node scripts/scan-dart.mjs <path>` | Measures a Dart tree. `--json` for exact numbers, `--top N` to list more files |
 | `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
 | `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
-| `node scripts/make-eval-projects.mjs <dir>` | Lays the sixteen evaluation scenarios out as runnable projects |
+| `node scripts/make-eval-projects.mjs <dir>` | Lays the sixteen evaluation scenarios out as runnable projects; `--verify` reports which ones a run has already rewritten |
 | `node scripts/check-evals.mjs` | Checks the eval registry — no PASS sitting over a partial expectation |
 | `node scripts/generate-eval-summary.mjs` | Renders the results table from `evals/results/`; `--check` in CI |
 | `node scripts/make-baseline.mjs` | Records what the deterministic tooling reports; `--check` compares |

@@ -24,15 +24,28 @@ that genuinely cannot be fetched. The re-run scenario needs an older report alre
 The generator deletes what it rebuilds, and refuses any directory holding an entry it does not
 manage. Then:
 
-1. Start a fresh session **in the scenario's directory**, with this skill installed and nothing
-   else loaded from this repository.
+1. **Check the project is still the scenario**, then start a fresh session **in its directory**,
+   with this skill installed and nothing else loaded from this repository:
+
+   ```bash
+   node scripts/make-eval-projects.mjs <target-dir> --verify
+   ```
 2. Paste the scenario's `query`.
 3. Read the answer against `expected_behavior` and `must_not`, item by item.
 4. Record the outcome in the table below.
 
-Some scenarios leave their project dirty — `04` ends with the fixture rewritten, and any pass
-that reaches `flutter analyze` leaves `.dart_tool` and a lockfile. Rebuild before running one
-again rather than tidying by hand.
+Some scenarios leave their project rewritten. `04` ends with the fixture refactored, and `13`
+was once answered by restructuring one file into four layers — the next run then read those
+layers and reported, accurately and uselessly, that the work was already done. Nothing in that
+reply looked wrong, which is why `--verify` exists and why rebuilding is not optional. A report
+in `docs/reviews/`, `.dart_tool`, `build/` and a lockfile are what a clean pass leaves and are
+not drift.
+
+Rebuild rather than tidying by hand:
+
+```bash
+node scripts/make-eval-projects.mjs <target-dir> --only 13-architecture-and-clean-code
+```
 
 Run the ones a change touches, and all sixteen before a tag. See the pre-publication checklist in
 [AGENTS.md](../AGENTS.md).

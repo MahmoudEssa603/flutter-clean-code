@@ -34,6 +34,15 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- `scripts/make-eval-projects.mjs --verify` reports which laid-out scenarios a run has already
+  rewritten, against a manifest the generator now writes. Scenario 13 was answered once by
+  restructuring the fixture into four layers; the next run read those layers and reported,
+  accurately and uselessly, that the work was already done. Nothing in that reply looked wrong,
+  and nothing but the generator could have known. A report in `docs/reviews/`, `.dart_tool`,
+  `build/` and a lockfile are what a clean pass leaves and do not count as drift.
+- The generator empties a scenario directory instead of deleting it. On Windows a directory
+  cannot be removed while any process holds it as a working directory, and a terminal parked in
+  the folder after a run is the normal case — rebuilding failed with EPERM until it was.
 - Step 4 forbade rewriting a feature and switching the state-management pattern "unless explicitly
   asked", while "What it does not own" put layer boundaries, dependency direction and module
   structure flatly outside the skill. A request to restructure to Clean Architecture asks
