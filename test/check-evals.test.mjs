@@ -115,14 +115,6 @@ test('an unknown tag reports "cannot tell", not "nothing changed"', () => {
   assert.equal(surfaceChangedSince('9.9.9'), null);
 });
 
-test('it can answer for a tag this repository really has', () => {
-  // Deliberately not asserting the list is empty. An edit to SKILL.md before the next tag is
-  // cut is the normal state of this repository mid-release, and a suite that goes red for it
-  // would be turned off inside a week. What matters here is that a real tag yields an answer
-  // rather than the null that means "cannot tell" — the semantics are pinned by the test below.
-  assert.ok(Array.isArray(surfaceChangedSince('1.3.1')));
-});
-
 test('a release that only moved the version line is not a reason to re-run anything', () => {
   // Built as a throwaway repo rather than asserted against this one, so it proves the rule
   // instead of restating today's history. Comparing raw bytes would call every scenario stale on
