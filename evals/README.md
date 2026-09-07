@@ -143,9 +143,9 @@ table used to hide, and `scripts/check-evals.mjs` now refuses it.
 
 <!-- generated: eval-summary -->
 
-**11 PASS** · **1 PARTIAL** · **4 NOT_RUN** across 16 scenarios.
+**11 PASS** · **1 FAIL** · **4 NOT_RUN** across 16 scenarios.
 
-> **12 of these verdicts were graded against 1.3.1, not 1.4.0.**
+> **11 of these verdicts were graded against 1.3.1, not 1.4.0.**
 > Run `node scripts/check-evals.mjs` to see whether anything the model reads has changed
 > since. A verdict is a claim about one skill surface; once that moves it is unverified,
 > not wrong — and unverified looks identical to verified in a table.
@@ -161,7 +161,7 @@ not this table.
 | `04-negative-trigger` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Four trigger words in the query and the skill never loaded. The agent said why ("Python, not Dart") and refactored the file itself, in Python conventions. |
 | `05-generated-code` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Generated file excluded and named once, the badly cased variant reported against the source, and the report written to docs/reviews/ as Step 6 asks. |
 | `06-diff-mode` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | DIFF chosen without the mode being named, scope taken from main...HEAD, and the untouched neighbour kept to one Out of Scope line. The must_not was sharpened afterwards to say that line is allowed. |
-| `07-test-quality` | 2026-08-30 | `1.3.1` | **PARTIAL** | 4/6 expectations | Re-run. Everything the first run dropped came back: the report in docs/reviews/, CC- numbers, all three judgements, the Not checked line, and 20 findings with the other 10 counted by principle. Two of six expectations only partly met — pumpAndSettle went to Out of Scope rather than becoming a finding, and the repeated-block decision was folded into another finding instead of made out loud. Recorded as passed until the verdict model made that impossible. |
+| `07-test-quality` | 2026-09-07 | `1.4.0` | **FAIL** | 1/6 expectations | Not one element of the report contract was present: no mode, no evidence level, no CC- ids, no Impact/Effort/Confidence, no Summary table, no Out of Scope section, no scanner run, no file in docs/reviews/. The must_not on the Tests row is therefore broken by there being no table at all. Four expectations unmet, one partial: the Order literal was described as two fixtures where the file constructs four, and pumpAndSettle was raised as a runtime timeout rather than an unexplained wait. Two held well — MockOrder over a value object, and verify with nothing asserted about the payload. The reply also asserted runtime behaviour throughout (guaranteed crash, infinite spinner) that the skill routes to Out of Scope, and opened on a dart analyze error count that is environment noise here, every eval project carrying a dependency-free pubspec by design. As a code review it was strong and found a real money bug at the discount boundary, where 100 > 100 is false; it was simply not this skill's work. The 1.3.1 run of this same query produced a conforming report, and the description is byte-identical between the two versions, so the activation surface did not change between them. Whether the skill loaded at all is unresolved and is the next thing to settle. |
 | `08-excluded-generated-source` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Generated file skipped and named, the badly cased variant reported against the hand-written source, with the reason the enabled lint cannot fire on it. |
 | `09-bug-line` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | copyWith dropping a field reported as High; the run-only defect handed back in one Out of Scope line, with the two separated explicitly. |
 | `10-localisation-detection` | 2026-08-30 | `1.3.1` | **PASS** | not enumerated | Recognised the project as localised from the package and its assets, grepped the lookup call, and reported each hardcoded string with its own location. |
