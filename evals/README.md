@@ -10,7 +10,7 @@ There is no built-in runner. Each scenario is run by hand, and the result is rec
 Build the projects once, somewhere outside this repository:
 
 ```bash
-node scripts/make-eval-projects.mjs <target-dir>          # all twelve
+node scripts/make-eval-projects.mjs <target-dir>          # all sixteen
 node scripts/make-eval-projects.mjs <target-dir> --only 06-diff-mode
 ```
 

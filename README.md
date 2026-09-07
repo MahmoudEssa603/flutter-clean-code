@@ -193,8 +193,10 @@ Antigravity's global path is `~/.gemini/config/skills/` — its own bundled guid
 `~/.gemini/antigravity/` folder some write-ups name is the product's internal state, not a place
 to install anything.
 
-Claude Code is the one that has been through the twelve scenarios — eleven PASS and one PARTIAL,
-recorded in `evals/results/`. A single run on Antigravity
+Claude Code is the only tool the scenarios have been run on: twelve of the sixteen, eleven PASS
+and one PARTIAL, every one of them graded against 1.3.1 and recorded in `evals/results/` with the
+version it was graded against. `node scripts/check-evals.mjs` says which of those the skill has
+moved underneath since. A single run on Antigravity
 against a real module produced a conforming report — right filename and location, numbered
 findings with all three judgements, generated files skipped, a blocked verification declared
 rather than mined — and reproduced nine of the fifteen findings Claude Code had made on the same
