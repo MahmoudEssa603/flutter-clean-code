@@ -72,9 +72,19 @@ function scannerBaseline() {
   };
 }
 
+// NOTE lines are dropped. The only one the validator emits says the checkout directory is not
+// named after the skill, which is true of every fork, every rename, and every clone a person
+// made into a folder of their choosing. Keeping it made the baseline report "the tooling reports
+// something different" above two identical signal counts, for a difference that is not in the
+// tooling at all. Failures and the exit code are what this records.
 function validatorBaseline() {
   const run = node(['scripts/validate-skill.mjs', '--quiet']);
-  return { exitCode: run.status, output: run.stdout.trim() };
+  const output = run.stdout
+    .split('\n')
+    .filter((line) => !line.startsWith('NOTE'))
+    .join('\n')
+    .trim();
+  return { exitCode: run.status, output };
 }
 
 function build() {

@@ -25,6 +25,10 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- The deterministic baseline recorded the validator's directory-name NOTE, so any clone into a
+  folder not called `flutter-clean-code` — every fork, every rename — failed with "the tooling
+  reports something different" printed above two identical signal counts. The baseline records
+  what the validator decided, not where the repository sits.
 - `allowed-tools` named only `~/.claude/skills/` while the README documented four install paths.
   Anyone who installed under `~/.agents/skills/` or `~/.gemini/config/skills/` had the scanner
   refused by permissions, which the skill would then report as "scanner did not run". It landed in
