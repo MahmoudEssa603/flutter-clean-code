@@ -392,7 +392,8 @@ numeric score is emitted.
 **Rule Zero: no behaviour-changing edits.** Tests green before *and* after every batch.
 
 **Refactor is not rewrite.** Do not rewrite the feature, change business rules, change UI output,
-switch the state-management pattern, or alter API contracts unless explicitly asked.
+or alter API contracts unless explicitly asked. Asking never unlocks what this skill does not own:
+layers and state management go back under Out of Scope, and the pass runs inside the design as is.
 
 - One refactoring type per batch. Rename, extract, and restructure never share a batch. This
   binds a patch you propose without applying just as hard. Nothing is revertable there, which is

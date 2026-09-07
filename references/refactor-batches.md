@@ -29,8 +29,22 @@ characterization test that proves it, or emit the patch unapplied and marked
 - rewriting a feature
 - changing a business rule, a threshold, or a default
 - changing what the user sees or the order in which they see it
-- switching the state-management pattern
 - altering an API contract, a route name, or a serialised field name
+
+Out of bounds **even when the user explicitly asked**, because they are not this skill's to do:
+
+- moving layer boundaries, or changing which direction dependencies point
+- introducing entities, usecases, repositories or a composition root
+- switching the state-management pattern
+
+Those are a different job being requested, not a job becoming yours. Hand them back in one line
+under Out of Scope, then run the clean-code pass inside the design as it stands — a god class is
+still a god class, and it is reported where it lives rather than dissolved into new layers.
+
+The failure this prevents is not refusal. It is answering "restructure this to Clean Architecture
+and clean it up" by delivering the restructure, with the clean-code findings folded into it, so
+the reader cannot take one and leave the other and nobody ever said the larger half was never
+on offer.
 
 ## What a batch is
 

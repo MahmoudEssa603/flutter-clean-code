@@ -34,6 +34,13 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- Step 4 forbade rewriting a feature and switching the state-management pattern "unless explicitly
+  asked", while "What it does not own" put layer boundaries, dependency direction and module
+  structure flatly outside the skill. A request to restructure to Clean Architecture asks
+  explicitly, so the second rule licensed what the first forbids — and scenario 13 came back with
+  the migration carried out: four new layers, six authored types, a composition root, a state
+  library swapped in, and Rule Zero abandoned with behaviour changes applied rather than proposed.
+  Asking now unlocks nothing this skill does not own; the pass runs inside the design as it stands.
 - The description's "Use when" clause named neither **audit** nor **refactor** — the two verbs
   in the skill's own first sentence, and one of them a mode name. Activation was effectively keyed
   on the literal phrase "clean code": every eval query carrying it fired, and the two that did not
