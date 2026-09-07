@@ -102,7 +102,7 @@ Everything here is Node built-ins and needs no install step.
 | Mode | Result |
 |---|---|
 | **AUDIT** | Findings report only. No file is modified. |
-| **REFACTOR** | Behaviour-preserving patches, applied in independently revertable batches. |
+| **REFACTOR** | Behaviour-preserving patches, applied in small ordered batches, one type each. |
 | **DIFF** | AUDIT restricted to the files changed against a base ref. For pull-request review. |
 
 Seven principle areas are checked every run: Naming · Functions · Classes & SOLID ·
@@ -121,6 +121,13 @@ acted on.
 **Re-runs pick up where the last one stopped.** A second pass on the same module opens with a
 Since-last-pass table — fixed, still open, new — and a finding that is still open keeps its
 original number.
+
+**Monorepos are scoped per package.** A pub workspace, a melos repository, or just several
+`pubspec.yaml` files under `packages/` gets a rung above module: packages are ranked and taken
+one at a time, reports are filed per package, and — the part that changes findings — the
+governing `analysis_options.yaml` is resolved per package. The analyzer uses the nearest one and
+does not merge the ones above it, so a package with its own file is judged against that file even
+under a stricter root.
 
 **Rule Zero:** no behaviour-changing edits, and the test suite is green before *and* after every
 batch. Without tests on the touched code the skill either writes characterization tests first or
@@ -236,13 +243,17 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── refactor-batches.md    batching, the safe/unsafe list, rollback
 │   ├── report-template.md     the output format
 │   ├── example-report.md      a full worked audit, for calibration
-│   └── test-quality.md        judging test code, the larger half of most projects
+│   ├── test-quality.md        judging test code, the larger half of most projects
+│   └── monorepo-scope.md      scoping a repository that holds several packages
 ├── evals/                     sixteen scenarios, fixtures, results and baselines
 ├── test/                      unit and integration suites, node --test
 ├── scripts/
 │   ├── validate-skill.mjs     checks SKILL.md against the contract in AGENTS.md
 │   ├── scan-dart.mjs          the Dart measurement scanner
 │   ├── check-report.mjs       checks a finished report against the contract
+│   ├── check-evals.mjs        checks the eval registry, and flags stale verdicts
+│   ├── generate-eval-summary.mjs  renders the results table from the records
+│   ├── make-baseline.mjs      records what the deterministic tooling reports
 │   └── make-eval-projects.mjs lays the scenarios out as runnable projects
 ├── AGENTS.md                  governance: vocabulary, conventions, releases
 ├── CHANGELOG.md               one entry per tag, checked against metadata.version
