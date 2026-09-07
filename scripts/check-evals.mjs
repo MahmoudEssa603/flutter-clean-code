@@ -150,6 +150,45 @@ export function surfaceChangedSince(version, { cwd = ROOT } = {}) {
   return changed;
 }
 
+const STOPWORDS = new Set([
+  'when', 'user', 'asks', 'that', 'them', 'this', 'with', 'from', 'they', 'only', 'also',
+  'their', 'than', 'then', 'into', 'over', 'such', 'against', 'whether', 'files', 'changed',
+  'branch', 'pull', 'request', 'including', 'arabic', 'phrasings', 'readability', 'rule', 'names',
+]);
+
+/**
+ * Scenario queries that share no word with the description's "Use when" clause.
+ *
+ * The description is the whole of activation: a host matches the request against it and nothing
+ * else. So a scenario whose query has no word in common with it is testing a request the skill
+ * may simply never see, and the run that follows measures the matcher, not the rules. This is
+ * reported, never failed — 14 and 16 deliberately pair a trigger with an exclusion, and tuning
+ * the description until every query lights up would be fitting it to its own tests.
+ */
+export function queriesWithoutTrigger({ description, scenarios }) {
+  const clause = description.slice(
+    description.toLowerCase().indexOf('use when'),
+    description.toLowerCase().indexOf('do not use for'),
+  );
+  const triggers = new Set(
+    (clause.toLowerCase().match(/[\p{L}]{4,}/gu) ?? []).filter((w) => !STOPWORDS.has(w)),
+  );
+
+  return scenarios
+    .filter((s) => (s.skills ?? []).length > 0)
+    .filter((s) => {
+      const words = (s.query.toLowerCase().match(/[\p{L}]{4,}/gu) ?? []);
+      return !words.some((w) => triggers.has(w));
+    })
+    .map((s) => s.id);
+}
+
+export function skillDescription() {
+  const raw = readFileSync(join(ROOT, 'SKILL.md'), 'utf8');
+  const block = /description: >-\n((?: {2}.*\n)+)/.exec(raw)?.[1] ?? '';
+  return block.trim().split('\n').map((l) => l.trim()).join(' ');
+}
+
 export function currentSkillVersion() {
   const match = readFileSync(join(ROOT, 'SKILL.md'), 'utf8').match(/^ {2}version: (\d+\.\d+\.\d+)$/m);
   return match?.[1] ?? null;
@@ -194,6 +233,21 @@ function reportStale(results, currentVersion) {
   }
 }
 
+function reportUntriggerable() {
+  const scenarios = readdirSync(SCENARIOS_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(join(SCENARIOS_DIR, f), 'utf8')));
+
+  const bare = queriesWithoutTrigger({ description: skillDescription(), scenarios });
+  if (bare.length === 0) return;
+
+  console.log('');
+  console.log(`  ${bare.length} scenario quer(ies) share no word with the description's "Use when" clause:`);
+  console.log(`    ${bare.join(', ')}`);
+  console.log('  The description is the whole of activation, so a run of these may measure whether');
+  console.log('  the skill loaded rather than what it decided. Check the load indicator first.');
+}
+
 function main(argv) {
   const quiet = argv.includes('--quiet');
   const { scenarios, results } = read();
@@ -212,6 +266,7 @@ function main(argv) {
       .join(' · ');
     console.log(`evals/results/: ${results.length} of ${scenarios.length} scenarios — ${tally}`);
     reportStale(results, currentSkillVersion());
+    reportUntriggerable();
   }
   return 0;
 }

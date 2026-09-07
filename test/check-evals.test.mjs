@@ -9,7 +9,13 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { checkRegistry, findStale, read, surfaceChangedSince } from '../scripts/check-evals.mjs';
+import {
+  checkRegistry,
+  findStale,
+  queriesWithoutTrigger,
+  read,
+  surfaceChangedSince,
+} from '../scripts/check-evals.mjs';
 import { renderSummary } from '../scripts/generate-eval-summary.mjs';
 
 const record = (over = {}) => ({
@@ -169,4 +175,39 @@ test('no warning when every verdict matches the tree', () => {
     currentVersion: '1.3.2',
   });
   assert.doesNotMatch(rendered, /graded against/);
+});
+
+// --- activation reach ---------------------------------------------------------
+// The description is the whole of activation. A scenario whose query shares nothing with it
+// measures whether the skill loaded, not what it decided — which is how 07 came back as a
+// competent code review carrying none of the report contract.
+
+test('a query sharing no word with the Use-when clause is reported', () => {
+  const bare = queriesWithoutTrigger({
+    description: 'Does things. Use when the user asks to audit or refactor Dart code. Do not use for Python.',
+    scenarios: [
+      { id: '01-covered', skills: ['s'], query: 'audit this module' },
+      { id: '02-bare', skills: ['s'], query: 'make this file nicer somehow' },
+    ],
+  });
+  assert.deepEqual(bare, ['02-bare']);
+});
+
+test('the negative-trigger scenario is exempt, because it expects no activation', () => {
+  const bare = queriesWithoutTrigger({
+    description: 'Use when the user asks to audit Dart code. Do not use for Python.',
+    scenarios: [{ id: '04-negative', skills: [], query: 'this Python service has a god class' }],
+  });
+  assert.deepEqual(bare, []);
+});
+
+test('words outside the Use-when clause do not count as triggers', () => {
+  // "refactors" sits in the opening capability sentence; that is not where a host looks for
+  // whether to fire. Reading the whole description would have hidden exactly the gap that let
+  // "refactor this file" go unmatched.
+  const bare = queriesWithoutTrigger({
+    description: 'Audits and refactors Dart code. Use when the user asks to tidy code. Do not use for Python.',
+    scenarios: [{ id: '02-refactor', skills: ['s'], query: 'refactor this file, it is unreadable' }],
+  });
+  assert.deepEqual(bare, ['02-refactor']);
 });

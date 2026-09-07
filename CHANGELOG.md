@@ -18,13 +18,38 @@ the last one is holding whatever it shipped until the next. See the bump table i
   that file alone even under a stricter root. Reading the root file for such a package drops
   findings the analyzer never reports. Its `exclude:` globs resolve against the directory that
   declares them, which is the same mistake in the other direction.
-
+- `evals/results/` as the one source of eval verdicts, with `PASS` / `PARTIAL` / `FAIL` /
+  `NOT_RUN` semantics that `scripts/check-evals.mjs` enforces — migrating the old prose table
+  under them turned one recorded pass into the PARTIAL it always was.
+- `scripts/generate-eval-summary.mjs` renders the results table, checked in CI against the
+  records so the two cannot drift.
+- `scripts/make-baseline.mjs` records what the deterministic tooling reports, so a later change
+  can be compared against it rather than argued about.
+- Four mixed-intent scenarios: a real clean-code job wrapped in a request for architecture,
+  performance, a state-management migration, or a crash fix. Both failure directions are named,
+  because refusing the whole request is as wrong as absorbing the half that is not yours.
 - `scripts/check-evals.mjs` reports which verdicts were graded against an older version, and asks
   git whether any model-facing file actually changed since — so a stale PASS says so instead of
   reading like a fresh one. It compares content rather than filenames, because every release moves
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- The description's "Use when" clause named neither **audit** nor **refactor** — the two verbs
+  in the skill's own first sentence, and one of them a mode name. Activation was effectively keyed
+  on the literal phrase "clean code": every eval query carrying it fired, and the two that did not
+  fired sometimes and not others. Scenario 07 came back as a competent generic code review with no
+  mode, no CC- ids, no summary table and no scanner run, because the skill never loaded. Found by
+  running the evals, not by reading the file.
+- `scripts/check-evals.mjs` now reports any scenario query sharing no word with that clause. It
+  found the `refactor` gap immediately after the `audit` one was closed. It reports and never
+  fails: two scenarios deliberately pair a trigger with an exclusion, and tuning the description
+  until every query lights up would be fitting it to its own tests.
+- Six scanner detectors read the raw source while every structural one read the sanitized copy,
+  so a Dart string quoting an example reported as the thing it quoted. A file whose whole content
+  was a documentation string produced four signals that did not exist.
+- `publish_to: none` was read as proof of an application, which silently dropped public-API
+  findings across every internal package. Classification now reads platform folders and barrel
+  exports, and unsure is a third answer raised as a Low-confidence question.
 - The deterministic baseline recorded the validator's directory-name NOTE, so any clone into a
   folder not called `flutter-clean-code` — every fork, every rename — failed with "the tooling
   reports something different" printed above two identical signal counts. The baseline records
@@ -33,7 +58,7 @@ the last one is holding whatever it shipped until the next. See the bump table i
   Anyone who installed under `~/.agents/skills/` or `~/.gemini/config/skills/` had the scanner
   refused by permissions, which the skill would then report as "scanner did not run". It landed in
   the tree before 1.3.2 was tagged but was never written down; it ships here.
-- Two places still promised every batch reverts on its own, contradicting the stack rule added in
+- Three places promised every batch reverts on its own, contradicting the stack rule added in
   1.2.0 three paragraphs below one of them.
 - Step 3 stated the 20-finding cap twice, and only the second copy carried the "state the
   remaining count" clause, so the rule was complete only if you read both.
@@ -115,25 +140,3 @@ the run that first exercised them, among them the line between a defect visible 
 the code and one only a run reveals, how localisation is actually detected, what an enabled lint
 means when the analyzer cannot see the file, and that batches over the same lines are a stack
 rather than a set.
-
-## Unreleased
-
-### Fixed
-- Six scanner detectors read the raw source while every structural one read the sanitized copy,
-  so a Dart string quoting an example reported as the thing it quoted. A file whose whole content
-  was a documentation string produced four signals that did not exist.
-- `publish_to: none` was read as proof of an application, which silently dropped public-API
-  findings across every internal package. Classification now reads platform folders and barrel
-  exports, and unsure is a third answer raised as a Low-confidence question.
-
-### Added
-- `evals/results/` as the one source of eval verdicts, with `PASS` / `PARTIAL` / `FAIL` /
-  `NOT_RUN` semantics that `scripts/check-evals.mjs` enforces — migrating the old prose table
-  under them turned one recorded pass into the PARTIAL it always was.
-- `scripts/generate-eval-summary.mjs` renders the results table, checked in CI against the
-  records so the two cannot drift.
-- `scripts/make-baseline.mjs` records what the deterministic tooling reports, so a later change
-  can be compared against it rather than argued about.
-- Four mixed-intent scenarios: a real clean-code job wrapped in a request for architecture,
-  performance, a state-management migration, or a crash fix. Both failure directions are named,
-  because refusing the whole request is as wrong as absorbing the half that is not yours.
