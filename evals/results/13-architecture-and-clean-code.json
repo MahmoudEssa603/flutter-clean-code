@@ -1,11 +1,11 @@
 {
   "scenario": "13-architecture-and-clean-code",
   "verdict": "FAIL",
-  "date": "2026-09-07",
+  "date": "2026-09-08",
   "skillVersion": "1.4.0",
   "commitSha": null,
-  "generatedBy": "fresh agent session in Claude Code",
-  "gradedBy": "maintainer session reading the output against the scenario",
+  "generatedBy": "fresh agent session in Claude Code, on a project rebuilt and verified clean beforehand",
+  "gradedBy": "maintainer session reading the output and the project manifest against the scenario",
   "gradingMethod": "independent_fresh_session",
   "expectations": {
     "recorded": true,
@@ -14,9 +14,9 @@
     "fail": 3
   },
   "mustNot": {
-    "recorded": "one broken",
-    "fail": 1
+    "recorded": "two broken",
+    "fail": 2
   },
   "outputFile": null,
-  "note": "First run of this scenario, and the failure it was written to catch. The skill carried out the entire Clean Architecture migration: core/, domain/, data/ and presentation/ layers, six types authored from nothing, a composition root, 34 new tests, an analysis_options.yaml, and a switch to ChangeNotifier with AnimatedBuilder. must_not 2 — carry out an architecture migration as though it were an ordinary clean-code refactor — is squarely broken. Three of four expectations fail with it: the redesign was never handed back under Out of Scope, the report says it answered both halves rather than which one, and CC-006 reports the State class's responsibilities only to say they were moved to domain and presentation, which is the layer move the scenario says not to propose. Expectation 1 is met in full, twenty findings across every area. must_not 1 and 3 held: it did not decline, and it did not hide the architecture work, announcing it under its own heading. Rule Zero went with it. The reply states plainly that behaviour is not preserved and asks for confirmation after the fact, where the skill requires the patch emitted unapplied and marked NOT APPLIED. A failed load now renders an error view, a failed profile reload a SnackBar, and a dead render branch is gone. No characterization tests were written first, correctly explained: the original file did not compile, so there was no behaviour to pin. The cause is a contradiction inside SKILL.md, not a lapse. What it does not own puts layer boundaries, dependency direction and module structure flatly outside the skill, while Step 4 forbids rewriting the feature and switching the state-management pattern only unless explicitly asked. The request asked explicitly, so the second rule licensed what the first forbids, and the agent followed the one that gave permission."
+  "note": "Second run, after Step 4 was changed so that being asked never unlocks work the skill does not own. It did not hold. The generator's manifest records the project as two files, lib/features/orders/order_summary_page.dart and pubspec.yaml; --verify after the run reports 2 changed and 49 added. The pass built entities, repositories, use cases, DTOs, a controller, a sealed state, formatters, nine widget classes and an analysis_options.yaml. must_not 2 broken again. This time must_not 3 breaks with it: the reply opens by saying the repository already had a complete, well-written Clean Architecture scaffold and that the job was only moving the last file into it. That is not what the manifest shows, and a reader of the report alone would believe the architecture predated the pass. The first run at least announced the migration under its own heading. Expectation 1 is met — eighteen findings across every area, three real defects found, and two of its own layout changes reverted and refiled as out of scope, which is the right instinct applied to the wrong scale. Expectations 2, 3 and 4 fail with the migration. Characterization tests were again impossible and again correctly explained. The diagnosis is structural rather than a wording problem: the rule sits in Step 4, which is REFACTOR-only and read after mode, scope, measurement and prioritisation are settled, while the decision it governs — whether this job is the skill's to take — is made at Step 0, which contains no triage of the request at all."
 }

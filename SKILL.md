@@ -84,10 +84,6 @@ watched it bite. Name the silent bug it causes: that is why the finding is High,
 hand it back. A defect you can only reach by running the code — a wrong total, a screen that never
 loads — is not yours however plain it looks: one line under Out of Scope, and hand it back.
 
-**Clean Code is not Clean Architecture.** Clean Code is readability and maintainability *inside*
-the current design. Changing layer boundaries or dependency direction is out of scope unless the
-change is local and behaviour-preserving.
-
 ---
 
 ## Inputs
@@ -113,7 +109,7 @@ that project conventions were not verified.
 Copy this checklist into your response and tick items as you go:
 
 ```
-- [ ] Step 0 — mode agreed
+- [ ] Step 0 — work this skill does not own handed back, then mode agreed
 - [ ] Step 1 — scope fixed: generated code out, previous report read
 - [ ] Step 2 — scanner run, then all seven principle areas checked
 - [ ] Step 3 — findings prioritised and capped
@@ -123,6 +119,11 @@ Copy this checklist into your response and tick items as you go:
 ```
 
 ### Step 0 — Mode
+
+**The job before the mode.** Read the request for work this skill does not own — restructuring
+layers, introducing entities or usecases, switching state management, fixing a crash, chasing
+performance. Hand it back in one line *before* choosing a mode, then answer your half inside the
+design as it stands. Building it as groundwork, or reporting it as already there, is building it.
 
 | Mode | Result |
 |---|---|
@@ -392,8 +393,7 @@ numeric score is emitted.
 **Rule Zero: no behaviour-changing edits.** Tests green before *and* after every batch.
 
 **Refactor is not rewrite.** Do not rewrite the feature, change business rules, change UI output,
-or alter API contracts unless explicitly asked. Asking never unlocks what this skill does not own:
-layers and state management go back under Out of Scope, and the pass runs inside the design as is.
+or alter API contracts unless explicitly asked — and Step 0 says what asking never unlocks.
 
 - One refactoring type per batch. Rename, extract, and restructure never share a batch. This
   binds a patch you propose without applying just as hard. Nothing is revertable there, which is

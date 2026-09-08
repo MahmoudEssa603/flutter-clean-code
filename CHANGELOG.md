@@ -43,13 +43,16 @@ the last one is holding whatever it shipped until the next. See the bump table i
 - The generator empties a scenario directory instead of deleting it. On Windows a directory
   cannot be removed while any process holds it as a working directory, and a terminal parked in
   the folder after a run is the normal case — rebuilding failed with EPERM until it was.
-- Step 4 forbade rewriting a feature and switching the state-management pattern "unless explicitly
-  asked", while "What it does not own" put layer boundaries, dependency direction and module
-  structure flatly outside the skill. A request to restructure to Clean Architecture asks
-  explicitly, so the second rule licensed what the first forbids — and scenario 13 came back with
-  the migration carried out: four new layers, six authored types, a composition root, a state
-  library swapped in, and Rule Zero abandoned with behaviour changes applied rather than proposed.
-  Asking now unlocks nothing this skill does not own; the pass runs inside the design as it stands.
+- Work the skill does not own is now triaged at Step 0, before a mode is chosen, and the workflow
+  checklist says so where the agent copies it. Three rules had disagreed: "What it does not own"
+  put layer boundaries and module structure flatly outside the skill, Step 4 forbade rewriting a
+  feature "unless explicitly asked", and the Clean Architecture paragraph said layer changes were
+  out of scope "unless the change is local and behaviour-preserving". A request to restructure
+  asks explicitly, so two of the three licensed what the first forbids. Scenario 13 carried out
+  the whole migration twice — the first time announcing it, the second reporting the scaffold it
+  had just built as having been there all along. Moving the rule was the fix: it had sat in Step 4,
+  which is REFACTOR-only and read after mode, scope, measurement and prioritisation are settled,
+  while the decision it governs is made at Step 0, which had no triage of the request at all.
 - The description's "Use when" clause named neither **audit** nor **refactor** — the two verbs
   in the skill's own first sentence, and one of them a mode name. Activation was effectively keyed
   on the literal phrase "clean code": every eval query carrying it fired, and the two that did not
