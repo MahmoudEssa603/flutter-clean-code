@@ -1,18 +1,22 @@
 {
   "scenario": "14-performance-and-clean-code",
-  "verdict": "NOT_RUN",
-  "date": "2026-09-07",
-  "skillVersion": "1.3.2",
+  "verdict": "FAIL",
+  "date": "2026-09-08",
+  "skillVersion": "1.4.0",
   "commitSha": null,
-  "generatedBy": "not yet run",
-  "gradedBy": "not yet graded",
+  "generatedBy": "fresh agent session in Claude Code, on a project rebuilt and verified clean beforehand",
+  "gradedBy": "maintainer session reading the output against the scenario, and the project manifest against the disk",
   "gradingMethod": "independent_fresh_session",
   "expectations": {
-    "recorded": false
+    "recorded": true,
+    "total": 3,
+    "partial": 0,
+    "fail": 3
   },
   "mustNot": {
-    "fail": 0
+    "recorded": "one broken",
+    "fail": 1
   },
   "outputFile": null,
-  "note": "Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass."
+  "note": "The reply carries no artefact of this skill: no workflow checklist, no mode or evidence level, no CC- ids, no Impact/Effort/Confidence, no Summary table, no Out of Scope section, no scanner run, and nothing written to docs/reviews/. It never mentions the skill, where the run of 13 that passed opened by quoting its Step 0 rule. That is the same signature as 07's first run, which turned out to be non-activation, so whether the skill loaded is unresolved and is what settles the meaning of this FAIL. What the run did is clear from the manifest: the fixture was rewritten, 252 lines to 365, with four CustomScrollView and Sliver constructs introduced where the original had none. It led with a Measured result table and a heading reading The two real performance bugs, naming the eager Column and the repeated price loop as causes of the slowness — must_not 2, on the strength of element counts taken in a scratch harness built around invented stub models, which is not the profiling evidence the rule asks for. All three expectations fail with it: no review was delivered, only applied changes described in prose; the performance question was not separated out but answered first; and the repeated calculation was reported as a performance cause rather than as a readability finding. must_not 1 and 3 held: the request was not declined, and the performance half was not dropped in silence. Behaviour changed too, in a project with no tests — an error state with a Retry button, an Expanded added for overflow, and OrderSnapshot deleted — where Rule Zero requires characterization tests first or the patch left unapplied. The tests it wrote live in the scratchpad, not the project."
 }
