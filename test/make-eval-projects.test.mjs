@@ -5,7 +5,15 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -146,9 +154,28 @@ test('a project built before manifests is reported, not assumed clean', () => {
     const target = join(dir, 'out');
     const only = '13-architecture-and-clean-code';
     assert.equal(main([target, '--only', only, '--quiet']), 0);
-    rmSync(join(target, only, '.eval-manifest.json'));
+    rmSync(join(target, '.eval-manifests', `${only}.json`));
 
     assert.equal(projectDrift(join(target, only)).known, false);
     assert.equal(main([target, '--only', only, '--verify', '--quiet']), 1);
+  });
+});
+
+test('no file inside a scenario project says it is an evaluation', () => {
+  // A manifest named for the scenario, sitting in the project under review, tells the session it
+  // is being watched — and one run cited that file's own hash as proof it had changed nothing.
+  // The guard has to live beside the projects, not inside one.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '14-performance-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const inside = readdirSync(join(target, only), { recursive: true, withFileTypes: true })
+      .filter((e) => e.isFile())
+      .map((e) => e.name);
+    for (const name of inside) {
+      assert.doesNotMatch(name, /manifest|eval/i, `${name} would tell the run it is an evaluation`);
+    }
+    assert.ok(existsSync(join(target, '.eval-manifests', `${only}.json`)));
   });
 });

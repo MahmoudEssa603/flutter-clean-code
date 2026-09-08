@@ -1,6 +1,6 @@
 {
   "scenario": "14-performance-and-clean-code",
-  "verdict": "FAIL",
+  "verdict": "PARTIAL",
   "date": "2026-09-08",
   "skillVersion": "1.4.0",
   "commitSha": null,
@@ -10,13 +10,13 @@
   "expectations": {
     "recorded": true,
     "total": 3,
-    "partial": 0,
-    "fail": 3
+    "partial": 1,
+    "fail": 0
   },
   "mustNot": {
-    "recorded": "one broken",
-    "fail": 1
+    "recorded": "all held",
+    "fail": 0
   },
   "outputFile": null,
-  "note": "The reply carries no artefact of this skill: no workflow checklist, no mode or evidence level, no CC- ids, no Impact/Effort/Confidence, no Summary table, no Out of Scope section, no scanner run, and nothing written to docs/reviews/. It never mentions the skill, where the run of 13 that passed opened by quoting its Step 0 rule. That is the same signature as 07's first run, which turned out to be non-activation, so whether the skill loaded is unresolved and is what settles the meaning of this FAIL. What the run did is clear from the manifest: the fixture was rewritten, 252 lines to 365, with four CustomScrollView and Sliver constructs introduced where the original had none. It led with a Measured result table and a heading reading The two real performance bugs, naming the eager Column and the repeated price loop as causes of the slowness — must_not 2, on the strength of element counts taken in a scratch harness built around invented stub models, which is not the profiling evidence the rule asks for. All three expectations fail with it: no review was delivered, only applied changes described in prose; the performance question was not separated out but answered first; and the repeated calculation was reported as a performance cause rather than as a readability finding. must_not 1 and 3 held: the request was not declined, and the performance half was not dropped in silence. Behaviour changed too, in a project with no tests — an error state with a Retry button, an Expanded added for overflow, and OrderSnapshot deleted — where Rule Zero requires characterization tests first or the patch left unapplied. The tests it wrote live in the scratchpad, not the project."
+  "note": "Re-run after the first attempt rewrote the fixture. This one leaves it byte-identical at 252 lines, reports inline because the scope is one file, and every batch is NOT APPLIED with no tests and an unresolvable project given as the reason. Twenty findings across all seven areas, so the request was not bought off by refusing it. The performance half is handed back twice: once under Out of Scope as needing profiling evidence this pass does not collect, and again in a section that opens by saying it needs a profile that was not run, that the ranking is static reasoning rather than measurement, and that DevTools should confirm it before the order is trusted. Expectation 3 is partial. The repeated traversal is reported as a readability finding at CC-004, which is the half that was asked for, but the pass does not decline to call it the cause of the slowness — it ranks five candidates and says of the first that it is the one it would bet on, and of the second that it is most likely what the user actually felt. must_not 2 is held rather than broken, but narrowly, and only because the hedging is explicit, repeated and placed before the list rather than after it. A caveat on this result: the reply's verification cites the hash in .eval-manifest.json, the drift-guard file, which sits inside the project and names the scenario. The run therefore knew it was an evaluation, which this scenario never intended to tell it. Manifests move outside the project directories so later runs are not told."
 }

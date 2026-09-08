@@ -22,7 +22,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -248,7 +248,11 @@ function copyFixture(target, fixture, relative) {
   cpSync(source, path);
 }
 
-const MANIFEST = '.eval-manifest.json';
+// Manifests live beside the scenario projects, never inside one. A file named for the scenario
+// sitting in the project under review tells the session it is being evaluated, and an agent that
+// knows it is being watched is not the agent the scenario meant to measure. One run cited this
+// file's hash as its own proof that it had changed nothing.
+const MANIFEST_DIR = '.eval-manifests';
 
 // Everything a run legitimately leaves behind. A pass that reaches the SDK writes these, and
 // none of them changes what the next run reads.
@@ -259,7 +263,7 @@ function projectFiles(dir) {
   const walk = (sub) => {
     for (const entry of readdirSync(join(dir, sub), { withFileTypes: true })) {
       const rel = sub ? `${sub}/${entry.name}` : entry.name;
-      if (rel === MANIFEST || RUN_ARTEFACTS.test(rel)) continue;
+      if (RUN_ARTEFACTS.test(rel)) continue;
       if (entry.isDirectory()) walk(rel);
       else out.push(rel);
     }
@@ -270,9 +274,13 @@ function projectFiles(dir) {
 
 const digest = (dir, rel) => createHash('sha256').update(readFileSync(join(dir, rel))).digest('hex').slice(0, 16);
 
+const manifestPath = (dir) => join(dirname(dir), MANIFEST_DIR, `${basename(dir)}.json`);
+
 function writeManifest(dir, scenarioId) {
   const files = Object.fromEntries(projectFiles(dir).map((rel) => [rel, digest(dir, rel)]));
-  writeFileSync(join(dir, MANIFEST), `${JSON.stringify({ scenario: scenarioId, files }, null, 2)}\n`);
+  const path = manifestPath(dir);
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, `${JSON.stringify({ scenario: scenarioId, files }, null, 2)}\n`);
 }
 
 /**
@@ -283,7 +291,7 @@ function writeManifest(dir, scenarioId) {
  * correctly and uselessly, that the work was already done. Nothing about that reply looked wrong.
  */
 export function projectDrift(dir) {
-  const path = join(dir, MANIFEST);
+  const path = manifestPath(dir);
   if (!existsSync(path)) return { known: false };
 
   const { files } = JSON.parse(readFileSync(path, 'utf8'));
@@ -357,7 +365,9 @@ function main(argv) {
   // Rebuilding means deleting, so refuse a directory holding anything this script did not put
   // there. Pointing it at a real project should cost nothing.
   if (existsSync(target)) {
-    const strangers = readdirSync(target).filter((entry) => !KNOWN_IDS.has(entry));
+    const strangers = readdirSync(target).filter(
+      (entry) => !KNOWN_IDS.has(entry) && entry !== MANIFEST_DIR,
+    );
     if (strangers.length > 0) {
       console.error(
         `${target} holds entries this script does not manage: ${strangers.join(', ')}.\n` +

@@ -34,6 +34,10 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- Scenario manifests live beside the projects, in `.eval-manifests/`, not inside them. A file
+  named for the scenario sitting in the project under review tells the session it is being
+  evaluated, and the run of 14 cited that file's own hash as its proof that it had changed
+  nothing. An agent that knows it is being watched is not the agent the scenario meant to measure.
 - `scripts/make-eval-projects.mjs --verify` reports which laid-out scenarios a run has already
   rewritten, against a manifest the generator now writes. Scenario 13 was answered once by
   restructuring the fixture into four layers; the next run read those layers and reported,
