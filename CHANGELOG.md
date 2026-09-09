@@ -34,6 +34,16 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- Activation and conduct are measured separately. Every scenario used to test both: a run that
+  never loaded the skill still produced a reply, and that reply was then graded against rules it
+  had never seen — three times, and each time the description was retuned as though a rule had
+  failed. Fifteen scenarios now name the skill with `/flutter-clean-code` and measure what it
+  decides; `04-negative-trigger` and the new `17-activation-on-a-mixed-request` do not, and
+  measure whether the description reaches it at all. A miss there costs one row instead of
+  fifteen, and is read as a rate across runs rather than a verdict on a single one. Scenarios
+  declare which they are in an `invocation` field, and `check-evals.mjs` prints the split.
+  Activation is a semantic match against the description; no wording makes it certain, and the
+  README now says so where a reader decides whether to name the skill.
 - The description told the host not to load the skill for the very requests the mixed-intent
   scenarios were written to test. Its negative clause excluded "fixing bugs or crashes" and
   "changing architecture layers or state-management patterns" outright, and three of those four

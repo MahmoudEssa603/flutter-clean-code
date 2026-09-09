@@ -233,6 +233,27 @@ function reportStale(results, currentVersion) {
   }
 }
 
+/**
+ * Scenarios that measure the rules, and the ones that measure whether the rules are reached.
+ *
+ * Every scenario used to do both. A scenario is run by pasting its query and reading the answer,
+ * so a run that never loaded the skill produced a reply graded against rules it had never seen —
+ * three times, and each time the description was retuned as though a rule had failed. Activation
+ * is a semantic match against the description and no wording makes it certain, so it is measured
+ * on its own rows. Everywhere else the skill is named, and the result is about conduct.
+ */
+function reportInvocationSplit() {
+  const scenarios = readdirSync(SCENARIOS_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(join(SCENARIOS_DIR, f), 'utf8')));
+
+  const implicit = scenarios.filter((s) => s.invocation === 'implicit').map((s) => s.id);
+  console.log('');
+  console.log(`  ${scenarios.length - implicit.length} scenarios name the skill and measure conduct.`);
+  console.log(`  ${implicit.length} do not, and measure activation: ${implicit.join(', ')}`);
+  console.log('  A miss on those is one row, not a verdict on the other rules.');
+}
+
 function reportUntriggerable() {
   const scenarios = readdirSync(SCENARIOS_DIR)
     .filter((f) => f.endsWith('.json'))
@@ -267,6 +288,7 @@ function main(argv) {
     console.log(`evals/results/: ${results.length} of ${scenarios.length} scenarios — ${tally}`);
     reportStale(results, currentSkillVersion());
     reportUntriggerable();
+    reportInvocationSplit();
   }
   return 0;
 }

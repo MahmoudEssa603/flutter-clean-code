@@ -1,0 +1,14 @@
+{
+  "scenario": "17-activation-on-a-mixed-request",
+  "verdict": "NOT_RUN",
+  "date": "2026-09-09",
+  "skillVersion": "1.4.0",
+  "commitSha": null,
+  "generatedBy": "not yet run",
+  "gradedBy": "not yet graded",
+  "gradingMethod": "independent_fresh_session",
+  "expectations": { "recorded": false },
+  "mustNot": { "recorded": "not yet observed", "fail": 0 },
+  "outputFile": null,
+  "note": "Written 2026-09-09 and not yet run. Split out of 15 so that scenario can name the skill and measure the rules, leaving one row to carry activation. Recorded rather than left blank, because a missing row reads like a pass."
+}

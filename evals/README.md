@@ -10,7 +10,7 @@ There is no built-in runner. Each scenario is run by hand, and the result is rec
 Build the projects once, somewhere outside this repository:
 
 ```bash
-node scripts/make-eval-projects.mjs <target-dir>          # all sixteen
+node scripts/make-eval-projects.mjs <target-dir>          # all seventeen
 node scripts/make-eval-projects.mjs <target-dir> --only 06-diff-mode
 ```
 
@@ -30,6 +30,12 @@ manage. Then:
    ```bash
    node scripts/make-eval-projects.mjs <target-dir> --verify
    ```
+
+   **Name the skill unless the scenario says not to.** Each scenario declares `invocation`.
+   `explicit` means paste the query with `/flutter-clean-code` — that scenario measures what the
+   skill decides, and the run must not also be a coin toss on whether it loaded. `implicit` means
+   paste the query alone: those scenarios measure activation, and are the only ones where a miss
+   is the result rather than a wasted run.
 2. Paste the scenario's `query`.
 3. Read the answer against `expected_behavior` and `must_not`, item by item.
 4. Record the outcome in the table below.
@@ -47,13 +53,30 @@ Rebuild rather than tidying by hand:
 node scripts/make-eval-projects.mjs <target-dir> --only 13-architecture-and-clean-code
 ```
 
-Run the ones a change touches, and all sixteen before a tag. See the pre-publication checklist in
+Run the ones a change touches, and all seventeen before a tag. See the pre-publication checklist in
 [AGENTS.md](../AGENTS.md).
 
 Step 1 is not a formality. Whoever wrote the rule under test cannot grade it from the session
 they wrote it in: the answer is already in their context, and so is the verdict they expect. A
 result recorded from such a session says nothing, and saying nothing while looking like a pass
 is worse than an empty row.
+
+## Two things are being measured, and they are not measured together
+
+Activation is a semantic match between the request and the `description`. No wording makes it
+certain, and it is not a rule this repository can fix — it is a property of the host's matcher.
+
+Every scenario used to test it by accident. A run that never loaded the skill still produced a
+reply, and that reply was then graded against rules it had never seen. It happened three times
+before the pattern was visible, and each time the description was retuned as though a rule had
+failed. Fifteen tests were being made unreliable by one variable that belonged in one test.
+
+So: fifteen scenarios name the skill and measure conduct. Two do not and measure activation —
+`04-negative-trigger`, which must not fire, and `17-activation-on-a-mixed-request`, which should.
+A miss on those two is one row. Read them as a rate across runs, and change the description only
+when a pattern shows, never after a single miss.
+
+The same split is the answer for anyone using the skill for real: name it when it matters.
 
 ## Scenarios
 
@@ -156,7 +179,7 @@ table used to hide, and `scripts/check-evals.mjs` now refuses it.
 
 <!-- generated: eval-summary -->
 
-**11 PASS** · **3 PARTIAL** · **1 FAIL** · **1 NOT_RUN** across 16 scenarios.
+**11 PASS** · **3 PARTIAL** · **1 FAIL** · **2 NOT_RUN** across 17 scenarios.
 
 > **11 of these verdicts were graded against 1.3.1, not 1.4.0.**
 > Run `node scripts/check-evals.mjs` to see whether anything the model reads has changed
@@ -184,6 +207,7 @@ not this table.
 | `14-performance-and-clean-code` | 2026-09-08 | `1.4.0` | **PARTIAL** | 2/3 expectations | Re-run after the first attempt rewrote the fixture. This one leaves it byte-identical at 252 lines, reports inline because the scope is one file, and every batch is NOT APPLIED with no tests and an unresolvable project given as the reason. Twenty findings across all seven areas, so the request was not bought off by refusing it. The performance half is handed back twice: once under Out of Scope as needing profiling evidence this pass does not collect, and again in a section that opens by saying it needs a profile that was not run, that the ranking is static reasoning rather than measurement, and that DevTools should confirm it before the order is trusted. Expectation 3 is partial. The repeated traversal is reported as a readability finding at CC-004, which is the half that was asked for, but the pass does not decline to call it the cause of the slowness — it ranks five candidates and says of the first that it is the one it would bet on, and of the second that it is most likely what the user actually felt. must_not 2 is held rather than broken, but narrowly, and only because the hedging is explicit, repeated and placed before the list rather than after it. A caveat on this result: the reply's verification cites the hash in .eval-manifest.json, the drift-guard file, which sits inside the project and names the scenario. The run therefore knew it was an evaluation, which this scenario never intended to tell it. Manifests move outside the project directories so later runs are not told. |
 | `15-state-migration-and-clean-code` | 2026-09-09 | `1.4.0` | **FAIL** | 0/3 expectations | The migration was carried out in full. The manifest reports 2 changed and 6 added: provider was removed from pubspec.yaml and flutter_riverpod put in its place, cart_screen.dart was rewritten as a ConsumerWidget, and cart_item.dart, cart_summary.dart, cart_providers.dart, an analysis_options.yaml and two test files were created. must_not 2 says do not begin a migration to another state-management library; this one finished. All three expectations fail with it: no clean-code review was delivered, the migration was not handed back, and the code was judged under Riverpod rather than under the Provider it actually used. must_not 1 held — the request was not declined. The reply carries no artefact of the skill: no checklist, no mode or evidence level, no CC- ids, no Summary table, no Out of Scope section, and no report file. The skill was never invoked — confirmed from the transcript, not inferred from the reply. So no rule of this skill was ignored; the description kept it out. Its negative clause reads: do not use for non-Dart code, for fixing bugs or crashes, for changing architecture layers or state-management patterns. Three of the four mixed-intent scenarios name exactly those — 13 architecture layers, 15 state management, 16 a crash — so the description excludes the requests these scenarios were written to test, while the scenarios expect the skill to load and hand that half back. That is a contradiction between the description and the eval set, and it explains the intermittent activation across the whole group rather than one run. |
 | `16-runtime-bug-and-clean-code` | 2026-09-07 | `1.3.2` | **NOT_RUN** | not enumerated | Written 2026-09-07 and not yet run. Recorded rather than left blank, because a missing row reads like a pass. |
+| `17-activation-on-a-mixed-request` | 2026-09-09 | `1.4.0` | **NOT_RUN** | not enumerated | Written 2026-09-09 and not yet run. Split out of 15 so that scenario can name the skill and measure the rules, leaving one row to carry activation. Recorded rather than left blank, because a missing row reads like a pass. |
 
 <!-- /generated: eval-summary -->
 

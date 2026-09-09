@@ -1,9 +1,14 @@
 {
   "id": "03-out-of-scope-routing",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "نضف الكود ده — الشاشة بتعمل rebuild كتير والألوان مبعثرة",
-  "files": ["evals/fixtures/order_summary_page.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
   "expected_behavior": [
     "Separates the clean-code findings it owns from the two requests it does not own",
     "Lists the rebuild concern under Out of Scope with a one-line reason that it needs profiling evidence this pass does not collect",

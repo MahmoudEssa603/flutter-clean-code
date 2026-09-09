@@ -3,6 +3,7 @@
   "skills": [
     "flutter-clean-code"
   ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "Fix this Flutter crash and clean the code.",
   "files": [

@@ -1,6 +1,9 @@
 {
   "id": "07-test-quality",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "audit the orders feature, tests included",
   "files": [

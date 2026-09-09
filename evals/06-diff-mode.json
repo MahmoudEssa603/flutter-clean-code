@@ -1,9 +1,14 @@
 {
   "id": "06-diff-mode",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "DIFF",
   "query": "راجع التغييرات اللي على الفرع ده قبل ما أعمل PR",
-  "files": ["evals/fixtures/order_summary_page.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
   "expected_behavior": [
     "Selects DIFF mode without being told the mode name, because the request is about the changes rather than the whole file",
     "Gets the file list with git diff --name-only <base>...HEAD -- '*.dart' and audits only those files",

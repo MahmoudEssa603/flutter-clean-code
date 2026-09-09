@@ -1,9 +1,14 @@
 {
   "id": "01-audit-fat-widget",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "راجع الملف ده حسب الكلين كود",
-  "files": ["evals/fixtures/order_summary_page.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
   "expected_behavior": [
     "States the mode as AUDIT and the evidence level as Partial, because no tests were provided",
     "Modifies no file on disk and answers inline, because the scope is a single file",

@@ -1,9 +1,14 @@
 {
   "id": "02-refactor-without-tests",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "REFACTOR",
   "query": "refactor this file, it is unreadable",
-  "files": ["evals/fixtures/order_summary_page.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
   "expected_behavior": [
     "Detects that the touched code has no tests and says so before touching anything",
     "Chooses exactly one of the two allowed paths and names the choice: write characterization tests first, or emit the patch marked 'NOT APPLIED — requires approval'",

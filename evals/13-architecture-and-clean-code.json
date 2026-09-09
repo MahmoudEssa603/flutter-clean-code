@@ -3,6 +3,7 @@
   "skills": [
     "flutter-clean-code"
   ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "Refactor this Flutter app to Clean Architecture and clean up the code.",
   "files": [

@@ -1,9 +1,14 @@
 {
   "id": "09-bug-line",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "review this file for clean code",
-  "files": ["evals/fixtures/customer_profile.dart"],
+  "files": [
+    "evals/fixtures/customer_profile.dart"
+  ],
   "expected_behavior": [
     "copyWith declaring nickname and never passing it is reported as a High-impact finding, because the defect is visible in the shape of the code and the bug it causes is silent",
     "The finding states the cost to the reader and names the silent bug as the reason for the impact, rather than withholding the finding because a bug is involved",

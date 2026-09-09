@@ -1,9 +1,14 @@
 {
   "id": "11-unresolved-dependencies",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "audit this module for clean code",
-  "files": ["evals/fixtures/order_summary_page.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart"
+  ],
   "expected_behavior": [
     "With the SDK on PATH but pub get failing, the failure is reported by name and the pass continues report-only on static reading plus the scanner",
     "A wall of undefined_class and undefined_method diagnostics cascading from packages that were never resolved is recognised as describing the broken resolution, not the code, and is not mined for findings",

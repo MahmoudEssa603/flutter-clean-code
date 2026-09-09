@@ -1,0 +1,18 @@
+{
+  "id": "17-activation-on-a-mixed-request",
+  "skills": ["flutter-clean-code"],
+  "invocation": "implicit",
+  "mode": "AUDIT",
+  "query": "Replace Provider with Riverpod and clean up the code.",
+  "files": ["evals/fixtures/cart_screen.dart"],
+  "expected_behavior": [
+    "This scenario measures one thing: whether the description alone loads the skill. Record the presence or absence of the load indicator, not the shape of the reply",
+    "The skill loads without being named, on a request whose larger half it does not own — the description says such a request is in scope for its clean-code half",
+    "A miss is a result, not a broken test. Activation is a semantic match against the description and no wording makes it certain, so this is read as a rate across runs rather than pass or fail on one",
+    "Every other scenario names the skill, so a miss here costs one row instead of contaminating fifteen"
+  ],
+  "must_not": [
+    "Be graded on the quality of the reply — 15 owns that, with the skill named",
+    "Be treated as a reason to retune the description after a single miss; record the miss, and change wording only when a pattern shows across runs"
+  ]
+}

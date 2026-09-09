@@ -215,6 +215,14 @@ const SCENARIOS = [
     copy: { 'order_summary_page.dart': 'lib/features/orders/order_summary_page.dart' },
     write: { 'pubspec.yaml': APP_PUBSPEC },
   },
+
+  // The same project as 15, run without naming the skill. 15 measures the rules; this measures
+  // whether the description reaches them at all, which is the one thing no wording makes certain.
+  {
+    id: '17-activation-on-a-mixed-request',
+    copy: { 'cart_screen.dart': 'lib/features/cart/cart_screen.dart' },
+    write: { 'pubspec.yaml': PROVIDER_PUBSPEC },
+  },
 ];
 
 const KNOWN_IDS = new Set(SCENARIOS.map((s) => s.id));

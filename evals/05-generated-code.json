@@ -1,9 +1,15 @@
 {
   "id": "05-generated-code",
-  "skills": ["flutter-clean-code"],
+  "skills": [
+    "flutter-clean-code"
+  ],
+  "invocation": "explicit",
   "mode": "AUDIT",
   "query": "audit lib/features/orders for clean code",
-  "files": ["evals/fixtures/order_summary_page.dart", "evals/fixtures/order.freezed.dart"],
+  "files": [
+    "evals/fixtures/order_summary_page.dart",
+    "evals/fixtures/order.freezed.dart"
+  ],
   "expected_behavior": [
     "Excludes order.freezed.dart from the audit and says so once, because it is generated and no finding about it can be acted on",
     "Reports findings only against the hand-written file",

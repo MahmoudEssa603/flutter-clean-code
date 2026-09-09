@@ -43,8 +43,13 @@ installed to more than one path, every copy needs its own pull.
 ## Use
 
 Ask in the words you would use anyway — *clean this up*, *split this function*, *review the
-changes on this branch*. The skill is reached by its description, so naming it is optional;
-`/flutter-clean-code` invokes it directly when you want to be certain.
+changes on this branch*. The skill is reached by its `description`, which the agent matches
+against your request.
+
+**That match is a judgment, not a switch.** A request whose larger half is a crash fix or a
+migration can read as somebody else's job and load nothing at all, and the failure is silent —
+you get an answer, just not this one. When it matters, type `/flutter-clean-code` and the
+question does not arise. Its own evaluations are run that way for exactly this reason.
 
 Three things decide how much the answer is worth:
 
@@ -91,7 +96,7 @@ Everything here is Node built-ins and needs no install step.
 | `node scripts/scan-dart.mjs <path>` | Measures a Dart tree. `--json` for exact numbers, `--top N` to list more files |
 | `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
 | `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
-| `node scripts/make-eval-projects.mjs <dir>` | Lays the sixteen evaluation scenarios out as runnable projects; `--verify` reports which ones a run has already rewritten |
+| `node scripts/make-eval-projects.mjs <dir>` | Lays the seventeen evaluation scenarios out as runnable projects; `--verify` reports which ones a run has already rewritten |
 | `node scripts/check-evals.mjs` | Checks the eval registry — no PASS sitting over a partial expectation |
 | `node scripts/generate-eval-summary.mjs` | Renders the results table from `evals/results/`; `--check` in CI |
 | `node scripts/make-baseline.mjs` | Records what the deterministic tooling reports; `--check` compares |
@@ -193,10 +198,9 @@ Antigravity's global path is `~/.gemini/config/skills/` — its own bundled guid
 `~/.gemini/antigravity/` folder some write-ups name is the product's internal state, not a place
 to install anything.
 
-Claude Code is the only tool the scenarios have been run on: twelve of the sixteen, eleven PASS
-and one PARTIAL, every one of them graded against 1.3.1 and recorded in `evals/results/` with the
-version it was graded against. `node scripts/check-evals.mjs` says which of those the skill has
-moved underneath since. A single run on Antigravity
+Claude Code is the only tool the scenarios have been run on, and `evals/README.md` carries the
+current tally with the version each verdict was graded against. `node scripts/check-evals.mjs`
+says which of them the skill has moved underneath since. A single run on Antigravity
 against a real module produced a conforming report — right filename and location, numbered
 findings with all three judgements, generated files skipped, a blocked verification declared
 rather than mined — and reproduced nine of the fifteen findings Claude Code had made on the same
@@ -247,7 +251,7 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── example-report.md      a full worked audit, for calibration
 │   ├── test-quality.md        judging test code, the larger half of most projects
 │   └── monorepo-scope.md      scoping a repository that holds several packages
-├── evals/                     sixteen scenarios, fixtures, results and baselines
+├── evals/                     seventeen scenarios, fixtures, results and baselines
 ├── test/                      unit and integration suites, node --test
 ├── scripts/
 │   ├── validate-skill.mjs     checks SKILL.md against the contract in AGENTS.md
