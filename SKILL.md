@@ -4,14 +4,15 @@ description: >-
   Audits and refactors Dart/Flutter code against Clean Code principles: meaningful naming, small
   single-responsibility functions, SOLID, DRY, honest comments, disciplined error handling, and
   Flutter widget hygiene. Produces a prioritised findings report, plus behaviour-preserving
-  refactoring patches when tests make them safe. Use when the user asks to audit, review,
-  refactor, clean up, tidy, split, rename or restructure Dart/Flutter code or its tests for
-  readability, whether or not the request names a rule, to judge it against clean code or SOLID
-  rules, or to review only the Dart files changed on a branch or in a pull request,
+  patches when tests make them safe. Use when the user asks to audit, review, refactor, clean up,
+  tidy, split, rename or restructure Dart/Flutter code or its tests for
+  readability, to judge it against clean code or SOLID rules, or to review only the Dart files
+  changed on a branch or in a pull request,
   including Arabic phrasings such as "نضف الكود", "الكود مش مقروء", "قسم الدالة دي",
-  "راجع الفيتشر ده", "راجع الكود ضد SOLID", "راجع التغييرات دي", "ودجت كبيرة". Do not use for non-Dart code, for fixing bugs or crashes,
-  for changing architecture layers or state-management patterns, or for lint and formatting rules
-  that analysis_options.yaml already enforces.
+  "راجع الفيتشر ده", "راجع الكود ضد SOLID", "راجع التغييرات دي", "ودجت كبيرة". Do not use for non-Dart code,
+  or for lint and formatting rules analysis_options.yaml already enforces. A request that also
+  asks to fix a crash, migrate state management or restructure layers is in scope for its
+  clean-code half; the rest is handed back under Out of Scope, never done.
 license: MIT
 compatibility: >-
   The Dart or Flutter SDK on PATH is required for the verification commands (flutter analyze,

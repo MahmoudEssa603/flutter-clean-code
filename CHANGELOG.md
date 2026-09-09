@@ -34,6 +34,15 @@ the last one is holding whatever it shipped until the next. See the bump table i
   the version line and a warning that fires every time is a warning nobody reads.
 
 ### Fixed
+- The description told the host not to load the skill for the very requests the mixed-intent
+  scenarios were written to test. Its negative clause excluded "fixing bugs or crashes" and
+  "changing architecture layers or state-management patterns" outright, and three of those four
+  scenarios name exactly that — 13 architecture, 15 a Provider-to-Riverpod migration, 16 a crash.
+  Scenario 15 came back with the migration finished: provider swapped for flutter_riverpod in
+  pubspec.yaml, six files added, and no artefact of the skill in the reply. The clause now
+  excludes non-Dart code and lint rules, and says a request that also asks for one of those is in
+  scope for its clean-code half with the rest handed back — which is what the Out of Scope
+  machinery, the Step 0 triage and those four scenarios have all along assumed.
 - Scenario manifests live beside the projects, in `.eval-manifests/`, not inside them. A file
   named for the scenario sitting in the project under review tells the session it is being
   evaluated, and the run of 14 cited that file's own hash as its proof that it had changed
