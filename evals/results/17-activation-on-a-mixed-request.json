@@ -1,14 +1,22 @@
 {
   "scenario": "17-activation-on-a-mixed-request",
-  "verdict": "NOT_RUN",
+  "verdict": "PASS",
   "date": "2026-09-09",
   "skillVersion": "1.4.0",
   "commitSha": null,
-  "generatedBy": "not yet run",
-  "gradedBy": "not yet graded",
+  "generatedBy": "fresh agent session in Claude Code, skill deliberately not named, on a project rebuilt and verified clean beforehand",
+  "gradedBy": "maintainer session reading the load indicator in the transcript",
   "gradingMethod": "independent_fresh_session",
-  "expectations": { "recorded": false },
-  "mustNot": { "recorded": "not yet observed", "fail": 0 },
+  "expectations": {
+    "recorded": true,
+    "total": 4,
+    "partial": 0,
+    "fail": 0
+  },
+  "mustNot": {
+    "recorded": "all held",
+    "fail": 0
+  },
   "outputFile": null,
-  "note": "Written 2026-09-09 and not yet run. Split out of 15 so that scenario can name the skill and measure the rules, leaving one row to carry activation. Recorded rather than left blank, because a missing row reads like a pass."
+  "note": "The skill loaded without being named, on the query that failed to load it before the description was changed. Graded on the load indicator alone, as this scenario asks, and not on the reply — the reply was still being produced when the result was recorded, and 15 owns its quality. The transcript gives the reason it matched: \"This is a Dart/Flutter cleanup request, and there's a project skill that covers exactly this.\" It matched on the clean-code half rather than on the migration, which is what the new clause says happens — a request that also asks to migrate state management is in scope for its clean-code half. So the wording change is doing the thing it was written to do, by the route it was written to take. One run. This scenario is read as a rate, so a single fire is evidence the clause works, not proof it always will; a later miss is one row and no reason to retune anything."
 }
