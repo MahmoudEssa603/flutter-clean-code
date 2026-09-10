@@ -22,7 +22,7 @@ git clone https://github.com/MahmoudEssa603/flutter-clean-code.git   ~/.claude/s
 
 Project scope instead of personal: clone into `.agents/skills/flutter-clean-code` inside the
 repository. Pin to a release rather than tracking the branch by adding
-`--branch v1.3.1 --depth 1`.
+`--branch v1.5.0 --depth 1`.
 
 The directory must keep the name `flutter-clean-code`, with `SKILL.md` directly inside it — the
 directory name is the command you type.

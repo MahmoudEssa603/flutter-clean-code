@@ -2,7 +2,7 @@
   "scenario": "15-state-migration-and-clean-code",
   "verdict": "PASS",
   "date": "2026-09-09",
-  "skillVersion": "1.4.0",
+  "skillVersion": "1.5.0",
   "commitSha": null,
   "generatedBy": "fresh agent session in Claude Code with the skill named, on a project rebuilt and verified clean beforehand",
   "gradedBy": "maintainer session reading the output against the scenario, and the project manifest against the disk",

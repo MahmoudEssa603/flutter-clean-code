@@ -7,31 +7,7 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
-## [1.4.0] — 2026-09-07
-
-### Added
-- `references/monorepo-scope.md`, and a Step 1 trigger that reaches it. A repository holding
-  several packages gets a rung above module, one scanner run per package, and a report path
-  carrying the package name so two modules called `auth` do not overwrite each other.
-- The per-package analyzer rule. The Dart analyzer uses the **nearest** `analysis_options.yaml`
-  and does not merge the ones it passed walking up, so a package with its own file is governed by
-  that file alone even under a stricter root. Reading the root file for such a package drops
-  findings the analyzer never reports. Its `exclude:` globs resolve against the directory that
-  declares them, which is the same mistake in the other direction.
-- `evals/results/` as the one source of eval verdicts, with `PASS` / `PARTIAL` / `FAIL` /
-  `NOT_RUN` semantics that `scripts/check-evals.mjs` enforces — migrating the old prose table
-  under them turned one recorded pass into the PARTIAL it always was.
-- `scripts/generate-eval-summary.mjs` renders the results table, checked in CI against the
-  records so the two cannot drift.
-- `scripts/make-baseline.mjs` records what the deterministic tooling reports, so a later change
-  can be compared against it rather than argued about.
-- Four mixed-intent scenarios: a real clean-code job wrapped in a request for architecture,
-  performance, a state-management migration, or a crash fix. Both failure directions are named,
-  because refusing the whole request is as wrong as absorbing the half that is not yours.
-- `scripts/check-evals.mjs` reports which verdicts were graded against an older version, and asks
-  git whether any model-facing file actually changed since — so a stale PASS says so instead of
-  reading like a fresh one. It compares content rather than filenames, because every release moves
-  the version line and a warning that fires every time is a warning nobody reads.
+## [1.5.0] — 2026-09-10
 
 ### Fixed
 - Activation and conduct are measured separately. Every scenario used to test both: a run that
@@ -76,6 +52,56 @@ the last one is holding whatever it shipped until the next. See the bump table i
   had just built as having been there all along. Moving the rule was the fix: it had sat in Step 4,
   which is REFACTOR-only and read after mode, scope, measurement and prioritisation are settled,
   while the decision it governs is made at Step 0, which had no triage of the request at all.
+- `scripts/check-report.mjs` exempts a re-run from the numbering checks, because a re-run keeps
+  the ids it inherited and a gap there is the rule working. It recognised a re-run only by the
+  literal heading `## Since last pass`, a wording no model-facing file states — `SKILL.md` asks
+  for a Since-last-pass table and leaves the heading to the report. A real re-run wrote
+  `## Since the last pass`, retired a withdrawn finding's number exactly as the rule asks, and
+  was failed for the gap. It now matches the shape of the heading, and its test uses the wording
+  a run actually produced rather than the one the regex wanted.
+
+### Changed
+- Scenario 09's third expectation gives the reason its handback actually rests on. It said that
+  reaching `reload()`'s early return means following the flow at runtime; the guard is in plain
+  sight, and a pass can run code. What puts it out of reach is that nothing in scope decides
+  whether it is a defect. Scenario 12's third expectation now names the finding that moves into
+  Out of Scope, which it had left to be inferred. Neither target moved.
+- The install instructions pin to the current release instead of 1.3.1.
+
+## [1.4.0] — 2026-09-07
+
+### Added
+- `references/monorepo-scope.md`, and a Step 1 trigger that reaches it. A repository holding
+  several packages gets a rung above module, one scanner run per package, and a report path
+  carrying the package name so two modules called `auth` do not overwrite each other.
+- The per-package analyzer rule. The Dart analyzer uses the **nearest** `analysis_options.yaml`
+  and does not merge the ones it passed walking up, so a package with its own file is governed by
+  that file alone even under a stricter root. Reading the root file for such a package drops
+  findings the analyzer never reports. Its `exclude:` globs resolve against the directory that
+  declares them, which is the same mistake in the other direction.
+- `evals/results/` as the one source of eval verdicts, with `PASS` / `PARTIAL` / `FAIL` /
+  `NOT_RUN` semantics that `scripts/check-evals.mjs` enforces — migrating the old prose table
+  under them turned one recorded pass into the PARTIAL it always was.
+- `scripts/generate-eval-summary.mjs` renders the results table, checked in CI against the
+  records so the two cannot drift.
+- `scripts/make-baseline.mjs` records what the deterministic tooling reports, so a later change
+  can be compared against it rather than argued about.
+- Four mixed-intent scenarios: a real clean-code job wrapped in a request for architecture,
+  performance, a state-management migration, or a crash fix. Both failure directions are named,
+  because refusing the whole request is as wrong as absorbing the half that is not yours.
+- `scripts/check-evals.mjs` reports which verdicts were graded against an older version, and asks
+  git whether any model-facing file actually changed since — so a stale PASS says so instead of
+  reading like a fresh one. It compares content rather than filenames, because every release moves
+  the version line and a warning that fires every time is a warning nobody reads.
+
+### Fixed
+- Step 4 forbade rewriting a feature and switching the state-management pattern "unless explicitly
+  asked", while "What it does not own" put layer boundaries, dependency direction and module
+  structure flatly outside the skill. A request to restructure to Clean Architecture asks
+  explicitly, so the second rule licensed what the first forbids — and scenario 13 came back with
+  the migration carried out: four new layers, six authored types, a composition root, a state
+  library swapped in, and Rule Zero abandoned with behaviour changes applied rather than proposed.
+  Asking now unlocks nothing this skill does not own; the pass runs inside the design as it stands.
 - The description's "Use when" clause named neither **audit** nor **refactor** — the two verbs
   in the skill's own first sentence, and one of them a mode name. Activation was effectively keyed
   on the literal phrase "clean code": every eval query carrying it fired, and the two that did not

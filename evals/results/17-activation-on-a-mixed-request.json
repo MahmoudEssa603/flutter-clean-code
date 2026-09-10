@@ -2,7 +2,7 @@
   "scenario": "17-activation-on-a-mixed-request",
   "verdict": "PASS",
   "date": "2026-09-09",
-  "skillVersion": "1.4.0",
+  "skillVersion": "1.5.0",
   "commitSha": null,
   "generatedBy": "fresh agent session in Claude Code, skill deliberately not named, on a project rebuilt and verified clean beforehand",
   "gradedBy": "maintainer session reading the load indicator in the transcript",
