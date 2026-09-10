@@ -94,6 +94,16 @@ test('a re-run keeps the ids it inherited, so it may start past CC-001', () => {
   assert.deepEqual(failures, []);
 });
 
+// The exemption used to require the exact words "Since last pass". SKILL.md only asks for a
+// Since-last-pass table and never dictates the heading, so a real run wrote "Since the last
+// pass" and was failed for a numbering gap it was right to have.
+test('the re-run exemption matches the heading a run actually writes', () => {
+  const heading = '## Since the last pass — 2026-09-10';
+  const rerun = HEADER.replace('## Summary', heading + '\n\nnothing fixed\n\n## Summary');
+  const { failures } = checkReport(rerun + [finding(21), finding(22)].join('\n') + TAIL);
+  assert.deepEqual(failures, []);
+});
+
 test('a first pass that does not start at CC-001 fails', () => {
   assert.match(checkReport(report([finding(21)])).failures.join('\n'), /start at CC-021, not CC-001/);
 });

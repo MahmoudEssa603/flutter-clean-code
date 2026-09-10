@@ -103,7 +103,12 @@ export function checkReport(text, label = 'report') {
     }
     // A re-run keeps every id it inherited, so numbering that continues from an earlier pass is
     // the rule working rather than a gap. Only a first pass has to begin at CC-001.
-    const isRerun = /^##\s+Since last pass\b/m.test(text);
+    //
+    // SKILL.md asks for a "Since-last-pass table" and never dictates the heading, so this
+    // matches the shape rather than one spelling. Requiring the exact words "Since last pass"
+    // made the exemption near-unreachable: a real run wrote "## Since the last pass — 2026-09-10"
+    // and was failed for a numbering gap it was right to have.
+    const isRerun = /^## +Since.*pass/im.test(text);
     const numbers = ids.map((id) => Number.parseInt(id.slice(3), 10));
     if (!isRerun) {
       if (numbers[0] !== 1) {
