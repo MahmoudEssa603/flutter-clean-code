@@ -15,7 +15,7 @@
 - [ ] No sibling skill, plugin, tool, or external project is named anywhere
 - [ ] The vocabulary table in AGENTS.md is respected; no banned synonym introduced
 - [ ] Every new Dart snippet is valid Dart 3
-- [ ] A new scanner signal ships with a unit test, a fixture case, and a header-comment line
+- [ ] A new scanner signal ships with a test that it fires, a test that it stays quiet, a fixture case, and a header-comment line
 - [ ] Reference files stay one level deep from SKILL.md
 - [ ] `metadata.version` bumped unless this is a docs-only change
 
