@@ -67,6 +67,10 @@ the last one is holding whatever it shipped until the next. See the bump table i
   whether it is a defect. Scenario 12's third expectation now names the finding that moves into
   Out of Scope, which it had left to be inferred. Neither target moved.
 - The install instructions pin to the current release instead of 1.3.1.
+- `test/README.md` listed two of the six test suites, so four suites and sixty of the
+  ninety-eight tests went undocumented. It also asked for three things when adding a scanner
+  signal where `CONTRIBUTING.md` asked for four — the same requirements, counted two ways, in
+  a repository that treats a rule stated twice with different content as a defect.
 - All seventeen scenarios were run by hand against this surface and recorded in
   `evals/results/`: thirteen PASS, two PARTIAL (`02`, `12`) and two FAIL (`01`, `09`), each
   with what fell short written down. No verdict in the table was graded against an older
