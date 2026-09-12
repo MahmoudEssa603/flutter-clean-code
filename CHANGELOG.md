@@ -7,7 +7,7 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
-## [1.5.0] — 2026-09-10
+## [1.5.0] — 2026-09-12
 
 ### Fixed
 - Activation and conduct are measured separately. Every scenario used to test both: a run that
@@ -67,6 +67,10 @@ the last one is holding whatever it shipped until the next. See the bump table i
   whether it is a defect. Scenario 12's third expectation now names the finding that moves into
   Out of Scope, which it had left to be inferred. Neither target moved.
 - The install instructions pin to the current release instead of 1.3.1.
+- All seventeen scenarios were run by hand against this surface and recorded in
+  `evals/results/`: thirteen PASS, two PARTIAL (`02`, `12`) and two FAIL (`01`, `09`), each
+  with what fell short written down. No verdict in the table was graded against an older
+  surface.
 
 ## [1.4.0] — 2026-09-07
 
