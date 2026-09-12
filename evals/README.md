@@ -1,6 +1,6 @@
 # Evaluations
 
-Sixteen scenarios that check whether `SKILL.md` still does what it claims. They are the source of
+Seventeen scenarios that check whether `SKILL.md` still does what it claims. They are the source of
 truth for whether a change to the skill was an improvement or a regression.
 
 There is no built-in runner. Each scenario is run by hand, and the result is recorded honestly.
