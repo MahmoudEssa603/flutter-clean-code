@@ -1,0 +1,273 @@
+{
+  "skillVersion": "1.6.0",
+  "commitSha": "f3fdade92df407ef9f928500ec5574382b0c22db",
+  "date": "2026-09-12",
+  "scanner": {
+    "filesScanned": 7,
+    "totalSignals": 32,
+    "signalsPerFile": 4.57,
+    "generatedSkipped": [
+      "order.freezed.dart"
+    ],
+    "duplication": [
+      {
+        "lines": 6,
+        "occurrences": [
+          {
+            "path": "cart_screen.dart",
+            "line": 49
+          },
+          {
+            "path": "cart_screen.dart",
+            "line": 59
+          },
+          {
+            "path": "cart_screen.dart",
+            "line": 69
+          },
+          {
+            "path": "order_summary_page.dart",
+            "line": 186
+          },
+          {
+            "path": "order_summary_page.dart",
+            "line": 196
+          },
+          {
+            "path": "order_summary_page.dart",
+            "line": 206
+          }
+        ]
+      },
+      {
+        "lines": 6,
+        "occurrences": [
+          {
+            "path": "order_summary_page_test.dart",
+            "line": 10
+          },
+          {
+            "path": "order_summary_page_test.dart",
+            "line": 33
+          }
+        ]
+      }
+    ],
+    "files": [
+      {
+        "path": "order_summary_page.dart",
+        "lines": 253,
+        "signals": 23,
+        "build": {
+          "name": "build",
+          "line": 111,
+          "length": 118,
+          "nesting": 1,
+          "positional": 1,
+          "boolParams": 0
+        },
+        "longFunctions": [],
+        "deepNesting": [
+          {
+            "name": "describe",
+            "line": 81,
+            "nesting": 3
+          }
+        ],
+        "missingDispose": [
+          {
+            "name": "_OrderSummaryPageState",
+            "line": 14,
+            "evidence": "ScrollController"
+          }
+        ],
+        "trivialWidgets": [
+          {
+            "name": "_SectionGap",
+            "line": 231,
+            "buildLines": 3,
+            "callSites": 0
+          }
+        ],
+        "magicLiterals": [
+          {
+            "line": 122,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 136,
+            "text": "color: const Color(0xFF3B5998),"
+          },
+          {
+            "line": 137,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 146,
+            "text": "backgroundColor: const Color(0xFF3B5998),"
+          },
+          {
+            "line": 154,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 160,
+            "text": "const SizedBox(width: 16),"
+          },
+          {
+            "line": 177,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 181,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 187,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 197,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 207,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 218,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 236,
+            "text": "return const SizedBox(height: 24);"
+          }
+        ],
+        "lateFields": [
+          {
+            "line": 15,
+            "text": "late Order order;"
+          }
+        ],
+        "bareCatch": [
+          {
+            "line": 42,
+            "text": "} catch (e) {"
+          }
+        ],
+        "collectionEquality": [
+          {
+            "line": 248,
+            "text": "other is OrderSnapshot && other.id == id && other.items == items;"
+          }
+        ],
+        "ownerlessTodo": [
+          {
+            "line": 109,
+            "text": "// TODO: fix this later"
+          }
+        ],
+        "commentedOutCode": [
+          {
+            "line": 59,
+            "text": "// final oldTotal = order.items.fold(0.0, (a, b) => a + b.price);"
+          }
+        ]
+      },
+      {
+        "path": "cart_screen.dart",
+        "lines": 84,
+        "signals": 5,
+        "build": {
+          "name": "build",
+          "line": 39,
+          "length": 44,
+          "nesting": 0,
+          "positional": 1,
+          "boolParams": 0
+        },
+        "longFunctions": [],
+        "deepNesting": [],
+        "missingDispose": [],
+        "trivialWidgets": [],
+        "magicLiterals": [
+          {
+            "line": 46,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 50,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 60,
+            "text": "padding: const EdgeInsets.all(17),"
+          },
+          {
+            "line": 70,
+            "text": "padding: const EdgeInsets.all(17),"
+          }
+        ],
+        "lateFields": [],
+        "bareCatch": [],
+        "collectionEquality": [],
+        "ownerlessTodo": [],
+        "commentedOutCode": []
+      },
+      {
+        "path": "order_filters.dart",
+        "lines": 45,
+        "signals": 2,
+        "build": null,
+        "longFunctions": [],
+        "deepNesting": [
+          {
+            "name": "apply",
+            "line": 11,
+            "nesting": 5
+          }
+        ],
+        "missingDispose": [],
+        "trivialWidgets": [],
+        "magicLiterals": [],
+        "lateFields": [],
+        "bareCatch": [],
+        "collectionEquality": [],
+        "ownerlessTodo": [],
+        "commentedOutCode": []
+      },
+      {
+        "path": "order_summary_page_test.dart",
+        "lines": 65,
+        "signals": 2,
+        "build": null,
+        "longFunctions": [
+          {
+            "name": "main",
+            "line": 9,
+            "length": 56
+          }
+        ],
+        "deepNesting": [
+          {
+            "name": "main",
+            "line": 9,
+            "nesting": 3
+          }
+        ],
+        "missingDispose": [],
+        "trivialWidgets": [],
+        "magicLiterals": [],
+        "lateFields": [],
+        "bareCatch": [],
+        "collectionEquality": [],
+        "ownerlessTodo": [],
+        "commentedOutCode": []
+      }
+    ]
+  },
+  "validator": {
+    "exitCode": 0,
+    "output": "All checks passed."
+  }
+}

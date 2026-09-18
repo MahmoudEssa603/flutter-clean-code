@@ -198,6 +198,11 @@ table used to hide, and `scripts/check-evals.mjs` now refuses it.
 
 **13 PASS** · **2 PARTIAL** · **2 FAIL** across 17 scenarios.
 
+> **17 of these verdicts were graded against 1.5.0, not 1.6.0.**
+> Run `node scripts/check-evals.mjs` to see whether anything the model reads has changed
+> since. A verdict is a claim about one skill surface; once that moves it is unverified,
+> not wrong — and unverified looks identical to verified in a table.
+
 Generated from `evals/results/` by `scripts/generate-eval-summary.mjs`. Edit the records,
 not this table.
 

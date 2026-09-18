@@ -7,7 +7,7 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
-## [Unreleased]
+## [1.6.0]
 
 ### Fixed
 - `make-eval-projects.mjs --verify` exempted `docs/reviews/`, so a report left behind by the last
