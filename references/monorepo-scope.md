@@ -77,8 +77,8 @@ between members, so ask it once per package rather than once per pass.
 
 `publish_to: none` decides even less here than usual: workspace members routinely carry it while
 being depended on by every other member in the repository. A member imported by a sibling has
-real consumers whatever it publishes to, so an undocumented public member in it is High. Look at
-who imports it, not at what it publishes to.
+real consumers whatever it publishes to, so an undocumented public member in it is High-impact.
+Look at who imports it, not at what it publishes to.
 
 ## Where the report goes
 

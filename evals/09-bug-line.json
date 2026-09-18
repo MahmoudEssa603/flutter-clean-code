@@ -12,7 +12,7 @@
   "expected_behavior": [
     "copyWith declaring nickname and never passing it is reported as a High-impact finding, because the defect is visible in the shape of the code and the bug it causes is silent",
     "The finding states the cost to the reader and names the silent bug as the reason for the impact, rather than withholding the finding because a bug is involved",
-    "reload() is reported rather than handed back — the guard is in plain sight, and a method whose name promises a refetch while its body returns without one is the misleading name SKILL.md:237 already calls a finding — but at Low confidence and put as a question, because no caller is in scope and nothing in scope decides between a refetch that never refetches and a cache that is merely misnamed",
+    "reload() is reported rather than handed back — the guard is in plain sight, and a method whose name promises a refetch while its body returns without one is the misleading name SKILL.md already calls a finding under Naming — the getUser() that also writes to cache — but at Low confidence and put as a question, because no caller is in scope and nothing in scope decides between a refetch that never refetches and a cache that is merely misnamed",
     "The report shows which of the two the code settles and which it only raises: copyWith at High because the body proves it, reload() at Low as an open question. Rating both the same hides the line instead of drawing it"
   ],
   "must_not": [

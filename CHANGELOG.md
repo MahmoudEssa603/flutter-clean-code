@@ -22,7 +22,7 @@ the last one is holding whatever it shipped until the next. See the bump table i
 - The bug-line paragraph said a shape-visible defect is "why the finding is High" where both
   scales have a High, one paragraph away from the Confidence rule that two runs then collapsed.
   It says High-impact now, as `:284` already did; the package-or-app rule is spelled the same way.
-- Confidence collapses to High on one shape, and the scale now names it. `SKILL.md:377` said
+- Confidence collapses to High on one shape, and the scale now names it. `SKILL.md:376` said
   High when the code proves it and Low when the judgment turns on intent you cannot see, which
   three runs read as a licence to rate the easiest half of their own claim. `09` and `12` each
   wrote that the body cannot say which of a name and its body is wrong, and rated the finding
@@ -45,6 +45,10 @@ the last one is holding whatever it shipped until the next. See the bump table i
   Printed, never fatal — re-running is the maintainer's call, hiding the need is not.
 
 ### Changed
+- `evals/README.md` documented the `docs/reviews/` exemption as settled fact, so the wrong
+  rule was written down in two places rather than one.
+- `references/monorepo-scope.md` spelled the package-or-app severity as bare `High` where
+  `SKILL.md` now says `High-impact`. Same rule, same sentence, two files.
 - Scenario 14 carries a fourth `must_not`: one finding rated at two confidences. That is where
   the split rating was found, and nothing there measured it. It is not scored against the
   recorded run, which predates the rule — the re-run is where it counts.
@@ -57,11 +61,11 @@ the last one is holding whatever it shipped until the next. See the bump table i
 - Scenarios 09 and 12 stop demanding a handback `SKILL.md` never asks for. Both required
   `reload()` — a method whose name promises a refetch while its body returns without one — to be
   handed back under Out of Scope. Read together, the skill says the opposite three times: the bug
-  line at `:80-86` hands back only a defect reachable solely by running the code, and this guard
-  is in plain sight; `:237` makes a name its body contradicts a finding outright, in the same
+  line at `:79-85` hands back only a defect reachable solely by running the code, and this guard
+  is in plain sight; `:236` makes a name its body contradicts a finding outright, in the same
   shape as the `getUser()` that writes to cache; and the uncertainty that is left — whether it is
-  a broken refetch or a misnamed cache — is intent you cannot see, which `:377` puts at
-  Confidence: Low as a question and `:174` refuses to let you drop. So both scenarios now expect
+  a broken refetch or a misnamed cache — is intent you cannot see, which `:376` puts at
+  Confidence: Low as a question and `:172` refuses to let you drop. So both scenarios now expect
   the finding reported at Low confidence, and 09 additionally expects the two ratings to differ,
   which is the line it exists to watch. The runs were right to report it and wrong to rate it
   High, and both verdicts stand: `09` FAIL at 2/4, `12` PARTIAL at 4/5. No model-facing file
