@@ -149,8 +149,14 @@ export function checkReport(text, label = 'report') {
     else {
       const value = confidence[1].replace(/\*/g, '').trim().replace(/[.·]+$/, '').trim();
       if (!CONFIDENCE.includes(value)) {
+        // Two shapes reach here and the advice differs. A second rating ("High (the name) / Low
+        // (the intent)") is a finding that cannot decide itself and wants splitting. Provenance
+        // ("Low (was High)") is one rating with history attached, and a re-run already has the
+        // Since-last-pass table for that — the field itself stays a single machine-readable word.
         fail(CONFIDENCE.some((c) => value.startsWith(c))
-          ? `${id} Confidence is "${value}" — one value per finding: split it, or rate it Low`
+          ? `${id} Confidence is "${value}" — the field carries one value and nothing else. ` +
+            'A finding needing two ratings is two findings, or one at Low; what it used to be ' +
+            'belongs in the Since-last-pass table.'
           : `${id} Confidence is "${value}"`);
       }
     }

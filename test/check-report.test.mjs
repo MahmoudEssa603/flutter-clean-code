@@ -79,7 +79,17 @@ test('a finding rated two confidences at once fails', () => {
     report([finding(1, { confidence: 'High (the name) / Low (the intent)' })]),
   );
   assert.match(failures.join('\n'), /CC-001 Confidence is "High \(the name\) \/ Low \(the intent\)"/);
-  assert.match(failures.join('\n'), /one value per finding/);
+  assert.match(failures.join('\n'), /two findings, or one at Low/);
+});
+
+test('a re-run annotating Confidence with its old value fails too', () => {
+  // A real re-run wrote "Low *(was High)*", which is one rating with its history attached rather
+  // than a finding that cannot decide itself. It is still rejected: the field stays one
+  // machine-readable word — the report template's JSON form carries it — and SKILL.md already
+  // gives a re-run the Since-last-pass table to say what moved. That report used both.
+  const { failures } = checkReport(report([finding(1, { confidence: 'Low *(was High)*' })]));
+  assert.match(failures.join('\n'), /CC-001 Confidence is "Low \(was High\)"/);
+  assert.match(failures.join('\n'), /Since-last-pass table/);
 });
 
 test('Confidence still passes when the value is bolded or trailed by punctuation', () => {
