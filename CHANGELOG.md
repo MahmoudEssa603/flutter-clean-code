@@ -10,6 +10,12 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [Unreleased]
 
 ### Changed
+- Scenario 11's second expectation describes what its fixture actually does. It asked for a wall
+  of `undefined_class` cascading from unresolved packages to be recognised and not mined; this
+  project never produces one, because `pub get` fails on the git dependency and `analyze` aborts
+  before emitting anything. The wall belongs to the scenarios whose pubspec merely declares no
+  dependencies — `02`, `07`, `13`, `14`. The requirement behind it, that nothing from a broken
+  resolution becomes a finding, is unchanged and was already met, so the PASS stands.
 - Scenarios 09 and 12 stop demanding a handback `SKILL.md` never asks for. Both required
   `reload()` — a method whose name promises a refetch while its body returns without one — to be
   handed back under Out of Scope. Read together, the skill says the opposite three times: the bug
