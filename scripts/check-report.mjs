@@ -32,10 +32,15 @@ const HARAKAT = '[\\u064B-\\u0652]*';
 // Not checked is matched by root rather than by listing spellings. The list held five and the
 // next real run, answering in Egyptian Arabic, wrote a sixth — `اللي ماتفحصش`. Negation and
 // dialect vary freely around ف-ح-ص (examine) and راجع (review); the root does not.
+//
+// Evidence and Conventions went the same way one run later. Scenario 06 wrote
+// `مستوى الأدلة` — two words the list held separately, never together — and `قواعد المشروع`,
+// which it did not hold at all. Each field is now its key word with anything around it.
+const around = (words) => `[^*:\\n]*(?:${words})[^*:\\n]*`;
 const HEADER_FIELDS = [
   { name: 'Scope', spellings: ['Scope', 'النطاق'] },
-  { name: 'Evidence', spellings: ['Evidence', 'الدليل', 'الأدلة', 'مستوى الدليل'] },
-  { name: 'Conventions', spellings: ['Conventions', 'الاصطلاحات', 'الأعراف'] },
+  { name: 'Evidence', spellings: ['Evidence', around('دليل|[أا]دلة')] },
+  { name: 'Conventions', spellings: ['Conventions', around('اصطلاح|[أا]عراف|قواعد|معايير')] },
   { name: 'Verification', spellings: ['Verification', 'التحقق'] },
   {
     name: 'Not checked',
@@ -51,7 +56,8 @@ const HEADER_FIELDS = [
 const SECTIONS = [
   { name: 'Summary', spellings: ['Summary', 'الملخص'] },
   { name: 'Findings', spellings: ['Findings', 'الملاحظات'] },
-  { name: 'Out of Scope', spellings: ['Out of Scope', 'برا النطاق', 'خارج النطاق'] },
+  // "Outside" is برا, بره or برّه in Egyptian Arabic and خارج in the standard; 06 wrote برّه.
+  { name: 'Out of Scope', spellings: ['Out of Scope', `(?:بر${HARAKAT}[اهة]|خارج)\\s+النطاق`] },
   { name: 'Verification', spellings: ['Verification', 'التحقق'] },
 ];
 

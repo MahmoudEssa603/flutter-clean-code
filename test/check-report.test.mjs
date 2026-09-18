@@ -186,6 +186,28 @@ test('the Not checked label is read by its root, because a list of spellings ran
   assert.match(checkReport(missing).failures.join('\n'), /the header has no Not checked field/);
 });
 
+test('Evidence, Conventions and Out of Scope are read by their key word, as 06 wrote them', () => {
+  // Scenario 06 answered in Egyptian Arabic and the checker failed it three times over on labels
+  // it did not list: `مستوى الأدلة`, `قواعد المشروع` and `## برّه النطاق`. The fields were there.
+  const labels = [
+    ['**Evidence:**', ['**مستوى الأدلة:**', '**الأدلة:**', '**الدليل:**', '**مستوى الدليل:**']],
+    ['**Conventions:**', ['**قواعد المشروع:**', '**الاصطلاحات:**', '**الأعراف:**', '**الـ Conventions:**']],
+    ['## Out of Scope', ['## برّه النطاق', '## بره النطاق', '## برا النطاق', '## خارج النطاق']],
+  ];
+  for (const [english, arabic] of labels) {
+    for (const label of arabic) {
+      const translated = report([finding(1)]).replace(english, label);
+      assert.deepEqual(checkReport(translated).failures, [], label);
+    }
+  }
+  const noEvidence = report([finding(1)]).replace(' · **Evidence:** Partial', '');
+  assert.match(checkReport(noEvidence).failures.join('\n'), /the header has no Evidence field/);
+  const noConventions = report([finding(1)]).replace('**Conventions:** not verified\n', '');
+  assert.match(checkReport(noConventions).failures.join('\n'), /the header has no Conventions field/);
+  const wrongValue = report([finding(1)]).replace('**Evidence:** Partial', '**مستوى الأدلة:** Some');
+  assert.match(checkReport(wrongValue).failures.join('\n'), /Evidence is "Some"/);
+});
+
 test('an Arabic Summary still has its rows counted', () => {
   // The heading was accepted in Arabic, but the row count looked for "## Summary" alone, so a
   // dropped principle row in an Arabic report was never caught — silently, with a pass.
