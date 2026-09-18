@@ -10,6 +10,18 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [Unreleased]
 
 ### Fixed
+- `make-eval-projects.mjs --verify` exempted `docs/reviews/`, so a report left behind by the last
+  run counted as nothing. It is not nothing: `SKILL.md` sends every pass to that directory for the
+  newest previous report before it writes one, so the leftover is read by the next run and turns
+  an ordinary scenario into a re-run. Four of the seventeen laid-out projects were carrying one —
+  `05`, `07`, `13`, and worst `12`, which seeds a deliberately weak report as its input and had
+  the previous run's corrected report sitting beside it, newer. A re-run of `12` would have
+  re-judged the last run's answer instead of the seeded one and looked entirely plausible doing
+  it. `--verify` called all four clean. The exemption now covers build output only, the seeded
+  report is tracked in the manifest, and the projects have been rebuilt.
+- The bug-line paragraph said a shape-visible defect is "why the finding is High" where both
+  scales have a High, one paragraph away from the Confidence rule that two runs then collapsed.
+  It says High-impact now, as `:284` already did; the package-or-app rule is spelled the same way.
 - Confidence collapses to High on one shape, and the scale now names it. `SKILL.md:377` said
   High when the code proves it and Low when the judgment turns on intent you cannot see, which
   three runs read as a licence to rate the easiest half of their own claim. `09` and `12` each
@@ -33,6 +45,9 @@ the last one is holding whatever it shipped until the next. See the bump table i
   Printed, never fatal — re-running is the maintainer's call, hiding the need is not.
 
 ### Changed
+- Scenario 14 carries a fourth `must_not`: one finding rated at two confidences. That is where
+  the split rating was found, and nothing there measured it. It is not scored against the
+  recorded run, which predates the rule — the re-run is where it counts.
 - Scenario 11's second expectation describes what its fixture actually does. It asked for a wall
   of `undefined_class` cascading from unresolved packages to be recognised and not mined; this
   project never produces one, because `pub get` fails on the git dependency and `analyze` aborts

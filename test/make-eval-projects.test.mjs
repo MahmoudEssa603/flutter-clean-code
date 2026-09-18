@@ -124,10 +124,32 @@ test('a file a run adds counts as drift too', () => {
   });
 });
 
-test('what a legitimate pass leaves behind is not drift', () => {
-  // A report in docs/reviews is the scenario succeeding, and .dart_tool, build/ and a lockfile
-  // are the SDK doing its job. If those counted, the check would fire after every clean run and
-  // be ignored within a day.
+test('build output a pass leaves behind is not drift', () => {
+  // .dart_tool, build/ and a lockfile are the SDK doing its job. If those counted, the check
+  // would fire after every clean run and be ignored within a day.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '13-architecture-and-clean-code';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const scenario = join(target, only);
+    mkdirSync(join(scenario, '.dart_tool'), { recursive: true });
+    mkdirSync(join(scenario, 'build'), { recursive: true });
+    writeFileSync(join(scenario, '.dart_tool/version'), '3.5.0\n');
+    writeFileSync(join(scenario, 'build/x'), 'artefact\n');
+    writeFileSync(join(scenario, 'pubspec.lock'), 'locked\n');
+
+    const drift = projectDrift(scenario);
+    assert.deepEqual(drift.changed, []);
+    assert.deepEqual(drift.added, []);
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 0);
+  });
+});
+
+test('a report the last run wrote is drift, because the next run reads it', () => {
+  // This one was exempt as "the scenario succeeding", which it is — and it is also the input to
+  // the next run, because SKILL.md sends every pass to docs/reviews for the newest previous
+  // report before it writes one. Left in place it makes an ordinary scenario behave as a re-run.
   withTempDir((dir) => {
     const target = join(dir, 'out');
     const only = '13-architecture-and-clean-code';
@@ -135,14 +157,22 @@ test('what a legitimate pass leaves behind is not drift', () => {
 
     const scenario = join(target, only);
     mkdirSync(join(scenario, 'docs/reviews'), { recursive: true });
-    mkdirSync(join(scenario, '.dart_tool'), { recursive: true });
-    mkdirSync(join(scenario, 'build'), { recursive: true });
     writeFileSync(join(scenario, 'docs/reviews/CLEAN-CODE-AUDIT-orders-2026-09-07.md'), '# report\n');
-    writeFileSync(join(scenario, '.dart_tool/version'), '3.5.0\n');
-    writeFileSync(join(scenario, 'build/x'), 'artefact\n');
-    writeFileSync(join(scenario, 'pubspec.lock'), 'locked\n');
 
-    const drift = projectDrift(scenario);
+    assert.deepEqual(projectDrift(scenario).added, ['docs/reviews/CLEAN-CODE-AUDIT-orders-2026-09-07.md']);
+    assert.equal(main([target, '--only', only, '--verify', '--quiet']), 1);
+  });
+});
+
+test('the report a scenario seeds on purpose is tracked, not reported as drift', () => {
+  // 12 ships an earlier pass in docs/reviews as its input. It has to survive --verify, or the
+  // fix above would call every correctly built copy of that scenario dirty.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '12-rerun-rejudges';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const drift = projectDrift(join(target, only));
     assert.deepEqual(drift.changed, []);
     assert.deepEqual(drift.added, []);
     assert.equal(main([target, '--only', only, '--verify', '--quiet']), 0);

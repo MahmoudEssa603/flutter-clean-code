@@ -262,9 +262,14 @@ function copyFixture(target, fixture, relative) {
 // file's hash as its own proof that it had changed nothing.
 const MANIFEST_DIR = '.eval-manifests';
 
-// Everything a run legitimately leaves behind. A pass that reaches the SDK writes these, and
-// none of them changes what the next run reads.
-const RUN_ARTEFACTS = /^(\.dart_tool[\\/]|\.git[\\/]|build[\\/]|docs[\\/]reviews[\\/]|pubspec\.lock$|\.flutter-plugins)/;
+// Build output a pass leaves behind, none of which changes what the next run reads.
+//
+// `docs/reviews/` used to be on this list and does not belong on it: SKILL.md tells every run to
+// look there for the newest previous report before writing one, so a report left by the last run
+// is read by the next. It turns an ordinary scenario into a re-run — 05, 07 and 13 each carried
+// one — and in 12, which seeds a weak report on purpose, it supersedes the seeded one, so the
+// scenario re-judges the previous run's corrected answer instead. --verify called all four clean.
+const RUN_ARTEFACTS = /^(\.dart_tool[\\/]|\.git[\\/]|build[\\/]|pubspec\.lock$|\.flutter-plugins)/;
 
 function projectFiles(dir) {
   const out = [];

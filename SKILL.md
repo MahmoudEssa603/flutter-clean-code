@@ -80,9 +80,9 @@ it stays yours — filed against the hand-written source that produced it.
 declared in `copyWith` and never passed to the constructor, a name that shadows a core type, two
 branches of a conditional with identical bodies, a flag parameter every call site passes the same
 value for. Those are yours, and the test is whether the defect is visible — not whether you have
-watched it bite. Name the silent bug it causes: that is why the finding is High, not a reason to
-hand it back. A defect you can only reach by running the code — a wrong total, a screen that never
-loads — is not yours however plain it looks: one line under Out of Scope, and hand it back.
+watched it bite. Name the silent bug it causes: that is why the finding is High-impact, not a
+reason to hand it back. A defect you can only reach by running the code — a wrong total, a screen
+that never loads — is not yours however plain it looks: one line under Out of Scope, hand it back.
 
 ---
 
@@ -169,8 +169,8 @@ Auditing eleven features in one reply produces a document nobody reads.
 
 **Package or app?** `publish_to: none` only means unpublishable; internal packages carry it and
 their consumers are real. Platform folders with an entrypoint say application; a `lib/<name>.dart`
-barrel others import says package, where an undocumented public member is High. Unsure is a third
-answer — ask it as a Low-confidence question rather than dropping or asserting it.
+barrel others import says package, where an undocumented public member is High-impact. Unsure is
+a third answer — ask it as a Low-confidence question rather than dropping or asserting it.
 
 **Never audit generated code.** It is not written by hand, so no finding about it can be acted
 on. Exclude a file when its name ends in `.g.dart`, `.freezed.dart`, `.mocks.dart`, `.gr.dart`,

@@ -17,6 +17,7 @@
   "must_not": [
     "Decline the whole request because half of it is out of scope",
     "Name a performance root cause on the strength of reading the code",
-    "Silently drop the performance half without saying it was set aside"
+    "Silently drop the performance half without saying it was set aside",
+    "Rate one finding at two confidences at once — a finding that needs both is two findings, or one at Low"
   ]
 }
