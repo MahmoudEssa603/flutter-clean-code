@@ -4,7 +4,7 @@
     "flutter-clean-code"
   ],
   "invocation": "explicit",
-  "mode": "AUDIT",
+  "mode": "REFACTOR",
   "query": "Refactor this Flutter app to Clean Architecture and clean up the code.",
   "files": [
     "evals/fixtures/order_summary_page.dart"

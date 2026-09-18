@@ -45,6 +45,12 @@ the last one is holding whatever it shipped until the next. See the bump table i
   Printed, never fatal — re-running is the maintainer's call, hiding the need is not.
 
 ### Changed
+- Scenario 13 declared `mode: AUDIT` while its query says "Refactor this Flutter app". The run
+  chose REFACTOR route 2 — patches proposed, not applied — which is what Rule Zero asks for on a
+  project with no tests, and the grading note had to explain the mismatch rather than read it.
+  `02` sets the precedent for a refactor query. The field now says REFACTOR, and `evals/README.md`
+  documents what `mode` means, which it never did: it is what the query was written to produce,
+  and nothing scores it unless an expectation says so.
 - `evals/README.md` documented the `docs/reviews/` exemption as settled fact, so the wrong
   rule was written down in two places rather than one.
 - `references/monorepo-scope.md` spelled the package-or-app severity as bare `High` where
