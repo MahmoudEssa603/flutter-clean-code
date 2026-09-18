@@ -7,7 +7,7 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
-## [1.6.0]
+## [1.6.0] — 2026-09-18
 
 ### Fixed
 - `scripts/check-report.mjs` could not read an Arabic report. It demanded English section
@@ -24,6 +24,12 @@ the last one is holding whatever it shipped until the next. See the bump table i
   negation and dialect without a list to outgrow. The Summary row count looked for `## Summary`
   alone, so a dropped principle row in an Arabic report was never caught; it uses the section's
   spellings now. Its end-of-text anchor was `\Z`, which JavaScript reads as a literal `Z`.
+- `scripts/check-report.mjs` ran out of spellings a third time. `06`, also in Egyptian Arabic,
+  wrote `**مستوى الأدلة:**`, `**قواعد المشروع:**` and `## برّه النطاق` — two words the Evidence
+  list held separately but never together, a Conventions label it did not hold at all, and the
+  dialect's `برّه` for "outside". All three fields were present and failed as missing. Evidence,
+  Conventions and Out of Scope are matched by their key word now, as Not checked already was, and
+  a test carries the three labels exactly as that run wrote them.
 - `make-eval-projects.mjs --verify` exempted `docs/reviews/`, so a report left behind by the last
   run counted as nothing. It is not nothing: `SKILL.md` sends every pass to that directory for the
   newest previous report before it writes one, so the leftover is read by the next run and turns
@@ -104,6 +110,19 @@ the last one is holding whatever it shipped until the next. See the bump table i
 - `evals/README.md` described the `customer_profile.dart` fixture as holding one defect on each
   side of the bug line, and the seeded previous report as carrying one finding that belongs in
   Out of Scope. Both descriptions followed the expectations rather than the rules.
+- All seventeen scenarios were run by hand against this surface and recorded in
+  `evals/results/`: fifteen PASS, two PARTIAL (`01`, `16`) and no FAIL, each with what fell
+  short written down. `09` moved from FAIL to PASS and `12` and `02` from PARTIAL to PASS; `01`
+  moved from FAIL to PARTIAL; `16` moved from PASS to PARTIAL, reporting the `late` field without
+  naming the `LateInitializationError` it invites. No verdict in the table was graded against an
+  older surface.
+
+### Known gaps
+- A REFACTOR report is meant to carry each proposed batch's key diff hunks, and four of the five
+  runs that proposed patches did not: the batches lived only as patch files in a temporary
+  scratch directory, or were never written out one by one. Where the files survived, every patch
+  applied and its tests passed. The rule is stated only in the report template and nothing
+  scores it; both are for the next release.
 
 ## [1.5.0] — 2026-09-12
 
