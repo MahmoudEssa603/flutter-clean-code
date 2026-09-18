@@ -152,6 +152,29 @@ test('an Arabic header is read, because the template lets those labels translate
   assert.deepEqual(checkReport(arabic).failures, []);
 });
 
+test('a fully Arabic report holds the contract, headings and finding labels included', () => {
+  // references/report-template.md says prose, headings and table cells translate. The checker
+  // used to translate the header fields only, so it rejected the suite's one Arabic scenario
+  // with 83 problems — every section and every finding label. It was enforcing English that no
+  // model-facing file asks for. `الـ Conventions` is the other half: a real run kept the term in
+  // English and put the Arabic article in front of it, which is ordinary technical prose.
+  const arabic = report([finding(1), finding(2)])
+    .replace('**Scope:**', '**النطاق:**')
+    .replace('**Evidence:**', '**الأدلة:**')
+    .replace('**Conventions:**', '**الـ Conventions:**')
+    .replace('**Not checked:**', '**ما اتراجعش:**')
+    .replace('## Summary', '## الملخص')
+    .replace('## Findings', '## الملاحظات')
+    .replace('## Out of Scope', '## برا النطاق')
+    .replaceAll('**Impact:**', '**الأثر:**')
+    .replaceAll('**Effort:**', '**الجهد:**')
+    .replaceAll('**Confidence:**', '**الثقة:**')
+    .replaceAll('**Location:**', '**المكان:**')
+    .replace('**Verification:**', '**التحقق:**')
+    .replace('## Verification', '## التحقق');
+  assert.deepEqual(checkReport(arabic).failures, []);
+});
+
 test('a report silent about the scanner fails', () => {
   // Two real passes skipped the measuring step and said nothing, so a reader could not tell
   // whether the numbers were measured or eyeballed. Running it is optional; saying is not.

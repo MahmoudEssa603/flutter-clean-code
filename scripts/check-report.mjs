@@ -27,11 +27,39 @@ const CAP = 20;
 // Prose translates; these labels are the header, and the template lets them translate with it.
 const HEADER_FIELDS = [
   { name: 'Scope', spellings: ['Scope', 'النطاق'] },
-  { name: 'Evidence', spellings: ['Evidence', 'الدليل', 'مستوى الدليل'] },
+  { name: 'Evidence', spellings: ['Evidence', 'الدليل', 'الأدلة', 'مستوى الدليل'] },
   { name: 'Conventions', spellings: ['Conventions', 'الاصطلاحات', 'الأعراف'] },
   { name: 'Verification', spellings: ['Verification', 'التحقق'] },
-  { name: 'Not checked', spellings: ['Not checked', 'لم يُفحَص', 'لم يتم فحص', 'ما لم يُفحص'] },
+  { name: 'Not checked', spellings: ['Not checked', 'لم يُفحَص', 'لم يتم فحص', 'ما لم يُفحص', 'ما اتراجعش'] },
 ];
+
+// The same rule reaches further than the header. references/report-template.md says prose,
+// headings and table cells translate while identifiers, paths, commands and code do not — so an
+// Arabic report writes "## الملخص" and "**الأثر:**", and this checker used to demand English for
+// both and reject the only Arabic scenario in the suite outright. A check that enforces what no
+// model-facing file asks for is the defect fixed in the re-run heading at 1.5.0, again.
+const SECTIONS = [
+  { name: 'Summary', spellings: ['Summary', 'الملخص'] },
+  { name: 'Findings', spellings: ['Findings', 'الملاحظات'] },
+  { name: 'Out of Scope', spellings: ['Out of Scope', 'برا النطاق', 'خارج النطاق'] },
+  { name: 'Verification', spellings: ['Verification', 'التحقق'] },
+];
+
+const FINDING_FIELDS = {
+  Impact: ['Impact', 'الأثر'],
+  Effort: ['Effort', 'الجهد'],
+  Confidence: ['Confidence', 'الثقة'],
+  Location: ['Location', 'المكان'],
+};
+
+// \b is ASCII-only, so it cannot end an Arabic word. "not followed by a letter" works in both
+// scripts and still allows a qualified heading such as "## Summary — new findings only".
+//
+// An Arabic report may also keep a term in English and put the article in front of it, which is
+// ordinary Arabic technical prose: a real run wrote `**الـ Conventions:**`. The article is
+// optional everywhere, so one spelling covers both renderings.
+const labelled = (spellings) => `\\*\\*(?:الـ\\s*)?(?:${spellings.join('|')}):\\*\\*`;
+const headerField = (spellings) => new RegExp(labelled(spellings));
 
 export function checkReport(text, label = 'report') {
   const failures = [];
@@ -49,11 +77,12 @@ export function checkReport(text, label = 'report') {
   // --- header fields -------------------------------------------------------
   const header = lines.slice(0, 40).join('\n');
   for (const { name, spellings } of HEADER_FIELDS) {
-    if (!spellings.some((s) => header.includes(`**${s}:**`))) {
+    if (!headerField(spellings).test(header)) {
       fail(`the header has no ${name} field`);
     }
   }
-  const evidence = /\*\*(?:Evidence|الدليل|مستوى الدليل):\*\*\s*\**\s*(\w+)/.exec(header);
+  const evidenceSpellings = HEADER_FIELDS.find((f) => f.name === 'Evidence').spellings;
+  const evidence = new RegExp(`${labelled(evidenceSpellings)}\\s*\\**\\s*(\\w+)`).exec(header);
   if (evidence && !EVIDENCE.includes(evidence[1])) {
     fail(`Evidence is "${evidence[1]}", not one of ${EVIDENCE.join(' / ')}`);
   }
@@ -61,8 +90,9 @@ export function checkReport(text, label = 'report') {
   // --- sections ------------------------------------------------------------
   // Headings translate, and a re-run qualifies them ("## Summary — new findings only"). Match
   // the name at the head of the line rather than demanding the line be nothing else.
-  for (const section of ['Summary', 'Findings', 'Out of Scope', 'Verification']) {
-    if (!new RegExp(`^##\\s+${section}\\b`, 'm').test(text)) fail(`no "## ${section}" section`);
+  for (const { name, spellings } of SECTIONS) {
+    const heading = new RegExp(`^##\\s+(?:${spellings.join('|')})(?!\\p{L})`, 'mu');
+    if (!heading.test(text)) fail(`no "## ${name}" section`);
   }
 
   // --- the summary table ---------------------------------------------------
@@ -131,13 +161,13 @@ export function checkReport(text, label = 'report') {
   for (const block of blocks) {
     const id = /^(CC-\d+)/.exec(block)?.[1] ?? 'a finding';
 
-    const impact = /\*\*Impact:\*\*\s*(\w+)/.exec(block);
-    const effort = /\*\*Effort:\*\*\s*(\w+)/.exec(block);
+    const impact = new RegExp(`${labelled(FINDING_FIELDS.Impact)}\\s*(\\w+)`).exec(block);
+    const effort = new RegExp(`${labelled(FINDING_FIELDS.Effort)}\\s*(\\w+)`).exec(block);
     // Confidence is read to the end of its line, not as the first word on it. Reading one word
     // accepted "High (the name) / Low (the intent)" as High: a real run wrote that, because the
     // name was proven and the intent was not, and no rule told it which to record. SKILL.md now
     // says one Confidence per finding, and a finding needing two is two findings or one at Low.
-    const confidence = /\*\*Confidence:\*\*\s*(.*)$/m.exec(block);
+    const confidence = new RegExp(`${labelled(FINDING_FIELDS.Confidence)}\\s*(.*)$`, 'm').exec(block);
 
     if (!impact) fail(`${id} has no Impact`);
     else if (!IMPACT.includes(impact[1])) fail(`${id} Impact is "${impact[1]}"`);
@@ -164,7 +194,7 @@ export function checkReport(text, label = 'report') {
     // "A finding without a location is an opinion" — a location, not necessarily a line. Some
     // defects have no line to point at: a misspelled filename is the file, and a missing test
     // directory is an absence. Both are located; neither has a number.
-    const location = /\*\*Location:\*\*(.*)/.exec(block);
+    const location = new RegExp(`${labelled(FINDING_FIELDS.Location)}(.*)`).exec(block);
     if (!location) fail(`${id} has no Location`);
     else if (!/[:#]L?\d+/.test(location[1]) && !/[\w-]+[/.]/.test(location[1])) {
       fail(`${id} Location names neither a path nor a line: ${location[1].trim()}`);

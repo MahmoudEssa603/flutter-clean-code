@@ -10,6 +10,13 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [1.6.0]
 
 ### Fixed
+- `scripts/check-report.mjs` could not read an Arabic report. It demanded English section
+  headings and English finding labels while `references/report-template.md` says prose, headings
+  and table cells translate — so the suite's one Arabic scenario failed the contract checker with
+  83 problems, and had since the checker existed. The same defect as the re-run heading at 1.5.0:
+  a check enforcing what no model-facing file asks for. Sections, the four finding labels and an
+  Arabic article in front of an English term (`**الـ Conventions:**`, which a real run wrote) are
+  all accepted now, with a test covering a fully Arabic report end to end.
 - `make-eval-projects.mjs --verify` exempted `docs/reviews/`, so a report left behind by the last
   run counted as nothing. It is not nothing: `SKILL.md` sends every pass to that directory for the
   newest previous report before it writes one, so the leftover is read by the next run and turns
@@ -45,6 +52,7 @@ the last one is holding whatever it shipped until the next. See the bump table i
   Printed, never fatal — re-running is the maintainer's call, hiding the need is not.
 
 ### Changed
+- Scenario 01's third expectation said a 120-line `build()`; it is 118 lines, :111 to :228.
 - Scenario 13 declared `mode: AUDIT` while its query says "Refactor this Flutter app". The run
   chose REFACTOR route 2 — patches proposed, not applied — which is what Rule Zero asks for on a
   project with no tests, and the grading note had to explain the mismatch rather than read it.
