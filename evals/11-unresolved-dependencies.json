@@ -11,7 +11,7 @@
   ],
   "expected_behavior": [
     "With the SDK on PATH but pub get failing, the failure is reported by name and the pass continues report-only on static reading plus the scanner",
-    "A wall of undefined_class and undefined_method diagnostics cascading from packages that were never resolved is recognised as describing the broken resolution, not the code, and is not mined for findings",
+    "Whatever the analyzer produces once resolution is broken is recognised as describing that, not the code, and is not mined for findings — a wall of undefined_class and undefined_method cascading from packages that were never resolved, or no diagnostics at all, which is what this fixture gives, because pub get fails before analysis can run",
     "The Verification section says which command failed and how",
     "Findings that would need the analyzer to confirm are listed as needing a re-check once resolution is fixed, with their locations"
   ],
