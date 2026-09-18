@@ -3,7 +3,7 @@
   "verdict": "PASS",
   "date": "2026-09-13",
   "skillVersion": "1.6.0",
-  "commitSha": "d853aa99001779057f57e331df0d374a39912a68",
+  "commitSha": "a3ccd5592881d9d71d491356ea7aa955443416fb",
   "generatedBy": "fresh agent session in Claude Code with the skill named, on a project rebuilt and verified clean beforehand",
   "gradedBy": "maintainer session reading the transcript's tool calls against the scenario, the fixture's md5, the report through check-report.mjs, and re-counting every measured claim against the file, with lint and import claims settled in a scratch Flutter package",
   "gradingMethod": "independent_fresh_session",

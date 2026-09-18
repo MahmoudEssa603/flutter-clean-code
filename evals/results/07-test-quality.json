@@ -3,7 +3,7 @@
   "verdict": "PASS",
   "date": "2026-09-14",
   "skillVersion": "1.6.0",
-  "commitSha": "d853aa99001779057f57e331df0d374a39912a68",
+  "commitSha": "a3ccd5592881d9d71d491356ea7aa955443416fb",
   "generatedBy": "fresh agent session in Claude Code with the skill named, on a project rebuilt and verified clean beforehand",
   "gradedBy": "maintainer session reading the transcript's tool calls and results against the scenario, the written report recovered verbatim from the run's single Write and put through check-report.mjs, and the scanner, analyzer, formatter, caller and call-count claims re-run on a copy of the project",
   "gradingMethod": "independent_fresh_session",
