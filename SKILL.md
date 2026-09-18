@@ -30,8 +30,7 @@ Audit and refactor Dart/Flutter code against Clean Code principles, translated t
 Output: findings ordered by impact, plus behaviour-preserving refactoring patches when tests
 make them safe.
 
-This skill is self-contained. It requires no other skill, no companion tool, and no external
-project. Everything it needs is in this directory.
+This skill is self-contained: no other skill, no companion tool, no external project.
 
 ## References
 
@@ -375,7 +374,9 @@ If the scope contains no tests at all, that is one finding, not one per untested
 **Effort:** XS / S / M / L.
 
 **Confidence:** High when the code itself proves it; Low when the judgment depends on intent you
-cannot see. Report Low-confidence findings as questions, not verdicts.
+cannot see — including when the body proves something is wrong but not which side of it is, where
+your claim is which side and stays Low however plain the defect is. Report Low-confidence
+findings as questions, not verdicts.
 
 > **High** — `getUser()` writes to the cache. The body proves the name is misleading.
 > **Low** — two similar discount blocks. They may be one rule duplicated, or two rules that
@@ -386,8 +387,7 @@ cannot see. Report Low-confidence findings as questions, not verdicts.
 the top 20, state the count left over per principle so nothing looks hidden, say which modules are
 queued, and stop. A report nobody finishes is a report that changed nothing.
 
-Order by Impact, then by lower Effort inside the same Impact, so quick wins come first. No
-numeric score is emitted.
+Order by Impact, then lower Effort inside the same Impact — quick wins first. No numeric score.
 
 ### Step 4 — Refactor (REFACTOR mode only)
 
@@ -504,7 +504,7 @@ then explicitly asks for one; if they do, label it as generic and untested again
 **AUDIT / DIFF**
 
 - All seven principle areas checked.
-- Every finding carries Impact, Effort, Confidence, and a `file:line` location.
+- Every finding carries one Impact, one Effort, one Confidence, and a `file:line` location.
 - Out-of-scope items listed with a one-line reason.
 - Evidence level stated.
 

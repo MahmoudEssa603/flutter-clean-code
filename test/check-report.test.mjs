@@ -71,6 +71,25 @@ test('Confidence is High or Low, and Medium is neither', () => {
   assert.match(failures.join('\n'), /CC-001 Confidence is "Medium"/);
 });
 
+test('a finding rated two confidences at once fails', () => {
+  // A real run wrote "High (the name) / Low (the intent)" on a field whose name was proven and
+  // whose intent was not. Reading the first word alone recorded that as High, so the report
+  // carried a contradiction the checker had endorsed. One value per finding, per SKILL.md.
+  const { failures } = checkReport(
+    report([finding(1, { confidence: 'High (the name) / Low (the intent)' })]),
+  );
+  assert.match(failures.join('\n'), /CC-001 Confidence is "High \(the name\) \/ Low \(the intent\)"/);
+  assert.match(failures.join('\n'), /one value per finding/);
+});
+
+test('Confidence still passes when the value is bolded or trailed by punctuation', () => {
+  // Tightening the read must not start failing reports that were always right.
+  for (const confidence of ['**Low**', 'Low.', 'Low ']) {
+    const { failures } = checkReport(report([finding(1, { confidence })]));
+    assert.deepEqual(failures, [], `rejected a valid Confidence: ${confidence}`);
+  }
+});
+
 test('more findings than the cap fails', () => {
   const many = Array.from({ length: 21 }, (_, i) => finding(i + 1));
   assert.match(checkReport(report(many)).failures.join('\n'), /21 findings listed, over the cap of 20/);

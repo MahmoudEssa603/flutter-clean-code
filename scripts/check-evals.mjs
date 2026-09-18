@@ -107,6 +107,21 @@ export function findStale({ results, currentVersion }) {
     .map((r) => ({ scenario: r.scenario, verdict: r.verdict, gradedAgainst: r.skillVersion }));
 }
 
+/**
+ * Verdicts that name the current version while the current surface has already moved past it.
+ *
+ * findStale compares version strings, and a version string only moves at a release. Editing
+ * SKILL.md between releases therefore leaves every verdict claiming a surface that is no longer
+ * in the tree, with nothing in the comparison able to see it — the check goes quiet exactly when
+ * it has something to say. This asks git instead, and asks it whether or not the number moved.
+ */
+export function verdictsOnMovedSurface({ results, currentVersion, changedPaths }) {
+  if (!currentVersion || !changedPaths || changedPaths.length === 0) return [];
+  return results
+    .filter((r) => r.verdict !== 'NOT_RUN' && r.skillVersion === currentVersion)
+    .map((r) => r.scenario);
+}
+
 // Every release moves the version line, and no scenario has ever depended on it. Comparing raw
 // bytes would therefore mark all twelve verdicts stale on any release at all, which is a warning
 // that fires every time and so gets read as noise. Line endings are normalised for the same
@@ -211,26 +226,40 @@ function read() {
 
 // Printed, never fatal. Whether stale verdicts are worth 16 fresh sessions is the maintainer's
 // call; hiding that they are stale is not.
+const listPaths = (paths) =>
+  (paths.length > 3 ? `${paths.slice(0, 3).join(', ')} +${paths.length - 3} more` : paths.join(', '));
+
 function reportStale(results, currentVersion) {
   if (!currentVersion) return;
   const stale = findStale({ results, currentVersion });
-  if (stale.length === 0) return;
 
-  const versions = [...new Set(stale.map((s) => s.gradedAgainst))].sort();
-  console.log('');
-  console.log(`  ${stale.length} verdict(s) graded against ${versions.join(', ')}; the tree is ${currentVersion}.`);
+  if (stale.length > 0) {
+    const versions = [...new Set(stale.map((s) => s.gradedAgainst))].sort();
+    console.log('');
+    console.log(`  ${stale.length} verdict(s) graded against ${versions.join(', ')}; the tree is ${currentVersion}.`);
 
-  for (const version of versions) {
-    const changed = surfaceChangedSince(version);
-    if (changed === null) {
-      console.log(`  v${version}: cannot tell what changed since — no such tag here, or no git.`);
-    } else if (changed.length === 0) {
-      console.log(`  v${version}: no model-facing file changed since. Those verdicts still hold.`);
-    } else {
-      const list = changed.length > 3 ? `${changed.slice(0, 3).join(', ')} +${changed.length - 3} more` : changed.join(', ');
-      console.log(`  v${version}: ${list} changed since. Re-run those scenarios, or say why not.`);
+    for (const version of versions) {
+      const changed = surfaceChangedSince(version);
+      if (changed === null) {
+        console.log(`  v${version}: cannot tell what changed since — no such tag here, or no git.`);
+      } else if (changed.length === 0) {
+        console.log(`  v${version}: no model-facing file changed since. Those verdicts still hold.`);
+      } else {
+        console.log(`  v${version}: ${listPaths(changed)} changed since. Re-run those scenarios, or say why not.`);
+      }
     }
   }
+
+  // The version string only moves at a release, so the comparison above cannot see an edit made
+  // between two of them. Ask git directly, and report a moved surface even when the number agrees.
+  const changedSinceCurrent = surfaceChangedSince(currentVersion);
+  const unverified = verdictsOnMovedSurface({ results, currentVersion, changedPaths: changedSinceCurrent });
+  if (unverified.length === 0) return;
+
+  console.log('');
+  console.log(`  ${listPaths(changedSinceCurrent)} changed since v${currentVersion}, which is still the declared version.`);
+  console.log(`  ${unverified.length} verdict(s) name that version and describe a surface no longer in the tree.`);
+  console.log('  Re-run them before the next tag, or record why the change cannot reach them.');
 }
 
 /**

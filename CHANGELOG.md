@@ -9,6 +9,29 @@ the last one is holding whatever it shipped until the next. See the bump table i
 
 ## [Unreleased]
 
+### Fixed
+- Confidence collapses to High on one shape, and the scale now names it. `SKILL.md:377` said
+  High when the code proves it and Low when the judgment turns on intent you cannot see, which
+  three runs read as a licence to rate the easiest half of their own claim. `09` and `12` each
+  wrote that the body cannot say which of a name and its body is wrong, and rated the finding
+  High anyway; `14` rated one finding `High (the name) / Low (the intent)`, inventing a second
+  value because nothing said which to record. The scale now covers the case directly: when the
+  body proves something is wrong but not which side of it is, the claim being made is which
+  side, and it stays Low however plain the defect. Where the rule already worked — a judgment
+  waiting on a file outside scope — it is unchanged, and `01`, `05` and `15` were right there.
+- `scripts/check-report.mjs` reads Confidence to the end of its line instead of taking the first
+  word, so `High (the name) / Low (the intent)` is rejected rather than recorded as High. The
+  checker had endorsed the contradiction it existed to catch. `SKILL.md`'s exit criteria now say
+  one Impact, one Effort and one Confidence per finding, so the check enforces a stated rule
+  rather than one only the script knew — the same defect this repository fixed in the re-run
+  heading at 1.5.0.
+- `scripts/check-evals.mjs` asks git whether the surface moved, not only whether the version
+  string did. A verdict names a version, and a version moves at a release, so any edit to
+  `SKILL.md` between two releases left seventeen verdicts describing a file no longer in the
+  tree with nothing able to report it: the staleness check returned before it ever reached the
+  question. It now runs whether or not the number moved, and says which verdicts are unverified.
+  Printed, never fatal — re-running is the maintainer's call, hiding the need is not.
+
 ### Changed
 - Scenario 11's second expectation describes what its fixture actually does. It asked for a wall
   of `undefined_class` cascading from unresolved packages to be recognised and not mined; this

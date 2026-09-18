@@ -133,7 +133,11 @@ export function checkReport(text, label = 'report') {
 
     const impact = /\*\*Impact:\*\*\s*(\w+)/.exec(block);
     const effort = /\*\*Effort:\*\*\s*(\w+)/.exec(block);
-    const confidence = /\*\*Confidence:\*\*\s*\**\s*(\w+)/.exec(block);
+    // Confidence is read to the end of its line, not as the first word on it. Reading one word
+    // accepted "High (the name) / Low (the intent)" as High: a real run wrote that, because the
+    // name was proven and the intent was not, and no rule told it which to record. SKILL.md now
+    // says one Confidence per finding, and a finding needing two is two findings or one at Low.
+    const confidence = /\*\*Confidence:\*\*\s*(.*)$/m.exec(block);
 
     if (!impact) fail(`${id} has no Impact`);
     else if (!IMPACT.includes(impact[1])) fail(`${id} Impact is "${impact[1]}"`);
@@ -142,7 +146,14 @@ export function checkReport(text, label = 'report') {
     else if (!EFFORT.includes(effort[1])) fail(`${id} Effort is "${effort[1]}"`);
 
     if (!confidence) fail(`${id} has no Confidence`);
-    else if (!CONFIDENCE.includes(confidence[1])) fail(`${id} Confidence is "${confidence[1]}"`);
+    else {
+      const value = confidence[1].replace(/\*/g, '').trim().replace(/[.·]+$/, '').trim();
+      if (!CONFIDENCE.includes(value)) {
+        fail(CONFIDENCE.some((c) => value.startsWith(c))
+          ? `${id} Confidence is "${value}" — one value per finding: split it, or rate it Low`
+          : `${id} Confidence is "${value}"`);
+      }
+    }
 
     // "A finding without a location is an opinion" — a location, not necessarily a line. Some
     // defects have no line to point at: a misspelled filename is the file, and a missing test

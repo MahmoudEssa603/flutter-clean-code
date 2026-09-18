@@ -15,6 +15,7 @@ import {
   queriesWithoutTrigger,
   read,
   surfaceChangedSince,
+  verdictsOnMovedSurface,
 } from '../scripts/check-evals.mjs';
 import { renderSummary } from '../scripts/generate-eval-summary.mjs';
 
@@ -113,6 +114,41 @@ test('NOT_RUN never goes stale, because it claims nothing', () => {
     currentVersion: '9.9.9',
   });
   assert.deepEqual(stale, []);
+});
+
+test('a verdict goes unverified when the surface moves under its own version', () => {
+  // findStale compares version strings, and the string only moves at a release. An edit between
+  // two releases leaves every verdict naming a surface that is gone, and the comparison stays
+  // silent about it — which is the case this check exists for, not an edge of it.
+  const results = [record({ skillVersion: '1.3.2' }), record({ scenario: '02-b' })];
+
+  assert.deepEqual(findStale({ results, currentVersion: '1.3.2' }), []);
+  assert.deepEqual(
+    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] }),
+    ['01-a', '02-b'],
+  );
+});
+
+test('an unmoved surface leaves every verdict alone, and NOT_RUN is never named', () => {
+  const results = [record({ scenario: '03-c', verdict: 'NOT_RUN', note: 'not run' }), record()];
+
+  assert.deepEqual(
+    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: [] }),
+    [],
+  );
+  assert.deepEqual(
+    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] }),
+    ['01-a'],
+  );
+});
+
+test('"cannot tell" is not "nothing moved" — a null surface answer names nothing', () => {
+  // surfaceChangedSince returns null when git cannot answer. Passing that through as an empty
+  // list would turn a shallow clone into a clean bill of health for every verdict in the table.
+  assert.deepEqual(
+    verdictsOnMovedSurface({ results: [record()], currentVersion: '1.3.2', changedPaths: null }),
+    [],
+  );
 });
 
 test('an unknown tag reports "cannot tell", not "nothing changed"', () => {
