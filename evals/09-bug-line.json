@@ -12,12 +12,12 @@
   "expected_behavior": [
     "copyWith declaring nickname and never passing it is reported as a High-impact finding, because the defect is visible in the shape of the code and the bug it causes is silent",
     "The finding states the cost to the reader and names the silent bug as the reason for the impact, rather than withholding the finding because a bug is involved",
-    "reload() returning early on a cached profile is handed back in one line under Out of Scope. The guard is in plain sight; whether it is a defect is not. That turns on what callers expect of reload(), no caller is in scope, and neither reading the file nor running it decides between a refetch that never refetches and a cache that is merely misnamed",
-    "The two are separated explicitly, so the reader can see where the line was drawn"
+    "reload() is reported rather than handed back — the guard is in plain sight, and a method whose name promises a refetch while its body returns without one is the misleading name SKILL.md:237 already calls a finding — but at Low confidence and put as a question, because no caller is in scope and nothing in scope decides between a refetch that never refetches and a cache that is merely misnamed",
+    "The report shows which of the two the code settles and which it only raises: copyWith at High because the body proves it, reload() at Low as an open question. Rating both the same hides the line instead of drawing it"
   ],
   "must_not": [
     "Withhold the copyWith finding on the grounds that bugs are out of scope",
-    "Present the run-only defect as a clean-code finding with an Impact, Effort and Confidence",
+    "Assert what reload() costs a caller — a retry button that stops working, a screen that never refreshes — when no caller is in scope to say so",
     "Lead the report with a list of silent bugs, turning a clean-code audit into a defect hunt",
     "Propose a behaviour-changing patch in AUDIT mode"
   ]

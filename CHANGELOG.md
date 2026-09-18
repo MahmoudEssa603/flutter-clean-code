@@ -7,6 +7,33 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
+## [Unreleased]
+
+### Changed
+- Scenarios 09 and 12 stop demanding a handback `SKILL.md` never asks for. Both required
+  `reload()` — a method whose name promises a refetch while its body returns without one — to be
+  handed back under Out of Scope. Read together, the skill says the opposite three times: the bug
+  line at `:80-86` hands back only a defect reachable solely by running the code, and this guard
+  is in plain sight; `:237` makes a name its body contradicts a finding outright, in the same
+  shape as the `getUser()` that writes to cache; and the uncertainty that is left — whether it is
+  a broken refetch or a misnamed cache — is intent you cannot see, which `:377` puts at
+  Confidence: Low as a question and `:174` refuses to let you drop. So both scenarios now expect
+  the finding reported at Low confidence, and 09 additionally expects the two ratings to differ,
+  which is the line it exists to watch. The runs were right to report it and wrong to rate it
+  High, and both verdicts stand: `09` FAIL at 2/4, `12` PARTIAL at 4/5. No model-facing file
+  changed, so no scenario was re-run. Scenario `09-bug-line` keeps its id: its first two
+  expectations are still the bug line's own clause, that a defect visible in the shape of the
+  code is the skill's to report. The far side of that line is measured by
+  `16-runtime-bug-and-clean-code`, whose fixture carries a crash no reading can diagnose.
+- Scenario 09's second `must_not` forbade presenting the run-only defect with an Impact, Effort
+  and Confidence — a prohibition resting on the same premise, and recorded broken on the strength
+  of it. It now forbids the claim this fixture genuinely cannot support: what `reload()` costs a
+  caller, when no caller is in scope. The run asserts nothing of the kind, so 09's `must_not`
+  tally moves from one broken to all held while its verdict does not move.
+- `evals/README.md` described the `customer_profile.dart` fixture as holding one defect on each
+  side of the bug line, and the seeded previous report as carrying one finding that belongs in
+  Out of Scope. Both descriptions followed the expectations rather than the rules.
+
 ## [1.5.0] — 2026-09-12
 
 ### Fixed
