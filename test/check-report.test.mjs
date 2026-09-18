@@ -175,6 +175,26 @@ test('a fully Arabic report holds the contract, headings and finding labels incl
   assert.deepEqual(checkReport(arabic).failures, []);
 });
 
+test('the Not checked label is read by its root, because a list of spellings ran out', () => {
+  // The checker held five spellings and scenario 03, answered in Egyptian Arabic, wrote a sixth:
+  // `**اللي ماتفحصش:**`. The field was there and said what it should; only the dialect was new.
+  for (const label of ['اللي ماتفحصش', 'ما اتفحصش', 'لم يُفحَص', 'ما اتراجعش']) {
+    const arabic = report([finding(1)]).replace('**Not checked:**', `**${label}:**`);
+    assert.deepEqual(checkReport(arabic).failures, [], label);
+  }
+  const missing = report([finding(1)]).replace('**Not checked:** nothing\n', '');
+  assert.match(checkReport(missing).failures.join('\n'), /the header has no Not checked field/);
+});
+
+test('an Arabic Summary still has its rows counted', () => {
+  // The heading was accepted in Arabic, but the row count looked for "## Summary" alone, so a
+  // dropped principle row in an Arabic report was never caught — silently, with a pass.
+  const short = report([finding(1)])
+    .replace('## Summary', '## الملخص')
+    .replace('| Tests | 0 | 0 | 0 | 0 |\n', '');
+  assert.match(checkReport(short).failures.join('\n'), /6 principle rows, not 7/);
+});
+
 test('a report silent about the scanner fails', () => {
   // Two real passes skipped the measuring step and said nothing, so a reader could not tell
   // whether the numbers were measured or eyeballed. Running it is optional; saying is not.

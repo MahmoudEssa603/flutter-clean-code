@@ -5,8 +5,8 @@
 // whether something was rightly called out of scope — that is the reading, and it stays yours.
 //
 // It reads the contract, not the tool, so a report from any agent is checked the same way.
-// Section headings stay English in every language (the template translates prose and table
-// cells); the five header fields do translate, so both spellings are accepted.
+// The template translates prose, headings and table cells, so header fields, section headings
+// and finding labels are accepted in English or Arabic; identifiers and code stay English.
 //
 // Node built-ins only: no install step, no network, no dependencies.
 // Usage: node scripts/check-report.mjs <report.md> [<report.md> ...] [--quiet]
@@ -24,13 +24,23 @@ const CONFIDENCE = ['High', 'Low'];
 const PRINCIPLE_AREAS = 7;
 const CAP = 20;
 
+// Arabic diacritics, which may sit between any two letters of a root.
+const HARAKAT = '[\\u064B-\\u0652]*';
+
 // Prose translates; these labels are the header, and the template lets them translate with it.
+//
+// Not checked is matched by root rather than by listing spellings. The list held five and the
+// next real run, answering in Egyptian Arabic, wrote a sixth — `اللي ماتفحصش`. Negation and
+// dialect vary freely around ف-ح-ص (examine) and راجع (review); the root does not.
 const HEADER_FIELDS = [
   { name: 'Scope', spellings: ['Scope', 'النطاق'] },
   { name: 'Evidence', spellings: ['Evidence', 'الدليل', 'الأدلة', 'مستوى الدليل'] },
   { name: 'Conventions', spellings: ['Conventions', 'الاصطلاحات', 'الأعراف'] },
   { name: 'Verification', spellings: ['Verification', 'التحقق'] },
-  { name: 'Not checked', spellings: ['Not checked', 'لم يُفحَص', 'لم يتم فحص', 'ما لم يُفحص', 'ما اتراجعش'] },
+  {
+    name: 'Not checked',
+    spellings: ['Not checked', `[^*:\\n]*(?:ف${HARAKAT}ح${HARAKAT}ص|راجع)[^*:\\n]*`],
+  },
 ];
 
 // The same rule reaches further than the header. references/report-template.md says prose,
@@ -98,7 +108,12 @@ export function checkReport(text, label = 'report') {
   // --- the summary table ---------------------------------------------------
   // A missing row reads as an area nobody looked at, which is the failure worth catching. The
   // row names themselves translate, so count the rows rather than matching their text.
-  const summary = /^##\s+Summary\b.*$([\s\S]*?)(?=^##\s|\Z)/m.exec(text);
+  // The heading is found by the same spellings as the section check; this used to look for
+  // "Summary" alone, so an Arabic report's rows were never counted. The section runs to the next
+  // heading or the end of the text — JavaScript has no \Z, which here meant a literal "Z".
+  const summarySpellings = SECTIONS.find((s) => s.name === 'Summary').spellings.join('|');
+  const summary = new RegExp(`^##\\s+(?:${summarySpellings})(?!\\p{L}).*$([\\s\\S]*?)(?=^##\\s|(?![\\s\\S]))`, 'mu')
+    .exec(text);
   if (summary) {
     const rows = summary[1]
       .split('\n')

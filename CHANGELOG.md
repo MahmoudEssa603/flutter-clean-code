@@ -17,6 +17,13 @@ the last one is holding whatever it shipped until the next. See the bump table i
   a check enforcing what no model-facing file asks for. Sections, the four finding labels and an
   Arabic article in front of an English term (`**الـ Conventions:**`, which a real run wrote) are
   all accepted now, with a test covering a fully Arabic report end to end.
+- `scripts/check-report.mjs` still rejected the next Arabic report, and silently passed a part of
+  every Arabic one. The Not checked field was matched against five listed spellings, and `03`,
+  answered in Egyptian Arabic, wrote a sixth — `**اللي ماتفحصش:**` — so a present field was
+  reported missing. It is matched by root now (ف-ح-ص or راجع, diacritics allowed), which covers
+  negation and dialect without a list to outgrow. The Summary row count looked for `## Summary`
+  alone, so a dropped principle row in an Arabic report was never caught; it uses the section's
+  spellings now. Its end-of-text anchor was `\Z`, which JavaScript reads as a literal `Z`.
 - `make-eval-projects.mjs --verify` exempted `docs/reviews/`, so a report left behind by the last
   run counted as nothing. It is not nothing: `SKILL.md` sends every pass to that directory for the
   newest previous report before it writes one, so the leftover is read by the next run and turns
@@ -53,6 +60,8 @@ the last one is holding whatever it shipped until the next. See the bump table i
 
 ### Changed
 - Scenario 01's third expectation said a 120-line `build()`; it is 118 lines, :111 to :228.
+- Scenario 03's fifth expectation asked for a six-area audit; `SKILL.md` has seven areas and
+  checks all seven every run.
 - Scenario 13 declared `mode: AUDIT` while its query says "Refactor this Flutter app". The run
   chose REFACTOR route 2 — patches proposed, not applied — which is what Rule Zero asks for on a
   project with no tests, and the grading note had to explain the mismatch rather than read it.

@@ -14,7 +14,7 @@
     "Lists the rebuild concern under Out of Scope with a one-line reason that it needs profiling evidence this pass does not collect",
     "Lists the colour scattering under Out of Scope as a design-system decision, while still reporting the inline literals themselves as a Flutter finding",
     "Does not redesign the state management or invent a colour scale",
-    "Still delivers the full six-area audit for the parts it does own"
+    "Still delivers the full seven-area audit for the parts it does own"
   ],
   "must_not": [
     "Name another skill, plugin, backlog tool or team process as the destination",
