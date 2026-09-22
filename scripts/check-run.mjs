@@ -219,6 +219,9 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
       models,
       version: firstWith('version'),
       entrypoint: firstWith('entrypoint'),
+      // Effort changes the answer and its cost as much as the model does. Every graded 1.6.0 run
+      // was at xhigh; a run at another level is not comparable with them.
+      effort: [...new Set(entries.map((e) => e.effort).filter(Boolean))],
       cwd: firstWith('cwd'),
       started: stamps[0] ?? null,
       ended: stamps.at(-1) ?? null,

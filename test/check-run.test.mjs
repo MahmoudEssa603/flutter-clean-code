@@ -15,7 +15,7 @@ const CWD = 'd:\\eval-runs\\01-audit-fat-widget';
 // A transcript is one JSON object per line; these build the few shapes the checker reads.
 let clock = 0;
 const stamp = () => new Date(Date.UTC(2026, 8, 22, 12, 0, clock++)).toISOString();
-const meta = { sessionId: 's1', version: '2.1.278', entrypoint: 'cli', cwd: CWD };
+const meta = { sessionId: 's1', version: '2.1.278', entrypoint: 'cli', cwd: CWD, effort: 'xhigh' };
 
 const user = (text) => ({ ...meta, type: 'user', timestamp: stamp(), message: { role: 'user', content: [{ type: 'text', text }] } });
 const said = (id, text, usage = { input_tokens: 1, output_tokens: 10 }) => ({
@@ -163,6 +163,7 @@ test('identity comes from the transcript, and a host-written message is not a mo
   assert.deepEqual(run.identity.models, ['claude-opus-5']);
   assert.equal(run.identity.version, '2.1.278');
   assert.equal(run.identity.entrypoint, 'cli');
+  assert.deepEqual(run.identity.effort, ['xhigh']);
 });
 
 test('the command line refuses unknown flags and a WITH check with no install', () => {
