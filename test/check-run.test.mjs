@@ -71,24 +71,27 @@ test('a scanner reached through a shell variable is resolved, not trusted', () =
     ...loadedFrom(INSTALL),
     bash('m1', 'SKILL="D:/eval-home/skills/flutter-clean-code"'),
     bash('m2', 'node "$SKILL/scripts/scan-dart.mjs" lib'),
+    said('m3', 'report'),
   ]);
   assert.equal(good.valid, true, good.problems.join('\n'));
 
   const bad = withRun([
     ...loadedFrom(INSTALL),
     bash('m1', 'SD=~/.claude/skills/flutter-clean-code && node $SD/scripts/scan-dart.mjs lib'),
+    said('m2', 'report'),
   ]);
   assert.equal(bad.valid, false);
 
   const powershell = withRun([
     ...loadedFrom(INSTALL),
     tool('m1', 'PowerShell', { command: "$s = 'C:\\Users\\someone\\.claude\\skills\\flutter-clean-code'; node \"$s\\scripts\\scan-dart.mjs\" lib" }),
+    said('m2', 'report'),
   ]);
   assert.equal(powershell.valid, false);
 });
 
 test('a path that cannot be resolved holds the run for a person, never passes it', () => {
-  const run = withRun([...loadedFrom(INSTALL), bash('m1', 'node "$UNSET/scripts/scan-dart.mjs" lib')]);
+  const run = withRun([...loadedFrom(INSTALL), bash('m1', 'node "$UNSET/scripts/scan-dart.mjs" lib'), said('m2', 'report')]);
   assert.equal(run.valid, false);
   assert.deepEqual(run.problems, []);
   assert.match(run.held[0], /cannot be resolved mechanically/);
@@ -98,10 +101,11 @@ test('a relative scanner path is resolved from the directory the command ran in'
   const inside = withRun([
     ...loadedFrom(INSTALL),
     bash('m1', 'cd D:/eval-home/skills/flutter-clean-code && node scripts/scan-dart.mjs D:/eval-runs/01'),
+    said('m2', 'report'),
   ]);
   assert.equal(inside.valid, true, inside.problems.join('\n'));
 
-  const fromProject = withRun([...loadedFrom(INSTALL), bash('m1', 'node scripts/scan-dart.mjs lib')]);
+  const fromProject = withRun([...loadedFrom(INSTALL), bash('m1', 'node scripts/scan-dart.mjs lib'), said('m2', 'report')]);
   assert.equal(fromProject.valid, false, 'scripts/ under the project is not the install');
 });
 
@@ -110,6 +114,7 @@ test('reading or listing the scanner is not running it', () => {
     ...loadedFrom(INSTALL),
     bash('m1', 'ls ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs'),
     tool('m2', 'Read', { file_path: `${STABLE}\\scripts\\scan-dart.mjs` }),
+    said('m3', 'report'),
   ]);
   assert.deepEqual(run.scanners, []);
   assert.equal(run.valid, true);
@@ -117,16 +122,17 @@ test('reading or listing the scanner is not running it', () => {
 
 test('a WITH run that never loaded the skill, or loaded another copy, is not valid', () => {
   assert.match(withRun([user('audit this'), said('m1', 'ok')]).problems.join('\n'), /never loaded/);
-  assert.match(withRun(loadedFrom(STABLE)).problems.join('\n'), /not the evaluation install/);
+  assert.match(withRun([...loadedFrom(STABLE), said('m1', 'report')]).problems.join('\n'), /not the evaluation install/);
 });
 
 test('an implicit run may leave the skill unloaded, but not load or run another copy', () => {
   // 04 and 17 leave the skill unnamed on purpose; whether it activates is what they measure.
   const implicit = (entries) => checkRun(entries, { condition: 'implicit', install: INSTALL, home: HOME });
   assert.equal(implicit([user('clean this Python up'), said('m1', 'not Dart')]).valid, true);
-  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${INSTALL}`)]).valid, true);
-  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${STABLE}`)]).valid, false);
-  assert.equal(implicit([user('x'), bash('m1', 'node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs lib')]).valid, false);
+  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${INSTALL}`), said('m1', 'report')]).valid, true);
+  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${STABLE}`), said('m1', 'report')]).valid, false);
+  const stableScanner = 'node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs lib';
+  assert.equal(implicit([user('x'), bash('m1', stableScanner), said('m2', 'report')]).valid, false);
 });
 
 test('a WITHOUT run shows no trace of the skill', () => {
@@ -140,6 +146,20 @@ test('a WITHOUT run shows no trace of the skill', () => {
 
   const scanner = withoutRun([user('audit this'), bash('m1', 'node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs lib')]);
   assert.match(scanner.problems.join('\n'), /scanner ran in a WITHOUT run/);
+});
+
+test('a run that stopped after its last tool call is not valid', () => {
+  // An interactive calibration run restarted itself after four tool calls and said nothing. It
+  // was recorded valid, because every other check passed: the skill had loaded from the right
+  // install and no forbidden scanner ran. A run that never answered is not a run.
+  const interrupted = withRun([...loadedFrom(INSTALL), bash('m1', 'ls'), bash('m2', 'cat a.dart')]);
+  assert.equal(interrupted.valid, false);
+  assert.match(interrupted.problems.join(' '), /said nothing after its last tool call/);
+  assert.equal(interrupted.answerChars, 0);
+
+  const answered = withRun([...loadedFrom(INSTALL), bash('m1', 'ls'), said('m2', '# Clean Code — AUDIT')]);
+  assert.equal(answered.valid, true, answered.problems.join(' '));
+  assert.ok(answered.answerChars > 0);
 });
 
 test('usage counts each API message once, although the transcript repeats it per block', () => {

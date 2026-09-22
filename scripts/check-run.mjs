@@ -141,11 +141,20 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
   }
 
   const toolUses = [];
-  for (const e of assistants) {
+  // A run has to end by answering. An interactive session that was interrupted, or a headless one
+  // that died, stops after its last tool call with nothing said: at 1.6.0 no check would have
+  // caught that, and one calibration run was recorded valid having produced no report at all.
+  let lastToolIndex = -1;
+  let answerChars = 0;
+  assistants.forEach((e, index) => {
     for (const c of Array.isArray(e.message.content) ? e.message.content : []) {
-      if (c.type === 'tool_use') toolUses.push({ entry: e, name: c.name, input: c.input ?? {} });
+      if (c.type === 'tool_use') {
+        toolUses.push({ entry: e, name: c.name, input: c.input ?? {} });
+        lastToolIndex = index;
+      }
+      if (c.type === 'text' && index > lastToolIndex) answerChars += c.text.length;
     }
-  }
+  });
 
   // --- did the skill load, and from where ------------------------------------------------
   const userTexts = entries.filter((e) => e.type === 'user').map((e) => textOf(e.message?.content));
@@ -189,6 +198,9 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
 
   // --- the verdict --------------------------------------------------------------------------
   if (models.length > 1) problems.push(`more than one model answered: ${models.join(', ')}`);
+  if (answerChars === 0) {
+    problems.push('the run said nothing after its last tool call: it was interrupted or it died');
+  }
   if (condition === 'with' || condition === 'implicit') {
     const target = normalisePath(install);
     if (!loaded && condition === 'with') problems.push('the skill never loaded: no Skill call, no slash command, no base directory');
@@ -227,6 +239,7 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
       ended: stamps.at(-1) ?? null,
     },
     skill: { loaded, skillCalls: skillCalls.length, slashInvoked, baseDirs },
+    answerChars,
     scanners,
     references,
     cost: {

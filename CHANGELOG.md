@@ -32,6 +32,11 @@ the last one is holding whatever it shipped until the next. See the bump table i
   describes.
 
 ### Added
+- `scripts/check-run.mjs` also refuses a run that said nothing after its last tool call. An
+  interactive calibration run restarted itself mid-way and produced no report, and every other
+  check passed it: the skill had loaded from the right install and no forbidden scanner ran. A
+  run that never answered is not a run. Five existing tests had transcripts ending on a tool
+  call, which is not a shape a finished run has; they now end with an answer.
 - `scripts/check-run.mjs` checks a measured run from its transcript. A WITH run must have
   loaded the skill from the evaluation install, and every scanner it executed must be that
   install's. `SKILL.md`'s fallback searches `~/.claude/skills` first, which in the 1.7.0 layout
