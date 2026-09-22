@@ -98,6 +98,7 @@ and a run never needs them:
 |---|---|
 | `validate-skill.mjs` | Enforces this file's contract. Run it before every commit; CI runs it too. |
 | `check-report.mjs` | Checks a report against the parts of the report contract that need no judgment. |
+| `check-run.mjs` | Checks from a transcript that a measured run used the evaluation install, or no skill at all, and records its identity and cost. |
 | `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
 | `generate-eval-summary.mjs` | Renders the results table in `evals/README.md` from the records. |
 | `make-baseline.mjs` | Records what the deterministic tooling says, so a later change can be compared, not argued. |
@@ -140,6 +141,7 @@ built-ins. `test/README.md` says what each covers:
 | `test/scan-dart.test.mjs` | unit |
 | `test/check-report.test.mjs` | unit |
 | `test/check-evals.test.mjs` | unit |
+| `test/check-run.test.mjs` | unit |
 | `test/validate-skill.test.mjs` | integration |
 | `test/make-eval-projects.test.mjs` | integration |
 | `test/make-baseline.test.mjs` | integration |

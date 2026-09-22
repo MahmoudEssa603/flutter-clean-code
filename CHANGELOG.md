@@ -32,6 +32,19 @@ the last one is holding whatever it shipped until the next. See the bump table i
   describes.
 
 ### Added
+- `scripts/check-run.mjs` checks a measured run from its transcript. A WITH run must have
+  loaded the skill from the evaluation install, and every scanner it executed must be that
+  install's. `SKILL.md`'s fallback searches `~/.claude/skills` first, which in the 1.7.0 layout
+  holds the stable release, so a run could measure the wrong scanner and look normal doing it.
+  Paths are resolved, not pattern-matched: `~`, shell variables and relative paths, because at
+  1.6.0 two runs wrote the `~` path literally and two went through a variable. A path it cannot
+  resolve holds the run for a person. A WITHOUT run must show no Skill call, no injected skill,
+  no `CC-` id and no scanner. It also records the model, version, entrypoint, timestamps, tool
+  calls and usage, counting each API message once although the transcript repeats it per content
+  block. Run over the seventeen 1.6.0 transcripts, it resolved every path, including both
+  variables, and found that `06` ran the scanner from the repository path rather than the
+  install. At 1.6.0 that was the same file through the junction; in an isolated install it would
+  not be.
 - `make-eval-projects.mjs --only <id> --diff` prints what a run changed in its project, as a
   unified diff against a fresh layout of the same scenario, leaving out the build output
   `--verify` already ignores. A scenario with a repository also gets its `git status
