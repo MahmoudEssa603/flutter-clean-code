@@ -31,26 +31,26 @@ cannot see.
 
 ```dart
 // Before
-Future<User> getUser(String id) async {
-  final user = await _api.fetchUser(id);
-  await _cache.write(id, user);   // hidden write
-  _analytics.log('user_opened');  // hidden write
-  return user;
+Future<Traveller> getTraveller(String id) async {
+  final traveller = await _api.fetchTraveller(id);
+  await _cache.write(id, traveller);   // hidden write
+  _analytics.log('traveller_opened');  // hidden write
+  return traveller;
 }
 ```
 
 ```dart
 // After — the read is a read; the writes are named and owned by the caller
-Future<User> fetchUser(String id) => _api.fetchUser(id);
+Future<Traveller> fetchTraveller(String id) => _api.fetchTraveller(id);
 
-Future<User> loadAndCacheUser(String id) async {
-  final user = await fetchUser(id);
-  await _cache.write(id, user);
-  return user;
+Future<Traveller> loadAndCacheTraveller(String id) async {
+  final traveller = await fetchTraveller(id);
+  await _cache.write(id, traveller);
+  return traveller;
 }
 ```
 
-The analytics call moved out entirely: logging that a user opened a screen is the screen's
+The analytics call moved out entirely: logging that a traveller opened a screen is the screen's
 concern, not the repository's.
 
 ### 1.2 Type noise and mental mapping
@@ -59,16 +59,16 @@ concern, not the repository's.
 // Before
 final userList = <User>[];
 final strName = user.name;
-final b = order.total > 0;
-void doIt(Order o) { ... }
+final b = booking.totalFare > 0;
+void doIt(Booking o) { ... }
 ```
 
 ```dart
 // After
 final users = <User>[];
 final name = user.name;
-final hasBalance = order.total > 0;
-void submitOrder(Order order) { ... }
+final hasBalance = booking.totalFare > 0;
+void submitBooking(Booking booking) { ... }
 ```
 
 ### 1.3 One word per concept
@@ -77,16 +77,16 @@ Three verbs for one operation force the reader to check whether they differ.
 
 ```dart
 // Before
-Future<User>    fetchUser(String id);
-Future<Profile> getProfile(String id);
-Future<Settings> loadSettings(String id);
+Future<Traveller> fetchTraveller(String id);
+Future<Passport>  getPassport(String id);
+Future<Settings>  loadSettings(String id);
 ```
 
 ```dart
 // After — pick one verb for "go get it from the source" and keep it
-Future<User>     fetchUser(String id);
-Future<Profile>  fetchProfile(String id);
-Future<Settings> fetchSettings(String id);
+Future<Traveller> fetchTraveller(String id);
+Future<Passport>  fetchPassport(String id);
+Future<Settings>  fetchSettings(String id);
 ```
 
 ### 1.4 Extension names
@@ -96,13 +96,13 @@ An extension is named for whom it serves, not for what it wraps.
 ```dart
 // Before — the name says nothing a reader can use
 extension StringExtension on String { ... }
-extension OrderExtension on Order { ... }
+extension BookingExtension on Booking { ... }
 ```
 
 ```dart
 // After
-extension OrderTotals on Order {
-  double get subtotal => items.fold(0.0, (sum, item) => sum + item.price);
+extension BookingFares on Booking {
+  double get totalFare => legs.fold(0.0, (sum, leg) => sum + leg.fare);
 }
 
 extension PhoneFormatting on String {
@@ -111,7 +111,7 @@ extension PhoneFormatting on String {
 ```
 
 An extension on a core type that encodes one feature's rule belongs inside that feature. Once
-`extension StringExtension on String` holds order formatting, invoice parsing and profile
+`extension StringExtension on String` holds booking formatting, receipt parsing and traveller
 initials, every screen that imports it gets all three.
 
 ### 1.5 Transliterated identifiers
@@ -124,15 +124,15 @@ English term nor the Arabic one.
 Future<User> getMostakhdem(String id);
 void saveBayanat(Map<String, dynamic> data);
 bool get isMafool => status == 'active';
-final orderTaleb = <Order>[];
+final hagozat = <Booking>[];
 ```
 
 ```dart
 // After
 Future<User> fetchUser(String id);
-void saveProfile(Map<String, dynamic> data);
-bool get isActive => status == OrderStatus.active;
-final orders = <Order>[];
+void saveTravellerDetails(Map<String, dynamic> data);
+bool get isActive => status == BookingStatus.active;
+final bookings = <Booking>[];
 ```
 
 The exemption is for domain terms with no English equivalent, not for convenience. These stay:
@@ -151,30 +151,30 @@ Translating those loses meaning; translating `mostakhdem` to `user` loses nothin
 
 ### 2.1 The boolean flag parameter
 
-`submit(order, true)` is unreadable at the call site, and the body is two functions wearing one
+`submit(booking, true)` is unreadable at the call site, and the body is two functions wearing one
 coat.
 
 ```dart
 // Before
-Future<void> submit(Order order, bool isDraft) async {
+Future<void> submit(Booking booking, bool isDraft) async {
   if (isDraft) {
-    await _repo.saveDraft(order);
+    await _repo.saveDraft(booking);
     return;
   }
-  await _validator.validate(order);
-  await _repo.submit(order);
-  await _notifier.confirm(order);
+  await _validator.validate(booking);
+  await _repo.submit(booking);
+  await _notifier.confirm(booking);
 }
 ```
 
 ```dart
 // After
-Future<void> saveDraft(Order order) => _repo.saveDraft(order);
+Future<void> saveDraft(Booking booking) => _repo.saveDraft(booking);
 
-Future<void> submitOrder(Order order) async {
-  await _validator.validate(order);
-  await _repo.submit(order);
-  await _notifier.confirm(order);
+Future<void> submitBooking(Booking booking) async {
+  await _validator.validate(booking);
+  await _repo.submit(booking);
+  await _notifier.confirm(booking);
 }
 ```
 
@@ -182,30 +182,30 @@ Future<void> submitOrder(Order order) async {
 
 ```dart
 // Before
-String describe(Order? order) {
-  if (order != null) {
-    if (order.items.isNotEmpty) {
-      if (order.isPaid) {
-        return 'Paid: ${order.items.length} items';
+String summarize(Booking? booking) {
+  if (booking != null) {
+    if (booking.legs.isNotEmpty) {
+      if (booking.isConfirmed) {
+        return 'Confirmed: ${booking.legs.length} legs';
       } else {
-        return 'Awaiting payment';
+        return 'Awaiting confirmation';
       }
     } else {
-      return 'Empty order';
+      return 'No legs booked';
     }
   } else {
-    return 'No order';
+    return 'No booking';
   }
 }
 ```
 
 ```dart
 // After — guard clauses, one level of nesting
-String describe(Order? order) {
-  if (order == null) return 'No order';
-  if (order.items.isEmpty) return 'Empty order';
-  if (!order.isPaid) return 'Awaiting payment';
-  return 'Paid: ${order.items.length} items';
+String summarize(Booking? booking) {
+  if (booking == null) return 'No booking';
+  if (booking.legs.isEmpty) return 'No legs booked';
+  if (!booking.isConfirmed) return 'Awaiting confirmation';
+  return 'Confirmed: ${booking.legs.length} legs';
 }
 ```
 
@@ -214,7 +214,7 @@ String describe(Order? order) {
 ```dart
 // Before
 Widget priceRow(String label, double amount, bool bold, bool showCurrency, int decimals) { ... }
-priceRow('Total', 42.5, true, true, 2);   // what is true, true?
+priceRow('Fare', 312.4, true, true, 2);   // what is true, true?
 ```
 
 ```dart
@@ -227,7 +227,7 @@ Widget priceRow({
   int decimals = 2,
 }) { ... }
 
-priceRow(label: 'Total', amount: 42.5, isEmphasised: true);
+priceRow(label: 'Fare', amount: 312.4, isEmphasised: true);
 ```
 
 When the same five parameters travel together to three or more functions, they are a concept:
@@ -239,11 +239,11 @@ give them a `PriceRowStyle` value class instead.
 // Before
 final children = <Widget>[];
 children.add(const Header());
-if (user.isPremium) {
-  children.add(const PremiumBadge());
+if (traveller.isLoyaltyMember) {
+  children.add(const LoyaltyBadge());
 }
-for (final item in items) {
-  children.add(ItemTile(item: item));
+for (final leg in legs) {
+  children.add(LegTile(leg: leg));
 }
 ```
 
@@ -251,8 +251,8 @@ for (final item in items) {
 // After
 final children = <Widget>[
   const Header(),
-  if (user.isPremium) const PremiumBadge(),
-  for (final item in items) ItemTile(item: item),
+  if (traveller.isLoyaltyMember) const LoyaltyBadge(),
+  for (final leg in legs) LegTile(leg: leg),
 ];
 ```
 
@@ -270,7 +270,7 @@ String label(Payment p) {
   if (p.type == 'card') return 'Card ****${p.last4}';
   if (p.type == 'cash') return 'Cash';
   if (p.type == 'wallet') return 'Wallet ${p.walletName}';
-  return 'Unknown';        // the silent hole
+  return 'Other';          // the silent hole
 }
 ```
 
@@ -311,7 +311,7 @@ class UserRepository {
   Future<User> fetch(String id) { ... }          // data access
   String formatJoinDate(User u) { ... }          // presentation
   Future<void> uploadAvatar(File f) { ... }      // file I/O
-  bool isEligibleForDiscount(User u) { ... }     // business rule
+  bool isEligibleForUpgrade(User u) { ... }      // business rule
 }
 ```
 
@@ -329,32 +329,32 @@ class AvatarUploader {
   Future<void> upload(File file) { ... }
 }
 
-class DiscountPolicy {
+class UpgradePolicy {
   bool isEligible(User user) { ... }
 }
 ```
 
-`DiscountPolicy` is the important one: a business rule with its own name is a rule you can test
+`UpgradePolicy` is the important one: a business rule with its own name is a rule you can test
 and find, instead of a method buried in a data class.
 
 ### 3.3 LSP — the override that breaks the contract
 
 ```dart
 // Before
-class ReadOnlyCart extends Cart {
+class ReadOnlyItinerary extends Itinerary {
   @override
-  void add(Item item) => throw UnimplementedError();   // callers of Cart now crash
+  void add(Leg leg) => throw UnimplementedError();   // callers of Itinerary now crash
 }
 ```
 
 ```dart
 // After — split the interface so the type cannot promise what it will not do
-abstract interface class ReadableCart {
-  List<Item> get items;
+abstract interface class ReadableItinerary {
+  List<Leg> get legs;
 }
 
-abstract interface class WritableCart implements ReadableCart {
-  void add(Item item);
+abstract interface class WritableItinerary implements ReadableItinerary {
+  void add(Leg leg);
 }
 ```
 
@@ -383,40 +383,46 @@ silent: no crash, no analyzer diagnostic, just a value that quietly fails to cha
 
 ```dart
 // Before — `note` was added later and never reached copyWith or ==
-class Order {
-  const Order({required this.id, required this.items, required this.note});
+class Booking {
+  const Booking({required this.reference, required this.legs, required this.note});
 
-  final String id;
-  final List<Item> items;
+  final String reference;
+  final List<Leg> legs;
   final String note;
 
-  Order copyWith({String? id, List<Item>? items}) =>
-      Order(id: id ?? this.id, items: items ?? this.items, note: note);
+  Booking copyWith({String? reference, List<Leg>? legs}) =>
+      Booking(reference: reference ?? this.reference, legs: legs ?? this.legs, note: note);
 
   @override
   bool operator ==(Object other) =>
-      other is Order && other.id == id && other.items == items;
+      other is Booking && other.reference == reference && other.legs == legs;
 
   @override
-  int get hashCode => Object.hash(id, items);
+  int get hashCode => Object.hash(reference, legs);
 }
 ```
 
-`order.copyWith(note: 'gift')` does not compile — that part is caught. But two orders differing
-only by `note` compare equal, so a state notifier holding `Order` will not emit, and the screen
-never updates.
+`booking.copyWith(note: 'window seat')` does not compile — that part is caught. But two bookings
+differing only by `note` compare equal, so a state notifier holding `Booking` will not emit, and
+the screen never updates.
 
 ```dart
 // After — every field appears in all three, and copyWith accepts every field
-Order copyWith({String? id, List<Item>? items, String? note}) =>
-    Order(id: id ?? this.id, items: items ?? this.items, note: note ?? this.note);
+Booking copyWith({String? reference, List<Leg>? legs, String? note}) => Booking(
+      reference: reference ?? this.reference,
+      legs: legs ?? this.legs,
+      note: note ?? this.note,
+    );
 
 @override
 bool operator ==(Object other) =>
-    other is Order && other.id == id && other.items == items && other.note == note;
+    other is Booking &&
+    other.reference == reference &&
+    other.legs == legs &&
+    other.note == note;
 
 @override
-int get hashCode => Object.hash(id, items, note);
+int get hashCode => Object.hash(reference, legs, note);
 ```
 
 When counting fields against these three methods, count them one by one. This is the single most
@@ -426,7 +432,7 @@ If the project already generates value classes, a hand-written one is itself the
 
 ### 3.6 `==` on a collection field
 
-A `List` field compared with `==` compares by identity. Two lists holding the same items are
+A `List` field compared with `==` compares by identity. Two lists holding the same legs are
 not equal, so a state notifier holding this class never emits, and the screen silently stops
 updating. Nothing crashes and no analyzer rule fires.
 
@@ -434,10 +440,10 @@ updating. Nothing crashes and no analyzer rule fires.
 // Before
 @override
 bool operator ==(Object other) =>
-    other is Cart && other.items == items;   // identity, not contents
+    other is Itinerary && other.legs == legs;   // identity, not contents
 
 @override
-int get hashCode => Object.hash(items);      // hashes the reference
+int get hashCode => Object.hash(legs);         // hashes the reference
 ```
 
 ```dart
@@ -446,10 +452,10 @@ import 'package:flutter/foundation.dart';
 
 @override
 bool operator ==(Object other) =>
-    other is Cart && listEquals(other.items, items);
+    other is Itinerary && listEquals(other.legs, legs);
 
 @override
-int get hashCode => Object.hashAll(items);
+int get hashCode => Object.hashAll(legs);
 ```
 
 `mapEquals` and `setEquals` are the equivalents for the other collections. For a nested
@@ -463,32 +469,32 @@ none, it is ceremony.
 
 ```dart
 // Over-built — three classes to express three constants
-sealed class OrderStatus {}
-final class Draft extends OrderStatus {}
-final class Paid extends OrderStatus {}
-final class Cancelled extends OrderStatus {}
+sealed class BookingStatus {}
+final class Held extends BookingStatus {}
+final class Confirmed extends BookingStatus {}
+final class Voided extends BookingStatus {}
 ```
 
 ```dart
 // Right-sized — a Dart 3 enum carries fields and methods when it needs to
-enum OrderStatus {
-  draft(isFinal: false),
-  paid(isFinal: true),
-  cancelled(isFinal: true);
+enum BookingStatus {
+  held(isFinal: false),
+  confirmed(isFinal: true),
+  voided(isFinal: true);
 
-  const OrderStatus({required this.isFinal});
+  const BookingStatus({required this.isFinal});
   final bool isFinal;
 }
 ```
 
-Reach for `sealed` when the variants stop being interchangeable: `Paid(receiptId)` and
-`Cancelled(reason, refundedAt)` hold different data, and that is what an `enum` cannot do.
+Reach for `sealed` when the variants stop being interchangeable: `Confirmed(ticketNumber)` and
+`Voided(reason, refundedAt)` hold different data, and that is what an `enum` cannot do.
 
 Records are the third option, and the boundary is visibility:
 
 ```dart
 // Fine — a local pair, read three lines later
-final (subtotal, discount) = _priceParts(order);
+final (baseFare, taxes) = _fareParts(booking);
 
 // A finding — the signature tells a caller nothing
 (String, int, bool) parseHeader(String raw);
@@ -505,9 +511,9 @@ final (subtotal, discount) = _priceParts(order);
 
 ```dart
 // Before — 90 lines, four visual concepts, no const anywhere
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, required this.user});
-  final User user;
+class TravellerPage extends StatelessWidget {
+  const TravellerPage({super.key, required this.traveller});
+  final Traveller traveller;
 
   @override
   Widget build(BuildContext context) {
@@ -515,15 +521,15 @@ class ProfilePage extends StatelessWidget {
       body: Column(
         children: [
           Row(children: [
-            CircleAvatar(backgroundImage: NetworkImage(user.avatarUrl)),
-            const SizedBox(width: 16),
+            CircleAvatar(backgroundImage: NetworkImage(traveller.photoUrl)),
+            const SizedBox(width: 12),
             Column(children: [
-              Text(user.name, style: const TextStyle(fontSize: 20)),
-              Text(user.email),
+              Text(traveller.name, style: const TextStyle(fontSize: 22)),
+              Text(traveller.email),
             ]),
           ]),
           const Divider(),
-          // ... 60 more lines of stats, actions and a footer
+          // ... 60 more lines of trips, loyalty points and a footer
         ],
       ),
     );
@@ -533,28 +539,28 @@ class ProfilePage extends StatelessWidget {
 
 ```dart
 // After — each concept is a class with a name, a const constructor, and a DevTools identity
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key, required this.user});
-  final User user;
+class TravellerPage extends StatelessWidget {
+  const TravellerPage({super.key, required this.traveller});
+  final Traveller traveller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ProfileHeader(user: user),
+          TravellerHeader(traveller: traveller),
           const Divider(),
-          ProfileStats(user: user),
-          ProfileActions(user: user),
+          TravellerTrips(traveller: traveller),
+          TravellerActions(traveller: traveller),
         ],
       ),
     );
   }
 }
 
-class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key, required this.user});
-  final User user;
+class TravellerHeader extends StatelessWidget {
+  const TravellerHeader({super.key, required this.traveller});
+  final Traveller traveller;
 
   @override
   Widget build(BuildContext context) { ... }
@@ -568,7 +574,7 @@ a `Widget` gets none of that and still rebuilds with the whole parent.
 A private builder is fine for a two-line local branch:
 
 ```dart
-Widget _emptyState() => const Center(child: Text('No items yet'));
+Widget _emptyState() => const Center(child: Text('No trips yet'));
 ```
 
 ### 4.2 Extraction has a floor as well as a ceiling
@@ -579,30 +585,30 @@ file to learn it was a `SizedBox`.
 
 ```dart
 // Over-extracted — six lines and a file jump to say "gap"
-class _SectionGap extends StatelessWidget {
-  const _SectionGap();
+class _BlockSpacer extends StatelessWidget {
+  const _BlockSpacer();
 
   @override
-  Widget build(BuildContext context) => const SizedBox(height: 24);
+  Widget build(BuildContext context) => const SizedBox(height: 20);
 }
 ```
 
 ```dart
 // Inline it
-const SizedBox(height: 24)
+const SizedBox(height: 20)
 ```
 
 Extraction earns its cost when the extracted thing has a concept worth naming, is reused,
-holds state, or is large enough that leaving it inline hides the parent's shape. `_SectionGap`
-meets none of those; `ProfileHeader` meets three.
+holds state, or is large enough that leaving it inline hides the parent's shape. `_BlockSpacer`
+meets none of those; `TravellerHeader` meets three.
 
 ### 4.3 Magic numbers inline
 
 ```dart
 // Before
-Padding(padding: const EdgeInsets.all(17), child: ...)
+Padding(padding: const EdgeInsets.all(13), child: ...)
 AnimatedOpacity(duration: const Duration(milliseconds: 340), ...)
-Container(color: const Color(0xFF3B5998), ...)
+Container(color: const Color(0xFF1F6F5C), ...)
 ```
 
 ```dart
@@ -619,14 +625,14 @@ the constants locally. Do not invent a scale.
 
 ```dart
 // Before
-Text('Order summary')
-Text('No items yet')
+Text('Trip summary')
+Text('No trips yet')
 ```
 
 ```dart
 // After — only when the project already has localisation
-Text(context.l10n.orderSummaryTitle)
-Text(context.l10n.orderEmptyState)
+Text(context.l10n.tripSummaryTitle)
+Text(context.l10n.tripEmptyState)
 ```
 
 **Check first.** If there is no `l10n.yaml`, no `.arb` files and no `flutter_localizations` in
@@ -679,7 +685,7 @@ hiding the fact that the field genuinely has no value before `initState`.
 ```dart
 // Before
 late User currentUser;              // crashes with LateInitializationError if read early
-Widget build(BuildContext c) => Text(profile!.name);   // crashes if profile is null
+Widget build(BuildContext c) => Text(itinerary!.title);   // crashes if itinerary is null
 ```
 
 ```dart
@@ -687,9 +693,9 @@ Widget build(BuildContext c) => Text(profile!.name);   // crashes if profile is 
 User? currentUser;
 
 Widget build(BuildContext context) {
-  final profile = this.profile;
-  if (profile == null) return const ProfileSkeleton();
-  return Text(profile.name);
+  final itinerary = this.itinerary;
+  if (itinerary == null) return const ItinerarySkeleton();
+  return Text(itinerary.title);
 }
 ```
 
@@ -702,24 +708,24 @@ Widget build(BuildContext context) {
 
 ```dart
 // Before
-// Loop over the items
-for (final item in items) {
-  // Add the price to the total
-  total += item.price;
+// Loop over the legs
+for (final leg in legs) {
+  // Add the fare to the total
+  total += leg.fare;
 }
 
-// final oldTotal = items.fold(0, (a, b) => a + b.price);
-// TODO: fix this later
+// final oldFare = legs.fold(0, (a, b) => a + b.fare);
+// TODO: clean up
 ```
 
 ```dart
 // After — the "what" comments are gone; the "why" comment earns its place
-for (final item in items) {
-  total += item.price;
+for (final leg in legs) {
+  total += leg.fare;
 }
 
 // Server rounds half-up while Dart rounds half-even; matching the server avoids
-// a 1-cent mismatch on the invoice. See issue #482.
+// a 1-cent mismatch on the receipt. See issue #482.
 final rounded = (total * 100).roundToDouble() / 100;
 ```
 
@@ -735,18 +741,18 @@ a tracked item with an owner or removed.
 ```dart
 // Before
 try {
-  await _repo.save(order);
+  await _repo.save(booking);
 } catch (e) {
-  // ignore
+  // nothing to do
 }
 ```
 
 ```dart
 // After — narrow type, stack trace kept, failure visible to the caller
 try {
-  await _repo.save(order);
+  await _repo.save(booking);
 } on NetworkException catch (e, stackTrace) {
-  _log.error('Saving order ${order.id} failed', e, stackTrace);
+  _log.error('Saving booking ${booking.reference} failed', e, stackTrace);
   rethrow;
 }
 ```
@@ -758,17 +764,17 @@ explanation is the finding.
 
 ```dart
 // Before
-Future<int> saveOrder(Order o) async {   // 0 = ok, 1 = network, 2 = validation
+Future<int> saveBooking(Booking b) async {   // 0 = ok, 1 = network, 2 = validation
   ...
 }
 ```
 
 ```dart
 // After — pick whichever the project already uses, and use only that one
-Future<void> saveOrder(Order order) async { ... }   // throws on failure
+Future<void> saveBooking(Booking booking) async { ... }   // throws on failure
 
 // or, in a Result-based codebase:
-Future<Result<Order, SaveFailure>> saveOrder(Order order) async { ... }
+Future<Result<Booking, SaveFailure>> saveBooking(Booking booking) async { ... }
 ```
 
 ### 6.3 Async honesty
@@ -776,13 +782,13 @@ Future<Result<Order, SaveFailure>> saveOrder(Order order) async { ... }
 ```dart
 // Before
 Future<void> refresh() async {          // async, never awaits
-  _repo.reload();                       // fire-and-forget; errors vanish
+  _repo.sync();                         // fire-and-forget; errors vanish
 }
 ```
 
 ```dart
 // After
-Future<void> refresh() => _repo.reload();
+Future<void> refresh() => _repo.sync();
 ```
 
 ### 6.4 DRY on knowledge
@@ -790,21 +796,23 @@ Future<void> refresh() => _repo.reload();
 The same rule, written twice, will drift.
 
 ```dart
-// Before — checkout_page.dart
-final discount = user.isPremium && order.total > 100 ? order.total * 0.1 : 0.0;
+// Before — fare_page.dart
+final credit = traveller.isLoyaltyMember && booking.totalFare > 400 ? booking.totalFare * 0.05 : 0.0;
 
-// Before — invoice_service.dart
-final discount = order.total > 100 && user.isPremium ? order.total * 0.1 : 0.0;
+// Before — receipt_service.dart
+final credit = booking.totalFare > 400 && traveller.isLoyaltyMember ? booking.totalFare * 0.05 : 0.0;
 ```
 
 ```dart
 // After — one home for the rule, one place to change it, one place to test it
-class DiscountPolicy {
-  static const _threshold = 100.0;
-  static const _rate = 0.1;
+class LoyaltyCreditPolicy {
+  static const _threshold = 400.0;
+  static const _rate = 0.05;
 
-  double discountFor(User user, Order order) =>
-      user.isPremium && order.total > _threshold ? order.total * _rate : 0.0;
+  double creditFor(Traveller traveller, Booking booking) =>
+      traveller.isLoyaltyMember && booking.totalFare > _threshold
+          ? booking.totalFare * _rate
+          : 0.0;
 }
 ```
 
@@ -817,11 +825,11 @@ them, so the reader knows you looked.
 
 ```dart
 // Similar shape, different rules — do NOT merge these
-double shippingDiscount(Order o) => o.total > 100 ? o.total * 0.1 : 0;
-double loyaltyDiscount(Order o)  => o.total > 100 ? o.total * 0.1 : 0;
+double baggageCredit(Booking b) => b.totalFare > 400 ? b.totalFare * 0.05 : 0;
+double loyaltyCredit(Booking b) => b.totalFare > 400 ? b.totalFare * 0.05 : 0;
 ```
 
-Shipping and loyalty are separate business decisions that happen to agree today. Merging them
+Baggage and loyalty are separate business decisions that happen to agree today. Merging them
 means the next change to one silently changes the other.
 
 Also not findings:

@@ -52,7 +52,7 @@ One refactoring type, applied across one scope, verified once.
 
 | Batch type | Example |
 |---|---|
-| **Rename** | `getUser` → `fetchUser` across the module |
+| **Rename** | `getBalance` → `fetchBalance` across the module |
 | **Extract** | one fat `build()` split into three widget classes |
 | **Split** | one god class divided by responsibility |
 | **Inline** | a needless indirection removed |
@@ -115,14 +115,14 @@ correctness test: if the current behaviour is wrong, the test records the wrong 
 you say so in a comment.
 
 ```dart
-// Characterization: pins current behaviour before extracting ProfileHeader.
+// Characterization: pins current behaviour before extracting TravellerHeader.
 // NOTE: an empty name currently renders "  " rather than a placeholder.
 // This is recorded, not endorsed — see finding CC-004.
-testWidgets('ProfilePage renders name and email as they are today', (tester) async {
-  await tester.pumpWidget(const MaterialApp(home: ProfilePage(user: _fixture)));
+testWidgets('TravellerPage renders name and email as they are today', (tester) async {
+  await tester.pumpWidget(const MaterialApp(home: TravellerPage(traveller: _fixture)));
 
-  expect(find.text('Sara Ahmed'), findsOneWidget);
-  expect(find.text('sara@example.com'), findsOneWidget);
+  expect(find.text('Lina Haddad'), findsOneWidget);
+  expect(find.text('lina@example.com'), findsOneWidget);
 });
 ```
 
@@ -131,7 +131,7 @@ Rules:
 - Cover the observable surface the batch touches, nothing wider.
 - Prefer widget tests over golden files: goldens fail on font and platform differences and turn
   a safe refactor into a debugging session.
-- Name the file after the code, not the refactor: `profile_page_test.dart`.
+- Name the file after the code, not the refactor: `traveller_page_test.dart`.
 - Keep them after the refactor. They are the regression net that made it safe.
 
 ## Rollback

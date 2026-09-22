@@ -52,7 +52,7 @@ Findings are numbered `CC-001` upward, ordered by Impact then by lower Effort.
 
 **Principle:** <Naming | Functions | SOLID | Flutter | Comments | Errors>
 **Impact:** <High|Medium|Low> · **Effort:** <XS|S|M|L> · **Confidence:** <High|Low>
-**Location:** `lib/features/orders/order_page.dart:42`
+**Location:** `lib/features/bookings/booking_page.dart:42`
 
 <One or two sentences: what the reader loses because of this. Not a restatement of the rule.>
 
@@ -154,20 +154,20 @@ not ask for.
 
 ```json
 {
-  "module": "orders",
+  "module": "bookings",
   "mode": "AUDIT",
   "date": "2026-08-28",
   "evidence": "Partial",
-  "notChecked": ["order.freezed.dart (generated)", "31 Low findings dropped by the cap"],
+  "notChecked": ["booking.freezed.dart (generated)", "31 Low findings dropped by the cap"],
   "findings": [
     {
       "id": "CC-001",
-      "title": "Move the discount rule out of the widget",
+      "title": "Move the loyalty credit rule out of the widget",
       "principle": "Errors & data",
       "impact": "High",
       "effort": "S",
       "confidence": "High",
-      "file": "lib/features/orders/order_summary_page.dart",
+      "file": "lib/features/bookings/itinerary_screen.dart",
       "line": 76
     }
   ]

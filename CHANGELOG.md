@@ -54,6 +54,27 @@ the last one is holding whatever it shipped until the next. See the bump table i
   project is one more thing a run could find.
 
 ### Changed
+- **The skill no longer carries the answers to its own evals.** A run in the isolated install read
+  `references/example-report.md`, and its first line named `evals/fixtures/order_summary_page.dart`.
+  It was a full eleven-finding audit of the very file `01`, `07` and `16` review, with the
+  fixture's line numbers. The other references had been built from the fixtures the same way:
+  - `dart-examples.md` held the page's `describe()` word for word, its `_SectionGap`,
+    `EdgeInsets.all(17)`, `Color(0xFF3B5998)`, `// TODO: fix this later`, the swallowed catch
+    and the discount rule;
+  - `test-quality.md` held `07`'s test almost line for line (the `isVisible` loop,
+    `findsNWidgets(9)`, `MockOrder`);
+  - `SKILL.md` used `getUser()`, the page's own misnamed method, as its example of a misleading
+    name.
+
+  A run on those scenarios could read its answers instead of finding them. So the 1.6.0 verdicts
+  on `01`, `07` and `16` may overstate what the skill does on code it has not seen, and an A/B
+  measured this way would have measured the answer sheet. Every example now lives in a
+  travel-booking domain, with different names, values and defects. What each example teaches is
+  unchanged. The worked report is a new audit of `itinerary_screen.dart`, and it now numbers its
+  findings by impact and then effort as `SKILL.md` requires; the old one put an Effort S High
+  ahead of two Effort XS ones. A scan of every identifier, string and colour in the Dart fixtures
+  against `SKILL.md` and `references/` finds only SDK names and the general `copyWith` rule.
+  `SKILL.md` keeps its line count.
 - `scripts/check-evals.mjs` counts `scripts/scan-dart.mjs` as model-facing, beside `SKILL.md`
   and `references/`. `SKILL.md` tells every run to execute the scanner and cite its numbers, so a
   change to its signals changes what a run reports while no Markdown file moves. Without this, a

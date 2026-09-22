@@ -43,19 +43,19 @@ The name states the behaviour and the condition, not the method.
 
 ```dart
 // Before
-test('discount', () { ... });
-test('test discount 2', () { ... });
-testWidgets('ProfilePage', (tester) async { ... });
+test('credit', () { ... });
+test('test credit 2', () { ... });
+testWidgets('ItineraryScreen', (tester) async { ... });
 ```
 
 ```dart
 // After
-test('applies 10% discount when a premium user spends over 100', () { ... });
-test('applies no discount when a premium user spends exactly 100', () { ... });
-testWidgets('shows a skeleton while the profile is loading', (tester) async { ... });
+test('credits 5% when a loyalty member books over 400', () { ... });
+test('credits nothing when a loyalty member books exactly 400', () { ... });
+testWidgets('shows a skeleton while the itinerary is loading', (tester) async { ... });
 ```
 
-The boundary case earns its own name. `discount 2` tells a person nothing about what regressed.
+The boundary case earns its own name. `credit 2` tells a person nothing about what regressed.
 
 ## 2. One reason to fail
 
@@ -64,20 +64,20 @@ unrelated assertions reports one problem and hides three.
 
 ```dart
 // Before — one failure hides the rest
-test('order behaves', () {
-  expect(order.total, 100);
-  expect(order.discount, 10);
-  expect(order.status, OrderStatus.paid);
-  expect(order.items, hasLength(3));
+test('booking behaves', () {
+  expect(booking.totalFare, 480);
+  expect(booking.loyaltyCredit, 24);
+  expect(booking.status, BookingStatus.confirmed);
+  expect(booking.legs, hasLength(2));
 });
 ```
 
 ```dart
 // After — each behaviour reports independently
-group('a paid premium order over the threshold', () {
-  test('totals the line items', () => expect(order.total, 100));
-  test('applies the premium discount', () => expect(order.discount, 10));
-  test('is marked paid', () => expect(order.status, OrderStatus.paid));
+group('a confirmed loyalty booking over the threshold', () {
+  test('totals the fares of every leg', () => expect(booking.totalFare, 480));
+  test('earns the loyalty credit', () => expect(booking.loyaltyCredit, 24));
+  test('is marked confirmed', () => expect(booking.status, BookingStatus.confirmed));
 });
 ```
 
@@ -91,10 +91,10 @@ pass without asserting anything.
 
 ```dart
 // Before — when the list is empty, this test passes having tested nothing
-test('all items have a price', () {
-  for (final item in order.items) {
-    if (item.isVisible) {
-      expect(item.price, greaterThan(0));
+test('all legs have a fare', () {
+  for (final leg in booking.legs) {
+    if (leg.isConfirmed) {
+      expect(leg.fare, greaterThan(0));
     }
   }
 });
@@ -102,10 +102,10 @@ test('all items have a price', () {
 
 ```dart
 // After — the intent is stated once, and an empty list fails
-test('every visible item is priced', () {
-  final visible = order.items.where((item) => item.isVisible).toList();
-  expect(visible, isNotEmpty);
-  expect(visible.every((item) => item.price > 0), isTrue);
+test('every confirmed leg has a fare', () {
+  final confirmed = booking.legs.where((leg) => leg.isConfirmed).toList();
+  expect(confirmed, isNotEmpty);
+  expect(confirmed.every((leg) => leg.fare > 0), isTrue);
 });
 ```
 
@@ -119,21 +119,21 @@ start mutating shared state.
 
 ```dart
 // Before
-late Order order;
+late Booking booking;
 
 setUp(() {
-  order = Order(
-    id: '1',
-    user: User(id: 'u1', name: 'Sara', isPremium: true),
-    items: [Item(name: 'A', price: 50, quantity: 2)],
+  booking = Booking(
+    reference: 'BK-7',
+    traveller: Traveller(id: 't9', name: 'Lina', isLoyaltyMember: true),
+    legs: [Leg(route: 'AMM-IST', fare: 240, seats: 2)],
   );
 });
 
-test('non-premium gets no discount', () {
-  order = Order(                      // rebuilding the whole thing anyway
-    id: '1',
-    user: User(id: 'u1', name: 'Sara', isPremium: false),
-    items: [Item(name: 'A', price: 50, quantity: 2)],
+test('a guest earns no credit', () {
+  booking = Booking(                  // rebuilding the whole thing anyway
+    reference: 'BK-7',
+    traveller: Traveller(id: 't9', name: 'Lina', isLoyaltyMember: false),
+    legs: [Leg(route: 'AMM-IST', fare: 240, seats: 2)],
   );
   ...
 });
@@ -141,14 +141,14 @@ test('non-premium gets no discount', () {
 
 ```dart
 // After — a builder with defaults; each test states only what it cares about
-Order anOrder({bool isPremium = true, List<Item>? items}) => Order(
-      id: '1',
-      user: User(id: 'u1', name: 'Sara', isPremium: isPremium),
-      items: items ?? [Item(name: 'A', price: 50, quantity: 2)],
+Booking aBooking({bool isLoyaltyMember = true, List<Leg>? legs}) => Booking(
+      reference: 'BK-7',
+      traveller: Traveller(id: 't9', name: 'Lina', isLoyaltyMember: isLoyaltyMember),
+      legs: legs ?? [Leg(route: 'AMM-IST', fare: 240, seats: 2)],
     );
 
-test('a non-premium user gets no discount', () {
-  expect(DiscountPolicy().discountFor(anOrder(isPremium: false)), 0);
+test('a guest earns no loyalty credit', () {
+  expect(LoyaltyCreditPolicy().creditFor(aBooking(isLoyaltyMember: false)), 0);
 });
 ```
 
@@ -185,14 +185,14 @@ extracting a widget — exactly what this skill recommends — turns the suite r
 reason.
 
 ```dart
-// Before — breaks the moment Padding is wrapped in anything
-expect(find.byType(Padding), findsNWidgets(9));
+// Before — breaks the moment a Card is wrapped in anything
+expect(find.byType(Card), findsNWidgets(4));
 ```
 
 ```dart
 // After — assert what the user sees, or what the test owns
-expect(find.text('Subtotal'), findsOneWidget);
-expect(find.byKey(const Key('order-total')), findsOneWidget);
+expect(find.text('Total fare'), findsOneWidget);
+expect(find.byKey(const Key('booking-total')), findsOneWidget);
 ```
 
 `find.byType` is fine for a widget the test itself pumped, and for asserting a specific widget
@@ -207,7 +207,7 @@ a design-critical component — say so in a comment so the next person does not 
 - A mock of a type the test never calls is noise. Delete it.
 - Verifying that a mock was called, with no assertion on the outcome, tests the wiring rather
   than the behaviour. Prefer asserting the result.
-- Mocking a value class instead of constructing one is a finding: `MockOrder()` where `anOrder()`
+- Mocking a value class instead of constructing one is a finding: `MockBooking()` where `aBooking()`
   would do makes the test lie about what the code receives.
 - A double throwing `UnimplementedError` on methods the test never calls is fine, and stays fine.
   It documents the surface the test relies on.
@@ -216,11 +216,11 @@ a design-critical component — say so in a comment so the next person does not 
 
 State these out loud when you leave them, so the reader knows you looked.
 
-- **Repeated assertions across tests.** Three tests each asserting `expect(result.status, paid)`
+- **Repeated assertions across tests.** Three tests each asserting `expect(result.status, confirmed)`
   is not duplication worth removing — merging them couples three independent failures.
-- **A long test body that is one linear scenario.** An integration test walking a checkout flow
+- **A long test body that is one linear scenario.** An integration test walking a booking flow
   reads top to bottom and should not be split into helpers that hide the sequence.
-- **Magic numbers in test data.** `Item(price: 50)` needs no named constant. The literal *is* the
+- **Magic numbers in test data.** `Leg(fare: 240)` needs no named constant. The literal *is* the
   documentation, and naming it adds a hop.
 - **No test for a private helper.** It is covered through its caller. A missing test for public
   behaviour is the finding; a missing test per method is not.

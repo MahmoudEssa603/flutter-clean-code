@@ -233,7 +233,7 @@ and duplication. Check all seven areas every run. Concrete Dart before/after cod
 - Booleans read as predicates: `isLoading`, `hasError`, `canSubmit`.
 - Functions are verbs, classes are nouns, no type noise (`userList` → `users`).
 - One word per concept across the module — `fetch` vs `get` vs `load`, pick one and keep it.
-- No misleading names. A `getUser()` that also writes to cache is a finding.
+- No misleading names. A `getBalance()` that also writes to cache is a finding.
 - Dart conventions: `lowerCamelCase` members, `UpperCamelCase` types, `snake_case` files, no
   `get` prefix on getters, and `Impl`/`Manager`/`Helper` suffixes are a smell to justify.
 - Transliterated identifiers are a finding: `getMostakhdem`, `orderTaleb`, `saveBayanat`. They
@@ -378,7 +378,7 @@ cannot see — including when the body proves something is wrong but not which s
 your claim is which side and stays Low however plain the defect is. Report Low-confidence
 findings as questions, not verdicts.
 
-> **High** — `getUser()` writes to the cache. The body proves the name is misleading.
+> **High** — `getBalance()` writes to the cache. The body proves the name is misleading.
 > **Low** — two similar discount blocks. They may be one rule duplicated, or two rules that
 > agree today. Ask: "are these the same rule? If yes, CC-007 applies; if no, say so in a
 > comment so the next reader does not merge them."
