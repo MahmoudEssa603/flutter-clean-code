@@ -120,6 +120,15 @@ test('a WITH run that never loaded the skill, or loaded another copy, is not val
   assert.match(withRun(loadedFrom(STABLE)).problems.join('\n'), /not the evaluation install/);
 });
 
+test('an implicit run may leave the skill unloaded, but not load or run another copy', () => {
+  // 04 and 17 leave the skill unnamed on purpose; whether it activates is what they measure.
+  const implicit = (entries) => checkRun(entries, { condition: 'implicit', install: INSTALL, home: HOME });
+  assert.equal(implicit([user('clean this Python up'), said('m1', 'not Dart')]).valid, true);
+  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${INSTALL}`)]).valid, true);
+  assert.equal(implicit([user('x'), user(`Base directory for this skill: ${STABLE}`)]).valid, false);
+  assert.equal(implicit([user('x'), bash('m1', 'node ~/.claude/skills/flutter-clean-code/scripts/scan-dart.mjs lib')]).valid, false);
+});
+
 test('a WITHOUT run shows no trace of the skill', () => {
   assert.equal(withoutRun([user('audit this'), said('m1', 'here is my review')]).valid, true);
 

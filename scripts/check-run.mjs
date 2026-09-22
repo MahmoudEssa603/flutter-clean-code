@@ -15,8 +15,12 @@
 //
 // Node built-ins only: no install step, no network, no dependencies.
 // Usage: node scripts/check-run.mjs <transcript.jsonl> [<more.jsonl> ...]
-//          --condition with|without [--install <dir>] [--home <dir>] [--json] [--quiet]
-//   --install  the evaluation install a WITH run must use (required for --condition with)
+//          --condition with|implicit|without [--install <dir>] [--home <dir>] [--json] [--quiet]
+//   with       the query named the skill, so it must have loaded, from the install
+//   implicit   the query did not name it (04, 17): loading is the outcome being measured, not a
+//              condition of validity, but if it loaded it must be the install, and so its scanner
+//   without    the skill was not installed, and no trace of it may appear
+//   --install  the evaluation install (required for with and implicit)
 //   --home     what ~ expands to in the run (default: this user's home directory)
 //   --json     print the record as JSON, for the run's result file
 // Exit code 0 = the run is valid for its condition, 1 = it is not, or it cannot be told.
@@ -185,9 +189,9 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
 
   // --- the verdict --------------------------------------------------------------------------
   if (models.length > 1) problems.push(`more than one model answered: ${models.join(', ')}`);
-  if (condition === 'with') {
+  if (condition === 'with' || condition === 'implicit') {
     const target = normalisePath(install);
-    if (!loaded) problems.push('the skill never loaded: no Skill call, no slash command, no base directory');
+    if (!loaded && condition === 'with') problems.push('the skill never loaded: no Skill call, no slash command, no base directory');
     for (const dir of baseDirs) {
       if (normalisePath(dir) !== target) problems.push(`the host loaded the skill from ${dir}, not the evaluation install`);
     }
@@ -248,12 +252,12 @@ function main(argv) {
 
   const condition = value('--condition');
   const install = value('--install');
-  if (paths.length === 0 || !['with', 'without'].includes(condition)) {
-    console.error('usage: node scripts/check-run.mjs <transcript.jsonl> [...] --condition with|without [--install <dir>] [--home <dir>] [--json] [--quiet]');
+  if (paths.length === 0 || !['with', 'implicit', 'without'].includes(condition)) {
+    console.error('usage: node scripts/check-run.mjs <transcript.jsonl> [...] --condition with|implicit|without [--install <dir>] [--home <dir>] [--json] [--quiet]');
     return 1;
   }
-  if (condition === 'with' && !install) {
-    console.error('--condition with needs --install <dir>: the evaluation install the run must use');
+  if (condition !== 'without' && !install) {
+    console.error(`--condition ${condition} needs --install <dir>: the evaluation install the run must use`);
     return 1;
   }
 
