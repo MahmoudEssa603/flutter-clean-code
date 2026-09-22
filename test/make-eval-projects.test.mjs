@@ -18,7 +18,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { SCENARIOS, main, projectDrift } from '../scripts/make-eval-projects.mjs';
+import { SCENARIOS, main, projectDiff, projectDrift } from '../scripts/make-eval-projects.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -207,5 +207,64 @@ test('no file inside a scenario project says it is an evaluation', () => {
       assert.doesNotMatch(name, /manifest|eval/i, `${name} would tell the run it is an evaluation`);
     }
     assert.ok(existsSync(join(target, '.eval-manifests', `${only}.json`)));
+  });
+});
+
+test('a fresh project diffs to nothing', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    for (const only of ['01-audit-fat-widget', '06-diff-mode']) {
+      assert.equal(main([target, '--only', only, '--quiet']), 0);
+      assert.equal(projectDiff(join(target, only), only), '', only);
+    }
+  });
+});
+
+test('--diff shows what a run edited and added, and leaves out build output', () => {
+  // The workspace, not the run's account of itself, decides whether an edit was unsafe or
+  // unnecessary. --verify can only say that a project drifted; this is the edit itself.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '01-audit-fat-widget';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const scenario = join(target, only);
+    const page = readdirSync(scenario).find((f) => f.endsWith('.dart'));
+    const original = readFileSync(join(scenario, page), 'utf8');
+    writeFileSync(join(scenario, page), original.replace(/\bloading\b/, 'isLoading'));
+    mkdirSync(join(scenario, 'docs/reviews'), { recursive: true });
+    writeFileSync(join(scenario, 'docs/reviews/report.md'), '# a report\n');
+    mkdirSync(join(scenario, '.dart_tool'), { recursive: true });
+    writeFileSync(join(scenario, '.dart_tool/version'), '3.5.0\n');
+    writeFileSync(join(scenario, 'pubspec.lock'), 'locked again\n');
+
+    const diff = projectDiff(scenario, only);
+    assert.match(diff, new RegExp(`^diff --git a/${page} b/${page}$`, 'm'));
+    assert.match(diff, /^\+.*isLoading/m);
+    assert.match(diff, /^\+\+\+ b\/docs\/reviews\/report\.md$/m);
+    assert.match(diff, /^new file mode/m);
+    assert.doesNotMatch(diff, /\.dart_tool|pubspec\.lock/);
+  });
+});
+
+test('--diff adds git status for a scenario with a repository', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '06-diff-mode';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+
+    const scenario = join(target, only);
+    writeFileSync(join(scenario, 'NOTES.md'), 'left by a run\n');
+    const diff = projectDiff(scenario, only);
+    assert.match(diff, /^# git status --porcelain$/m);
+    assert.match(diff, /^\?\? NOTES\.md$/m);
+  });
+});
+
+test('--diff needs one scenario and an existing project', () => {
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    assert.equal(main([target, '--diff', '--quiet']), 1);
+    assert.equal(main([target, '--only', '01-audit-fat-widget', '--diff', '--quiet']), 1);
   });
 });

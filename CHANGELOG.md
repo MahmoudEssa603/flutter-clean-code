@@ -23,6 +23,15 @@ the last one is holding whatever it shipped until the next. See the bump table i
   rule living only in the template, waits for the 1.7.0 measurements to show whether it is still
   missed.
 
+### Added
+- `make-eval-projects.mjs --only <id> --diff` prints what a run changed in its project, as a
+  unified diff against a fresh layout of the same scenario, leaving out the build output
+  `--verify` already ignores. A scenario with a repository also gets its `git status
+  --porcelain`. `--verify` could only say that a project drifted. Whether an edit was unsafe,
+  unnecessary or out of scope is decided from the workspace, not from the run's account of
+  itself, and that needs the edit. No pristine copy is kept on disk, because a copy beside the
+  project is one more thing a run could find.
+
 ### Changed
 - `scripts/check-evals.mjs` counts `scripts/scan-dart.mjs` as model-facing, beside `SKILL.md`
   and `references/`. `SKILL.md` tells every run to execute the scanner and cite its numbers, so a

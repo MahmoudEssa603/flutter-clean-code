@@ -13,7 +13,7 @@ node --test test/scan-dart.test.mjs
 | `check-report.test.mjs` | unit | The report contract: the three judgements on every finding and one value each, the 20-finding cap, what counts as a location, the sections that must exist, a heading and a diff block for every batch, and the re-run exemption from the numbering checks |
 | `check-evals.test.mjs` | unit | The eval registry: no PASS sitting over a recorded partial or failure, no scenario without a record, and a verdict short of PASS that says what fell short |
 | `validate-skill.test.mjs` | integration | Every gate in `validate-skill.mjs`, by copying the repository, breaking one thing, and asserting the exit code is 1 |
-| `make-eval-projects.test.mjs` | integration | The generator: every scenario has a layout, it refuses a directory holding anything it does not manage, and `--verify` tells a run's edits from what a legitimate pass leaves behind |
+| `make-eval-projects.test.mjs` | integration | The generator: every scenario has a layout, it refuses a directory holding anything it does not manage, `--verify` tells a run's edits from what a legitimate pass leaves behind, and `--diff` shows those edits against a fresh layout |
 | `make-baseline.test.mjs` | integration | That a checkout in a differently named folder still matches the baseline — and that the directory-name NOTE really does fire there, so the first test means something |
 
 ## Why the validator is tested by breaking things

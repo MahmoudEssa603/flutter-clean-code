@@ -101,7 +101,7 @@ and a run never needs them:
 | `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
 | `generate-eval-summary.mjs` | Renders the results table in `evals/README.md` from the records. |
 | `make-baseline.mjs` | Records what the deterministic tooling says, so a later change can be compared, not argued. |
-| `make-eval-projects.mjs` | Lays each scenario out as a standalone project, and `--verify` reports what a run changed. |
+| `make-eval-projects.mjs` | Lays each scenario out as a standalone project. `--verify` reports whether a run changed it, `--diff` shows how. |
 
 A change to the runtime group changes what the skill does, and sends every scenario back for a
 re-run. A change to the maintenance group moves nothing a run reads, but that holds only when the
@@ -128,8 +128,8 @@ Rules for anything added here:
 
 ## Tests
 
-`node --test` runs everything. One suite per script, at two levels, all on Node built-ins.
-`test/README.md` says what each covers:
+`node --test` runs everything: a suite for every script but one, at two levels, all on Node
+built-ins. `test/README.md` says what each covers:
 
 | Suite | Level |
 |---|---|

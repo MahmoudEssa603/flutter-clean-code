@@ -6,8 +6,9 @@
 // fetched, and the re-run scenario wants an older report already sitting in docs/reviews.
 //
 // Node built-ins only: no install step, no network, no dependencies.
-// Usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--verify] [--quiet]
+// Usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--verify | --diff] [--quiet]
 //   --verify  report which laid-out projects a run has already changed, and build nothing
+//   --diff    print what a run changed, as a unified diff against a fresh layout, and build nothing
 // Exit code 0 = every requested scenario was written, 1 = something was refused or failed.
 
 import { createHash } from 'node:crypto';
@@ -15,6 +16,7 @@ import {
   cpSync,
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readFileSync,
   readdirSync,
   realpathSync,
@@ -22,6 +24,7 @@ import {
   writeFileSync,
 } from 'node:fs';
 import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -314,10 +317,74 @@ export function projectDrift(dir) {
   return { known: true, changed, added };
 }
 
+/**
+ * What a run changed in a laid-out project, as a unified diff against a fresh layout of it.
+ *
+ * --verify says a project drifted; this says how. The repository state, not a run's account of
+ * itself, decides whether an edit was unsafe, unnecessary or out of scope, and a hash cannot show
+ * an edit. No pristine copy is kept on disk for this, since a copy beside the project is one more
+ * thing a run could find. The scenario is laid out again in a temporary directory, both sides are
+ * copied without the build output --verify also ignores, and git compares the two. A scenario
+ * with a repository also gets its `git status --porcelain`, which shows staged and untracked work
+ * that the file diff alone would present as plain edits.
+ *
+ * Returns the text, empty when the run changed nothing.
+ */
+export function projectDiff(dir, scenarioId) {
+  const scenario = SCENARIOS.find((s) => s.id === scenarioId);
+  if (!scenario) throw new Error(`unknown scenario "${scenarioId}"`);
+
+  const work = mkdtempSync(join(tmpdir(), 'eval-diff-'));
+  try {
+    const fresh = join(work, 'layout');
+    mkdirSync(fresh);
+    layOut(fresh, scenario);
+
+    for (const [from, side] of [[fresh, 'a'], [dir, 'b']]) {
+      mkdirSync(join(work, side));
+      for (const rel of projectFiles(from)) {
+        mkdirSync(dirname(join(work, side, rel)), { recursive: true });
+        cpSync(join(from, rel), join(work, side, rel));
+      }
+    }
+
+    // --no-index exits 1 when the sides differ, which is the answer, not a failure. The two
+    // directories are named a and b and --no-prefix is set, so the headers read a/<path> b/<path>
+    // as any other git diff does, instead of carrying the directory names twice.
+    const diff = spawnSync('git', ['diff', '--no-index', '--no-color', '--no-prefix', '--', 'a', 'b'], {
+      cwd: work,
+      encoding: 'utf8',
+    });
+    if (diff.error) throw new Error(`git is not on PATH: ${diff.error.message}`);
+    if (diff.status > 1) throw new Error(`git diff --no-index failed: ${diff.stderr.trim()}`);
+
+    let text = diff.stdout;
+    if (scenario.git && existsSync(join(dir, '.git'))) {
+      const status = spawnSync('git', ['status', '--porcelain'], { cwd: dir, encoding: 'utf8' });
+      if (status.stdout.trim()) text += `
+# git status --porcelain
+${status.stdout}`;
+    }
+    return text;
+  } finally {
+    rmSync(work, { recursive: true, force: true });
+  }
+}
+
 function git(cwd, args) {
   const run = spawnSync('git', args, { cwd, encoding: 'utf8' });
   if (run.error) throw new Error(`git is not on PATH: ${run.error.message}`);
   if (run.status !== 0) throw new Error(`git ${args.join(' ')} failed: ${run.stderr.trim()}`);
+}
+
+function layOut(dir, scenario) {
+  for (const [fixture, relative] of Object.entries(scenario.copy)) {
+    copyFixture(dir, fixture, relative);
+  }
+  for (const [relative, contents] of Object.entries(scenario.write)) {
+    writeFile(dir, relative, contents);
+  }
+  if (scenario.git) buildRepository(dir, scenario.git);
 }
 
 function buildRepository(target, spec) {
@@ -341,7 +408,7 @@ function main(argv) {
   const targetArg = argv.find((a) => !a.startsWith('--') && !flagValues.has(a));
 
   if (!targetArg) {
-    console.error('usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--quiet]');
+    console.error('usage: node scripts/make-eval-projects.mjs <target-dir> [--only <id>] [--verify | --diff] [--quiet]');
     return 1;
   }
   if (only && !KNOWN_IDS.has(only)) {
@@ -375,6 +442,24 @@ function main(argv) {
     return 1;
   }
 
+  // The diff goes to stdout so it can be saved beside the run's transcript; the verdict on it is
+  // for whoever grades the run.
+  if (argv.includes('--diff')) {
+    if (!only) {
+      console.error('--diff needs --only <id>: one run, one diff');
+      return 1;
+    }
+    const dir = join(target, only);
+    if (!existsSync(dir)) {
+      console.error(`${dir} does not exist; there is no run to diff`);
+      return 1;
+    }
+    const text = projectDiff(dir, only);
+    process.stdout.write(text);
+    if (!quiet) console.error(text ? `${only}: the run changed the project` : `${only}: no changes`);
+    return 0;
+  }
+
   // Rebuilding means deleting, so refuse a directory holding anything this script did not put
   // there. Pointing it at a real project should cost nothing.
   if (existsSync(target)) {
@@ -397,17 +482,8 @@ function main(argv) {
     const dir = join(target, scenario.id);
     emptyDirectory(dir);
     mkdirSync(dir, { recursive: true });
-
-    for (const [fixture, relative] of Object.entries(scenario.copy)) {
-      copyFixture(dir, fixture, relative);
-    }
-    for (const [relative, contents] of Object.entries(scenario.write)) {
-      writeFile(dir, relative, contents);
-    }
-    if (scenario.git) {
-      buildRepository(dir, scenario.git);
-      repositories += 1;
-    }
+    layOut(dir, scenario);
+    if (scenario.git) repositories += 1;
     writeManifest(dir, scenario.id);
     if (!quiet) console.log(`  ${scenario.id}`);
   }
