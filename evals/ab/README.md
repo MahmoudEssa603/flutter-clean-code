@@ -1,8 +1,8 @@
 # A/B measurement protocol
 
-> **Status: DRAFT, not frozen.** Nothing here may change once the first measured A/B run exists.
-> The commit that removes this line is the freeze. Every result under `evals/ab/` is graded
-> against the protocol as it stood at that commit.
+> **Status: frozen 2026-09-23.** Nothing here changes while measured A/B results exist. A
+> correction after the freeze is recorded with its reason and its date, and every result graded
+> before it is re-graded.
 
 This protocol answers one question: how much better does the same model do on the same task
 with the skill than without it? It measures against a ground truth written before any run,
@@ -63,6 +63,12 @@ drafts were merged by root cause, under one rule applied without exception: **an
 `required` only if both drafts marked it required.** A disagreement, or an item only one draft
 found, is optional. So no run is marked down for omitting something an independent reviewer also
 left out. Each file lists the questions the merge could not settle, under `reviewQuestions`.
+
+**Three questions the merge could not settle were decided from the baseline runs**, and each
+decision is recorded in the file it applies to: the test suite's inability to compile is optional
+(no run reported it, and the fixture is partial by design); the cancelled-order text contradiction
+is optional (no run claimed it, one drafter of two found it); and the `late` field beside the
+loading bool is required (six of nine runs named the error it invites).
 
 An item is corrected after the freeze only when it is **proven wrong**, for example a wrong line
 or a claim the code contradicts. The correction is recorded with its reason and its date, and

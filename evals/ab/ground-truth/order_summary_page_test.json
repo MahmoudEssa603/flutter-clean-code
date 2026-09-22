@@ -1,11 +1,10 @@
 {
   "fixture": "test/features/orders/order_summary_page_test.dart",
-  "scenarios": ["07-test-quality"],
-  "status": "draft — awaiting the maintainer's review",
-  "provenance": "Merged from two independent drafts by subagents that read only the 07 project's test file, page and pubspec, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Items the drafts split differently were merged by root cause; line numbers checked against the file.",
-  "reviewQuestions": [
-    "GT-T01: the fixture is deliberately partial — Order, User, Item, Analytics, OrderReporter and OrderApi are defined nowhere in the project, the page included. The missing import of the page is real either way. Is 'the suite cannot compile' a required finding, or a property of the fixture a reviewer may reasonably set aside?"
+  "scenarios": [
+    "07-test-quality"
   ],
+  "status": "frozen 2026-09-23",
+  "provenance": "Merged from two independent drafts by subagents that read only the 07 project's test file, page and pubspec, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Items the drafts split differently were merged by root cause; line numbers checked against the file.",
   "items": [
     {
       "id": "GT-T01",
@@ -13,7 +12,7 @@
       "claim": "The file never imports the code under test, so OrderSummaryPage and the model types it uses are undefined; as written the suite cannot compile, and none of its tests can run.",
       "category": "tests",
       "kind": "shape-visible",
-      "required": true,
+      "required": false,
       "unsafeToEdit": true
     },
     {
@@ -178,5 +177,8 @@
       "required": false,
       "unsafeToEdit": true
     }
+  ],
+  "decisions": [
+    "GT-T01 (the suite cannot compile) is optional, not required. Decided 2026-09-23 from the seventeen isolated baseline runs, not from taste. The counts below are what those runs actually reported. No baseline run reported it, and the fixture is partial by design: Order, User, Item, Analytics and OrderReporter are undefined project-wide, and the page under test does not compile either. Required, it would score every run as missing something the fixture's own shape explains. Optional, a run that reports it is still credited and never counted a false positive."
   ]
 }

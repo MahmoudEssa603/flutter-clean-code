@@ -1,7 +1,9 @@
 {
   "fixture": "customer_profile.dart",
-  "scenarios": ["09-bug-line"],
-  "status": "draft — awaiting the maintainer's review",
+  "scenarios": [
+    "09-bug-line"
+  ],
+  "status": "frozen 2026-09-23",
   "provenance": "Merged from two independent drafts by subagents that read only D:/eval-runs/09-bug-line/customer_profile.dart, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Both drafts agreed on every required item. Line numbers checked against the file.",
   "items": [
     {

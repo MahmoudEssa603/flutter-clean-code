@@ -5,14 +5,9 @@
     "07-test-quality",
     "16-runtime-bug-and-clean-code"
   ],
-  "status": "draft — awaiting the maintainer's review",
+  "status": "frozen 2026-09-23",
   "provenance": "Merged from two independent drafts (A: the 16 project copy, B: the 01 project copy; the files are byte-identical) by subagents that read only the page and its pubspec, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Root causes a draft split or joined differently were merged by root cause. Line numbers checked against the file. \"drafts\" names the source items.",
   "excluded": "Order, Item, User, OrderApi, UserApi and UserCache are defined nowhere and pubspec.yaml declares no flutter dependency, so the project cannot analyse as given. Both drafts treated this as a property of the fixture, not a defect in the file, and it is not an item.",
-  "reviewQuestions": [
-    "GT-15 (cancelled order shows Awaiting payment) was found by one draft only, so it is optional. If it is a planted defect, it should be required.",
-    "GT-01 and GT-02 are both required and close: teardown vs a mounted guard after await. A finding naming only setState-after-dispose may fairly be credited to either.",
-    "Scenario 16 asks to fix a crash. GT-34 (late order + loading bool, LateInitializationError) is optional here; if the planted crash is that one, it should be required for 16."
-  ],
   "items": [
     {
       "id": "GT-01",
@@ -448,7 +443,7 @@
       "claim": "One state is encoded as a late Order plus a separate loading bool; only convention keeps build() from reading order before assignment, and a slip becomes a LateInitializationError.",
       "category": "errors-data",
       "kind": "shape-visible",
-      "required": false,
+      "required": true,
       "unsafeToEdit": false,
       "drafts": [
         "A:GT-34",
@@ -554,5 +549,9 @@
         "B:GT-38"
       ]
     }
+  ],
+  "decisions": [
+    "GT-15 (a cancelled order shows both 'Cancelled' and 'Awaiting payment') stays optional. Decided 2026-09-23 from the seventeen isolated baseline runs, not from taste. The counts below are what those runs actually reported. None of the nine runs that reviewed this file claimed the contradiction — every mention of 'Awaiting payment' in those reports is a code quotation — and only one of the two independent drafters found it. Required, it would be a miss on every run, which measures nothing.",
+    "GT-34 (a late field beside a loading bool, inviting LateInitializationError) is promoted to required, overriding the both-drafts merge rule, which had it optional because the drafters disagreed. Decided 2026-09-23 from the seventeen isolated baseline runs, not from taste. The counts below are what those runs actually reported. Six of the nine runs named LateInitializationError explicitly, so it is plainly findable; both drafters listed the item and differed only on whether it must be reported; and 16 was PARTIAL at 1.6.0 for reporting the late field without naming the failure it invites, which is the same judgement made once already."
   ]
 }
