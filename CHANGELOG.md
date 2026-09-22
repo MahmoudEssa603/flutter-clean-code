@@ -9,6 +9,20 @@ the last one is holding whatever it shipped until the next. See the bump table i
 
 ## [1.7.0]
 
+### Fixed
+- `scripts/check-report.mjs` now scores the batches, half of 1.6.0's known gap on diff hunks.
+  `references/report-template.md` gives every batch its own `### Batch N — <type>` heading and a
+  fenced `diff` block, and nothing checked either. A Batches section with no batch heading now
+  fails, because that is the shape the failing runs wrote: `02`, `13`, `15` and `16` put every
+  batch in one table, so a check that only looked inside `### Batch` sections would have passed
+  all four. Every batch heading needs a `diff` block before the next heading, whatever its Status.
+  Headings are read outside fenced blocks, because `16`'s diff opened with `# Batch 2 — Rename`.
+  Arabic headings are matched by key word. Rebuilt from their transcripts, the four reports each
+  fail with this one message, and `03` and `17`, which followed the template, still pass. No
+  verdict moves: a run is never re-graded against a checker changed after it. The other half, the
+  rule living only in the template, waits for the 1.7.0 measurements to show whether it is still
+  missed.
+
 ## [1.6.0] — 2026-09-18
 
 ### Fixed

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Checks a report against the parts of the contract that need no judgment: the header fields,
 // the summary table, finding ids and their three ratings, a location on every finding, the cap,
-// and the sections that must exist. It says nothing about whether a finding is correct or
-// whether something was rightly called out of scope — that is the reading, and it stays yours.
+// the sections that must exist, and a heading and a diff block for every batch. It says nothing
+// about whether a finding is correct or whether something was rightly called out of scope —
+// that is the reading, and it stays yours.
 //
 // It reads the contract, not the tool, so a report from any agent is checked the same way.
 // The template translates prose, headings and table cells, so header fields, section headings
@@ -222,7 +223,65 @@ export function checkReport(text, label = 'report') {
     }
   }
 
+  checkBatches(lines, fail);
+
   return { label, failures, findings: ids.length };
+}
+
+// "Batch" is دفعة in Arabic, الدفعات for the section. Matched by key word, like the fields above.
+const BATCH_WORD = `(?:Batch(?:es)?|(?:ال)?دف${HARAKAT}ع${HARAKAT}(?:ة|ات))`;
+
+// references/report-template.md gives every batch its own `### Batch N — <type>` heading and a
+// fenced `diff` block of its key hunks. Nothing enforced it, and four of the five runs at 1.6.0
+// that proposed patches wrote the batches as one table under `## Batches` instead — so a check
+// keyed on `### Batch` headings alone would have passed every one of them. A Batches section
+// with no batch heading fails for that reason. The rule does not depend on Status: the template
+// gives the block to applied and unapplied batches alike. AUDIT and DIFF have no Batches section
+// and are untouched.
+//
+// Headings are read outside fenced blocks only. A real run's diff carried `# Batch 2 — Rename`
+// as its first line, which is a heading to a line scanner and a comment to a reader.
+function checkBatches(lines, fail) {
+  const headings = [];
+  const diffs = [];
+  let fence = null;
+  lines.forEach((line, index) => {
+    const marker = /^\s*(`{3,}|~{3,})\s*(\S*)/.exec(line);
+    if (marker) {
+      if (fence === null) {
+        fence = marker[1];
+        if (marker[2] === 'diff') diffs.push(index);
+      } else if (marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2]) {
+        fence = null;
+      }
+      return;
+    }
+    if (fence !== null) return;
+    const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+    if (heading) headings.push({ level: heading[1].length, text: heading[2].trim(), index });
+  });
+
+  const startsWithBatch = new RegExp(`^${BATCH_WORD}(?!\\p{L})`, 'u');
+  const section = headings.findIndex((h) => h.level === 2 && startsWithBatch.test(h.text));
+  if (section === -1) return;
+
+  const sectionEnd = headings.slice(section + 1).find((h) => h.level <= 2)?.index ?? lines.length;
+  const batches = headings.filter(
+    (h) => h.level === 3 && h.index > headings[section].index && h.index < sectionEnd &&
+      startsWithBatch.test(h.text),
+  );
+  if (batches.length === 0) {
+    fail('the Batches section has no "### Batch" heading — a table of batches is not one; ' +
+      'the template gives every batch its own heading and a ```diff block');
+    return;
+  }
+
+  for (const batch of batches) {
+    const end = headings.find((h) => h.index > batch.index && h.level <= 3)?.index ?? lines.length;
+    if (!diffs.some((d) => d > batch.index && d < Math.min(end, sectionEnd))) {
+      fail(`"### ${batch.text}" has no \`\`\`diff block of its key hunks`);
+    }
+  }
 }
 
 function main(argv) {

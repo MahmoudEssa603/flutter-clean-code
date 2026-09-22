@@ -228,3 +228,90 @@ test('a report silent about the scanner fails', () => {
     assert.deepEqual(checkReport(withNote).failures, [], said);
   }
 });
+
+// A REFACTOR report's Batches section, shaped as references/report-template.md gives it.
+const batch = (n, type, { diff = true } = {}) =>
+  [
+    `### Batch ${n} — ${type}`,
+    '',
+    '**Status:** NOT APPLIED — requires approval',
+    '**Reason safe:** private members, every reference in this file',
+    '**Addresses:** CC-001',
+    '',
+    '| File | Change | Reason |',
+    '|---|---|---|',
+    '| `a/b.dart` | rename | CC-001 |',
+    '',
+    ...(diff ? ['```diff', '# key hunk', '-  bool loading = true;', '+  bool _isLoading = true;', '```', ''] : []),
+  ].join('\n');
+
+const withBatches = (...batches) =>
+  report([finding(1)], ['', '## Batches', '', ...batches, '## Applied', '', '| Batch | Type |', '|---|---|', ''].join('\n'));
+
+test('every batch with its diff block passes, one batch or several', () => {
+  assert.deepEqual(checkReport(withBatches(batch(1, 'Rename'))).failures, []);
+  assert.deepEqual(
+    checkReport(withBatches(batch(1, 'Rename'), batch(2, 'Extract'), batch(3, 'Inline'))).failures,
+    [],
+  );
+});
+
+test('a batch without a diff block fails, and the failure names that batch', () => {
+  const one = checkReport(withBatches(batch(1, 'Rename', { diff: false }))).failures;
+  assert.equal(one.length, 1);
+  assert.match(one[0], /"### Batch 1 — Rename" has no ```diff block/);
+
+  const several = checkReport(
+    withBatches(batch(1, 'Rename'), batch(2, 'Extract', { diff: false }), batch(3, 'Inline')),
+  ).failures;
+  assert.equal(several.length, 1);
+  assert.match(several[0], /Batch 2 — Extract/);
+});
+
+test('a Batches section holding only a table fails, as 13, 15 and 16 wrote it', () => {
+  // Four of the five runs at 1.6.0 that proposed patches wrote this shape: one table, no batch
+  // headings, a stray diff below it. A check keyed on "### Batch" alone would pass all of them.
+  const tableOnly = report([finding(1)], [
+    '',
+    '## Batches',
+    '',
+    'All batches are **NOT APPLIED — requires approval.** They form a stack.',
+    '',
+    '| # | Type | Addresses | Why behaviour is preserved |',
+    '|---|---|---|---|',
+    '| 1 | Delete | CC-001 | `_cachedTotal` is never read |',
+    '| 2 | Rename | CC-001 | members of a private `State` |',
+    '',
+    '```diff',
+    '# Batch 2 — Rename',
+    '-  bool loading = true;',
+    '+  bool _isLoading = true;',
+    '```',
+    '',
+  ].join('\n'));
+  const failures = checkReport(tableOnly).failures;
+  assert.equal(failures.length, 1);
+  assert.match(failures[0], /the Batches section has no "### Batch" heading/);
+});
+
+test('a heading-shaped line inside a diff does not end the batch it belongs to', () => {
+  // 16's diff opened with `# Batch 2 — Rename`. Read as a heading, it would cut the batch off
+  // above its own diff block and report the block missing.
+  const commented = batch(1, 'Rename').replace('# key hunk', '### Batch 1 — Rename, key hunk');
+  assert.deepEqual(checkReport(withBatches(commented)).failures, []);
+});
+
+test('an AUDIT report with no Batches section is untouched', () => {
+  assert.deepEqual(checkReport(report([finding(1), finding(2)])).failures, []);
+});
+
+test('Arabic batch headings are read by their key word', () => {
+  const arabic = withBatches(batch(1, 'Rename'), batch(2, 'Extract'))
+    .replace('## Batches', '## الدفعات')
+    .replace('### Batch 1', '### الدفعة 1')
+    .replace('### Batch 2', '### دفعة 2');
+  assert.deepEqual(checkReport(arabic).failures, []);
+
+  const missing = withBatches(batch(1, 'Rename', { diff: false })).replace('### Batch 1', '### الدفعة 1');
+  assert.match(checkReport(missing).failures.join('\n'), /"### الدفعة 1 — Rename" has no ```diff block/);
+});
