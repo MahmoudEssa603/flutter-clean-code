@@ -62,7 +62,8 @@ laid-out project files: no `SKILL.md`, no references, no scenario file and no pa
 drafts were merged by root cause, under one rule applied without exception: **an item is
 `required` only if both drafts marked it required.** A disagreement, or an item only one draft
 found, is optional. So no run is marked down for omitting something an independent reviewer also
-left out. Each file lists the questions the merge could not settle, under `reviewQuestions`.
+left out. Where the merge could not settle a question, the file records the decision that did,
+under `decisions`, with the evidence it rests on.
 
 **Three questions the merge could not settle were decided from the baseline runs**, and each
 decision is recorded in the file it applies to: the test suite's inability to compile is optional
