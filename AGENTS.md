@@ -117,6 +117,10 @@ untestable script does not belong here.
 Rules for anything added here:
 
 - **Node built-ins only.** `validate-skill.mjs` fails the build on a bare import specifier.
+- **An unknown flag is refused, never ignored.** An ignored flag runs the default, and in a
+  script that writes, the default writes: `--verify-clean` for `--verify` rebuilt a project and
+  deleted a run's output. Every maintenance script exits 1 on a flag it does not take.
+  `scan-dart.mjs` is the exception for now, because changing it moves what a run reads.
 - **Solve, do not defer.** A script handles its own error cases — a missing directory, an
   unreadable file — instead of failing and leaving the agent to work it out.
 - **No voodoo constants.** Every threshold carries a comment saying which rule in `SKILL.md` it

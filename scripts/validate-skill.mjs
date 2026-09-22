@@ -11,6 +11,14 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const QUIET = process.argv.includes('--quiet');
 
+// A flag this script does not know is refused before anything runs, as in every script here: an
+// ignored typo reads as a pass that checked something it did not.
+const unknownFlags = process.argv.slice(2).filter((a) => a.startsWith('--') && a !== '--quiet');
+if (unknownFlags.length > 0) {
+  console.error(`unknown flag ${unknownFlags.join(', ')}; this script takes --quiet`);
+  process.exit(1);
+}
+
 // Limits come from the Agent Skills spec; see AGENTS.md > Frontmatter contract.
 const NAME_MAX = 64;
 const DESCRIPTION_MAX = 1024;

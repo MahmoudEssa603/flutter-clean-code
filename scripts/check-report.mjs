@@ -285,6 +285,14 @@ function checkBatches(lines, fail) {
 }
 
 function main(argv) {
+  // A flag this script does not know is refused before anything runs. Unknown flags used to be
+  // ignored, and ignoring one is not harmless: `make-eval-projects <dir> --verify-clean`, a typo
+  // for --verify, rebuilt the project and deleted the run's output before anyone graded it.
+  const unknownFlags = argv.filter((a) => a.startsWith('--') && !['--quiet'].includes(a));
+  if (unknownFlags.length > 0) {
+    console.error(`unknown flag ${unknownFlags.join(', ')}; this script takes --quiet`);
+    return 1;
+  }
   const quiet = argv.includes('--quiet');
   const paths = argv.filter((a) => !a.startsWith('--'));
   if (paths.length === 0) {

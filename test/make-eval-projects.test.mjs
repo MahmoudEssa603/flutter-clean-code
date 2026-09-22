@@ -268,3 +268,19 @@ test('--diff needs one scenario and an existing project', () => {
     assert.equal(main([target, '--only', '01-audit-fat-widget', '--diff', '--quiet']), 1);
   });
 });
+
+test('a mistyped flag leaves a run\'s project exactly as the run left it', () => {
+  // `--verify-clean` is not --verify. When unknown flags were ignored, this command rebuilt the
+  // project and deleted the run's edits before anyone had graded them, and exited 0.
+  withTempDir((dir) => {
+    const target = join(dir, 'out');
+    const only = '01-audit-fat-widget';
+    assert.equal(main([target, '--only', only, '--quiet']), 0);
+    const scenario = join(target, only);
+    const page = readdirSync(scenario).find((f) => f.endsWith('.dart'));
+    writeFileSync(join(scenario, page), 'class EditedByARun {}\n');
+
+    assert.equal(main([target, '--only', only, '--verify-clean', '--quiet']), 1);
+    assert.equal(readFileSync(join(scenario, page), 'utf8'), 'class EditedByARun {}\n');
+  });
+});

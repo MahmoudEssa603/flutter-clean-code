@@ -235,3 +235,28 @@ test('a missing changelog fails, because a release nobody wrote down is not one'
   assert.equal(status, 1);
   assert.match(output, /CHANGELOG\.md: missing/);
 });
+
+test('every maintenance script refuses a flag it does not know, before doing anything', () => {
+  // make-baseline ignored an unknown flag and rewrote the stored baseline; make-eval-projects
+  // ignored `--verify-clean` and rebuilt the project it was asked to verify. A refused flag costs
+  // a retyped command. An ignored one runs the default, and here the default writes.
+  const scripts = [
+    ['check-evals.mjs'],
+    ['check-report.mjs', 'report.md'],
+    ['generate-eval-summary.mjs'],
+    ['make-baseline.mjs'],
+    ['make-eval-projects.mjs', join(tmpdir(), 'never-built'), '--only', '01-audit-fat-widget'],
+    ['validate-skill.mjs'],
+  ];
+  const before = spawnSync('git', ['status', '--porcelain'], { cwd: REPO, encoding: 'utf8' }).stdout;
+  for (const [script, ...args] of scripts) {
+    const run = spawnSync(process.execPath, [join('scripts', script), ...args, '--verify-clean'], {
+      cwd: REPO,
+      encoding: 'utf8',
+    });
+    assert.equal(run.status, 1, `${script} exited ${run.status}`);
+    assert.match(run.stderr, /unknown flag --verify-clean/, script);
+  }
+  const after = spawnSync('git', ['status', '--porcelain'], { cwd: REPO, encoding: 'utf8' }).stdout;
+  assert.equal(after, before, 'a refused run wrote something');
+});

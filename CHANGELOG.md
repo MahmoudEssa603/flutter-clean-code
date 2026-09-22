@@ -23,6 +23,14 @@ the last one is holding whatever it shipped until the next. See the bump table i
   rule living only in the template, waits for the 1.7.0 measurements to show whether it is still
   missed.
 
+- The maintenance scripts ignored flags they did not know, and ran their default instead.
+  `make-eval-projects.mjs <dir> --only <id> --verify-clean`, one letter from a flag in the 1.7.0
+  plan, rebuilt the project it was asked to check, deleting the run's edits before they were
+  graded, and exited 0. `make-baseline.mjs --json` rewrote the stored baseline. All six now exit
+  1 on an unknown flag before doing anything, and a test sweeps them. `scan-dart.mjs` is left as
+  it is: it is the one script a run executes, so changing it moves the surface every verdict
+  describes.
+
 ### Added
 - `make-eval-projects.mjs --only <id> --diff` prints what a run changed in its project, as a
   unified diff against a fresh layout of the same scenario, leaving out the build output
