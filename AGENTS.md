@@ -75,6 +75,15 @@ deliberate `...` elisions. No pseudo-code.
 
 **Prose lines wrap at 100 columns.** Tables and code blocks are exempt.
 
+**No example reuses an eval fixture.** Every snippet in `SKILL.md` and `references/` is written
+in a domain no scenario uses, with its own names and values. The examples were once built from
+the fixtures — `references/example-report.md` was a full audit of `evals/fixtures/order_summary_page.dart`,
+the file three scenarios review, and `SKILL.md` used that file's own `getUser()` as its example
+of a misleading name. A run could then read its answers instead of finding them, and no
+measurement taken that way means anything. After any edit under `references/`, scan the Dart
+fixtures' identifiers, strings and colours against `SKILL.md` and `references/`: the only
+matches may be SDK names and rules stated in general terms.
+
 **Generated Dart is never audited.** `.g.dart`, `.freezed.dart`, `.mocks.dart`, `.gr.dart`,
 `.config.dart`, `.gen.dart`, `.pb*.dart`, and any file carrying a `GENERATED CODE` banner are
 excluded in `SKILL.md` and skipped by `scan-dart.mjs`. Adding a generator to the ecosystem means
