@@ -1,22 +1,23 @@
 {
   "scenario": "04-negative-trigger",
   "verdict": "PASS",
-  "date": "2026-09-12",
-  "skillVersion": "1.6.0",
-  "commitSha": "a3ccd5592881d9d71d491356ea7aa955443416fb",
-  "generatedBy": "fresh agent session in Claude Code with the skill NOT named, on a project rebuilt and verified clean beforehand",
-  "gradedBy": "maintainer session reading the session transcript for the load indicator, then the rewritten fixture and an independently written equivalence harness",
+  "date": "2026-09-22",
+  "skillVersion": "1.7.0",
+  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
+  "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
   "expectations": {
     "recorded": true,
     "total": 3,
     "partial": 0,
-    "fail": 0
+    "fail": 0,
+    "notApplicable": 1
   },
   "mustNot": {
     "recorded": "all held",
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run against the 1.6.0 surface, and the first verdict in the suite recorded against the version it actually ran on rather than restamped afterwards. The session started 2026-09-12T20:36:49Z, thirty-two minutes after a3ccd55 opened 1.6.0, so the surface is the one in the tree. Expectation 4 is conditional on the skill being invoked by name, which is the opposite of this run, so it is not counted: three apply and all three are met. The load indicator is decisive and it is an absence. The transcript holds 65 entries and eight tool calls -- Glob, Read, Write x2, PowerShell x2, ToolSearch, Edit, TaskStop -- and no Skill call, no injected SKILL.md, no command-name block, no CC- id, no 'Flutter Clean Code' string anywhere in it. The skill did not load. The query went in verbatim carrying all four trigger words the must_not names -- SOLID, god class, rename, clean it up -- and the non-Dart clause in the description held against them on its own. must_not 1 holds on the transcript rather than on the reply's word for it. One difference from the 1.5.0 run, recorded because it changes what the evidence proves rather than the verdict. That run declined the skill out loud -- 'Python, not Dart, so the flutter-clean-code skill doesn't apply here' -- which showed the description being read and applied. This reply never mentions the skill, Dart or Flutter at all; it simply refactors the Python. Non-activation is what the scenario requires and it is met either way, but this run evidences only that the skill stayed out, not that its exclusion clause was consciously consulted. Read the pair as a rate, which is what this scenario is for. must_not 2 holds with nothing borderline. The rewritten file is Python throughout: snake_case functions and methods, PascalCase classes, UPPER_SNAKE module constants. There is no lowerCamelCase member anywhere and no Dart idiom carried across. Expectation 3 predicted the fixture would come back rewritten and it did -- --verify reports 1 changed and 1 added, the addition being __pycache__ from running the run's own comparison script. The project has been rebuilt so the next run does not read this one's output. The refactor's quality is not what this scenario grades and does not enter the verdict, but its central claim is checkable and I checked it rather than recording it on trust. I wrote my own harness, loading the repository's fixture and the rewritten file as separate modules and driving both through recording fakes: 4003 cases -- 4000 random orders across both workflows and both premium states, plus an empty basket and a premium order totalling exactly 100 -- comparing return value, return type and the full ordered list of db, mailer and pdf calls. Zero mismatches, and the boundary returns 100.0 on both sides undiscounted, because the rule is strictly greater than. The reply's two stated deliberate quirks are real and correctly reasoned: the subtotal keeps an accumulating loop rather than sum(), and the discount keeps subtotal - subtotal * 0.1 rather than subtotal * 0.9, both of which can differ in the last float digit. Reading the two files confirms the call order is identical too -- pdf.render is evaluated as an argument to mailer.send in both, and the send happens after the total is computed and before it is returned. The reply's claim that the project has no tests is true: the directory holds the one .py file and nothing else. Rule Zero's habit surviving in a language this skill does not cover, and never loaded for, is worth recording twice now."
+  "note": "Three of three that apply, both must_nots held. The load indicator is absent: check-run.mjs reports no Skill call, no slash command and no injected base directory, and the reply says in its first line that the file is Python, so the skill does not apply, before doing the refactor itself. Expectation 4 is not counted — the skill was never invoked by name. The fixture came back rewritten, as expectation 3 anticipates, and the project was rebuilt afterwards. must_not 2 holds visibly: the refactor is Python throughout, snake_case methods and Protocol classes, with the god class split into a service, a pricer and a notifier. Recorded, not scored: the run verified its own refactor by running old and new side by side over eight cases, which is more than the scenario asks of it."
 }
