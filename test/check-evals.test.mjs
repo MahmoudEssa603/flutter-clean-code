@@ -195,6 +195,39 @@ test('a release that only moved the version line is not a reason to re-run anyth
   }
 });
 
+test('a scanner change moves the surface, because every run executes it and cites its numbers', () => {
+  // SKILL.md tells each run to run scan-dart.mjs and quote what it prints. A change to its signals
+  // changes the report while no Markdown file moves, so a check reading only SKILL.md and
+  // references/ would call the verdicts current over a scanner that no longer matches them.
+  const dir = mkdtempSync(join(tmpdir(), 'fcc-scanner-'));
+  const git = (...args) => {
+    const r = spawnSync('git', args, { cwd: dir, encoding: 'utf8' });
+    assert.equal(r.status, 0, `git ${args.join(' ')}: ${r.stderr}`);
+  };
+  try {
+    mkdirSync(join(dir, 'references'));
+    mkdirSync(join(dir, 'scripts'));
+    writeFileSync(join(dir, 'SKILL.md'), 'body\n');
+    writeFileSync(join(dir, 'references/a.md'), 'one\n');
+    writeFileSync(join(dir, 'scripts/scan-dart.mjs'), 'export const signals = 1;\n');
+    writeFileSync(join(dir, 'scripts/check-report.mjs'), 'export const checks = 1;\n');
+    git('init', '-q');
+    git('config', 'user.email', 't@t');
+    git('config', 'user.name', 't');
+    git('add', '-A');
+    git('commit', '-qm', 'v1');
+    git('tag', 'v1.0.0');
+
+    writeFileSync(join(dir, 'scripts/check-report.mjs'), 'export const checks = 2;\n');
+    assert.deepEqual(surfaceChangedSince('1.0.0', { cwd: dir }), [], 'a maintenance script is not read by a run');
+
+    writeFileSync(join(dir, 'scripts/scan-dart.mjs'), 'export const signals = 2;\n');
+    assert.deepEqual(surfaceChangedSince('1.0.0', { cwd: dir }), ['scripts/scan-dart.mjs']);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('the summary warns when the table describes a version nobody can install', () => {
   const rendered = renderSummary({
     scenarios: ['01-a'],

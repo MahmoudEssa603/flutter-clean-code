@@ -23,6 +23,13 @@ the last one is holding whatever it shipped until the next. See the bump table i
   rule living only in the template, waits for the 1.7.0 measurements to show whether it is still
   missed.
 
+### Changed
+- `scripts/check-evals.mjs` counts `scripts/scan-dart.mjs` as model-facing, beside `SKILL.md`
+  and `references/`. `SKILL.md` tells every run to execute the scanner and cite its numbers, so a
+  change to its signals changes what a run reports while no Markdown file moves. Without this, a
+  scanner change would leave every verdict marked current. The other scripts stay outside: no run
+  is told to use them, and a measured run cannot see them.
+
 ## [1.6.0] — 2026-09-18
 
 ### Fixed

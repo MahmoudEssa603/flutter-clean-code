@@ -22,8 +22,13 @@ export const VERDICTS = ['PASS', 'PARTIAL', 'FAIL', 'NOT_RUN'];
 const REQUIRED = ['scenario', 'verdict', 'date', 'skillVersion', 'generatedBy', 'gradedBy'];
 
 // What the model actually reads. A change anywhere in here can change what a scenario produces;
-// a change anywhere else — a script, the README, this file — cannot.
-export const MODEL_FACING = ['SKILL.md', 'references/'];
+// a change anywhere else — another script, the README, this file — cannot.
+//
+// The scanner is here because SKILL.md tells every run to execute it and cite its numbers, so a
+// change to what it prints changes what a run reports while no Markdown file moves. It is the one
+// script a run reads; the others maintain the repository, and a measured run cannot see them.
+export const SCANNER = 'scripts/scan-dart.mjs';
+export const MODEL_FACING = ['SKILL.md', 'references/', SCANNER];
 
 export function checkRegistry({ scenarios, results }) {
   const failures = [];
@@ -148,6 +153,7 @@ export function surfaceChangedSince(version, { cwd = ROOT } = {}) {
   const nowFiles = ['SKILL.md', ...readdirSync(join(cwd, 'references'))
     .filter((f) => f.endsWith('.md'))
     .map((f) => `references/${f}`)];
+  if (existsSync(join(cwd, SCANNER))) nowFiles.push(SCANNER);
 
   const changed = [];
   for (const path of [...new Set([...thenFiles, ...nowFiles])].sort()) {
