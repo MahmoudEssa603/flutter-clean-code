@@ -1,0 +1,182 @@
+{
+  "fixture": "test/features/orders/order_summary_page_test.dart",
+  "scenarios": ["07-test-quality"],
+  "status": "draft — awaiting the maintainer's review",
+  "provenance": "Merged from two independent drafts by subagents that read only the 07 project's test file, page and pubspec, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Items the drafts split differently were merged by root cause; line numbers checked against the file.",
+  "reviewQuestions": [
+    "GT-T01: the fixture is deliberately partial — Order, User, Item, Analytics, OrderReporter and OrderApi are defined nowhere in the project, the page included. The missing import of the page is real either way. Is 'the suite cannot compile' a required finding, or a property of the fixture a reviewer may reasonably set aside?"
+  ],
+  "items": [
+    {
+      "id": "GT-T01",
+      "location": "order_summary_page_test.dart:1-3",
+      "claim": "The file never imports the code under test, so OrderSummaryPage and the model types it uses are undefined; as written the suite cannot compile, and none of its tests can run.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T02",
+      "location": "order_summary_page_test.dart:10, 23, 33, 47, 57",
+      "claim": "Test names state no behaviour or expected outcome ('test 1', 'discount', 'analytics'), and the widget test is named 'ProfilePage' while it pumps OrderSummaryPage.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-T03",
+      "location": "order_summary_page_test.dart:10-21",
+      "claim": "One test asserts four unrelated behaviours (total, discount, status, item count), so a failure has no single cause and the first failing expectation hides the rest.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-T04",
+      "location": "order_summary_page_test.dart:14, 18",
+      "claim": "At a total of exactly 100 the test expects a premium discount of 10, while the page discounts only when the total is strictly above 100; the test pins a rule the page does not render, and the suite cannot say which is right.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T05",
+      "location": "order_summary_page_test.dart:23-31",
+      "claim": "The non-premium discount test uses a total of 100, where the page's threshold already yields 0, so it passes whether or not the premium check exists; the >100 boundary and a premium order above it are never tested.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T06",
+      "location": "order_summary_page_test.dart:40-44",
+      "claim": "The only expectation sits in a loop behind an isVisible guard, so with no visible items the test asserts nothing and passes; it cannot fail for the case its name claims.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T07",
+      "location": "order_summary_page_test.dart:20",
+      "claim": "hasLength(1) re-reads the fixture the test just built and cannot fail because of production code.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T08",
+      "location": "order_summary_page_test.dart:54",
+      "claim": "The analytics test verifies only that log was called once with any argument, so a wrong or empty payload still passes; it proves an interaction, not what was reported.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T09",
+      "location": "order_summary_page_test.dart:5, 49-50",
+      "claim": "The test mocks Order, a value object, instead of building a real one, with only id stubbed, coupling it to which getters OrderReporter happens to read.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T10",
+      "location": "order_summary_page_test.dart:5, 7, 50, 54",
+      "claim": "Hand-written extends Mock classes without generated null-safe overrides make when(order.id) and log(any) fail or throw under null safety.",
+      "category": "tests",
+      "kind": "run-only",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T11",
+      "location": "order_summary_page_test.dart:61-62",
+      "claim": "The widget test counts Padding and Divider instances: coupled to layout and to framework-internal widgets, broken by any cosmetic change, and blind to wrong content.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T12",
+      "location": "order_summary_page_test.dart:58-59",
+      "claim": "The page is pumped with no fake data source, so it reaches the real OrderApi and NetworkImage; if no order arrives, the endless progress indicator makes pumpAndSettle time out. The outcome depends on the environment.",
+      "category": "tests",
+      "kind": "run-only",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T13",
+      "location": "order_summary_page_test.dart:57-63",
+      "claim": "The only page test implies coverage while asserting none of what the page shows or does: amounts, status labels, describe() text, premium banner, item rows, the reload action, the loading state or the swallowed load error.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T14",
+      "location": "order_summary_page_test.dart:11-15, 24-28, 34-38",
+      "claim": "The same Order/User/Item fixture is copied into three tests with no builder or setUp, burying the one field that differs and tripling the edit on any constructor change.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-T15",
+      "location": "order_summary_page_test.dart:19",
+      "claim": "status 'paid' is asserted on an order built without a status, pinning an unseen constructor default.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T16",
+      "location": "order_summary_page_test.dart:14, 17-18, 61",
+      "claim": "Expected values are unexplained literals: nothing shows 100 is 50 x 2, 10 is the premium rate, or where 9 Paddings comes from.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-T17",
+      "location": "order_summary_page_test.dart:9-63",
+      "claim": "Model tests, a reporter test and a page widget test sit ungrouped in a file named for the page, so the file's contents do not match its name.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-T18",
+      "location": "order_summary_page_test.dart:17-18",
+      "claim": "The unit tests exercise model getters while the page renders its own duplicated getTotal()/discount(), so the logic actually displayed is untested.",
+      "category": "tests",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-T19",
+      "location": "pubspec.yaml:1-6",
+      "claim": "The pubspec declares no flutter, flutter_test or mockito dependency, so the test imports cannot resolve.",
+      "category": "tests",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": true
+    }
+  ]
+}

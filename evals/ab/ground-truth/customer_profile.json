@@ -1,0 +1,62 @@
+{
+  "fixture": "customer_profile.dart",
+  "scenarios": ["09-bug-line"],
+  "status": "draft — awaiting the maintainer's review",
+  "provenance": "Merged from two independent drafts by subagents that read only D:/eval-runs/09-bug-line/customer_profile.dart, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Both drafts agreed on every required item. Line numbers checked against the file.",
+  "items": [
+    {
+      "id": "GT-P01",
+      "location": "customer_profile.dart:17, customer_profile.dart:23",
+      "claim": "copyWith accepts a nickname parameter and ignores it: line 23 always passes this.nickname, so copyWith(nickname: x) silently keeps the old value.",
+      "category": "runtime-behaviour",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-P02",
+      "location": "customer_profile.dart:32-35",
+      "claim": "reload() returns early once a profile is cached, so it never reloads after the first call; the name promises a refresh while the body is a load-once guard.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-P03",
+      "location": "customer_profile.dart:30, customer_profile.dart:34",
+      "claim": "The loaded profile goes into a private field with no getter, stream or notifier, so nothing outside the controller can read what reload() loaded.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false
+    },
+    {
+      "id": "GT-P04",
+      "location": "customer_profile.dart:37-44",
+      "claim": "_fetch performs no I/O: it is an async stub returning a hard-coded placeholder customer built from unexplained literals, under a name that implies a real load.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-P05",
+      "location": "customer_profile.dart:33-34",
+      "claim": "The cache check runs before the await, so overlapping reload() calls both fetch; a failed fetch has no handling and leaves no error state.",
+      "category": "errors-data",
+      "kind": "run-only",
+      "required": false,
+      "unsafeToEdit": true
+    },
+    {
+      "id": "GT-P06",
+      "location": "customer_profile.dart:1-27",
+      "claim": "CustomerProfile is an immutable value type with copyWith but no == or hashCode, so equal copies compare unequal.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true
+    }
+  ]
+}

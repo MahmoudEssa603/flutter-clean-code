@@ -1,0 +1,558 @@
+{
+  "fixture": "order_summary_page.dart",
+  "scenarios": [
+    "01-audit-fat-widget",
+    "07-test-quality",
+    "16-runtime-bug-and-clean-code"
+  ],
+  "status": "draft — awaiting the maintainer's review",
+  "provenance": "Merged from two independent drafts (A: the 16 project copy, B: the 01 project copy; the files are byte-identical) by subagents that read only the page and its pubspec, with no access to SKILL.md, references/, the scenario files or any past report. Merging rule, applied without exception: an item is required only if both drafts marked it required; a disagreement, or an item only one draft found, is optional. Root causes a draft split or joined differently were merged by root cause. Line numbers checked against the file. \"drafts\" names the source items.",
+  "excluded": "Order, Item, User, OrderApi, UserApi and UserCache are defined nowhere and pubspec.yaml declares no flutter dependency, so the project cannot analyse as given. Both drafts treated this as a property of the fixture, not a defect in the file, and it is not an item.",
+  "reviewQuestions": [
+    "GT-15 (cancelled order shows Awaiting payment) was found by one draft only, so it is optional. If it is a planted defect, it should be required.",
+    "GT-01 and GT-02 are both required and close: teardown vs a mounted guard after await. A finding naming only setState-after-dispose may fairly be credited to either.",
+    "Scenario 16 asks to fix a crash. GT-34 (late order + loading bool, LateInitializationError) is optional here; if the planted crash is that one, it should be required for 16."
+  ],
+  "items": [
+    {
+      "id": "GT-01",
+      "location": "order_summary_page.dart:16, order_summary_page.dart:17, order_summary_page.dart:24-29, order_summary_page.dart:33",
+      "claim": "The State has no dispose(): the stream subscription is never cancelled and the ScrollController never disposed, so both outlive the page and the subscription keeps calling setState on an unmounted State; the \"// no dispose\" comment records the gap instead of closing it.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-01",
+        "B:GT-01"
+      ]
+    },
+    {
+      "id": "GT-02",
+      "location": "order_summary_page.dart:37-41",
+      "claim": "load() calls setState after awaiting fetchOrder with no mounted check, so a page popped before the fetch completes gets setState on a disposed State.",
+      "category": "runtime-behaviour",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-02",
+        "B:GT-02"
+      ]
+    },
+    {
+      "id": "GT-03",
+      "location": "order_summary_page.dart:42-44",
+      "claim": "The catch swallows every error with \"// ignore\": a failed fetch leaves loading true, so the user sees an endless spinner, and nothing is logged.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-03",
+        "B:GT-03"
+      ]
+    },
+    {
+      "id": "GT-04",
+      "location": "order_summary_page.dart:24, order_summary_page.dart:220",
+      "claim": "Other async failures have no handler: the stream is listened to without onError, and the button fires getUser as an unawaited future, so their errors are unhandled.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-04",
+        "B:GT-04"
+      ]
+    },
+    {
+      "id": "GT-05",
+      "location": "order_summary_page.dart:47-51, order_summary_page.dart:219-221",
+      "claim": "The 'Reload profile' button calls getUser and discards the result without setState, so pressing it changes nothing on screen.",
+      "category": "runtime-behaviour",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-06",
+        "B:GT-05"
+      ]
+    },
+    {
+      "id": "GT-06",
+      "location": "order_summary_page.dart:47-51",
+      "claim": "getUser reads as a pure query but also writes to UserCache; the name hides the side effect.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-07",
+        "B:GT-05"
+      ]
+    },
+    {
+      "id": "GT-07",
+      "location": "order_summary_page.dart:17, order_summary_page.dart:24, order_summary_page.dart:37, order_summary_page.dart:42, order_summary_page.dart:48, order_summary_page.dart:55",
+      "claim": "Cryptic abbreviations force the reader to decode them: sub, o, d, e, tmp, t.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-08",
+        "B:GT-17"
+      ]
+    },
+    {
+      "id": "GT-08",
+      "location": "order_summary_page.dart:19, order_summary_page.dart:35, order_summary_page.dart:65, order_summary_page.dart:81, order_summary_page.dart:97",
+      "claim": "Names that say nothing about intent: load, describe and render are generic verbs, discount is a noun for a computation, loading is a bool without an is/has prefix.",
+      "category": "naming",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-07",
+        "B:GT-18"
+      ]
+    },
+    {
+      "id": "GT-09",
+      "location": "order_summary_page.dart:18, order_summary_page.dart:54-62",
+      "claim": "getTotal() looks like a query but writes _cachedTotal, a field nothing reads: dead state and a hidden side effect in a getter-like method.",
+      "category": "functions",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-09",
+        "B:GT-06"
+      ]
+    },
+    {
+      "id": "GT-10",
+      "location": "order_summary_page.dart:66-67",
+      "claim": "The premium discount threshold 100 and rate 0.1 are unexplained business literals.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-10",
+        "B:GT-14"
+      ]
+    },
+    {
+      "id": "GT-11",
+      "location": "order_summary_page.dart:64-70",
+      "claim": "By its own comment the discount rule is duplicated in invoice_service.dart, so two copies of one business rule can drift; the comment records the duplication instead of removing it.",
+      "category": "architecture",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-11",
+        "B:GT-15"
+      ]
+    },
+    {
+      "id": "GT-12",
+      "location": "order_summary_page.dart:14-229",
+      "claim": "The State class fetches data, writes a cache, computes prices and discounts, formats dates and statuses and builds the whole UI: several reasons to change, and pure logic that cannot be tested without a widget.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-12",
+        "B:GT-08"
+      ]
+    },
+    {
+      "id": "GT-13",
+      "location": "order_summary_page.dart:24, order_summary_page.dart:37, order_summary_page.dart:48, order_summary_page.dart:49",
+      "claim": "OrderApi, UserApi and UserCache are constructed inline, fresh on each call, so they cannot be injected or replaced in tests.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-13",
+        "B:GT-07"
+      ]
+    },
+    {
+      "id": "GT-14",
+      "location": "order_summary_page.dart:81-95",
+      "claim": "describe() nests if/else three levels deep where guard clauses would read flat.",
+      "category": "functions",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-14",
+        "B:GT-22"
+      ]
+    },
+    {
+      "id": "GT-15",
+      "location": "order_summary_page.dart:84-88, order_summary_page.dart:178, order_summary_page.dart:182",
+      "claim": "describe() returns 'Awaiting payment' for every status but paid, so a cancelled order shows 'Cancelled' and 'Awaiting payment' side by side.",
+      "category": "runtime-behaviour",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-15"
+      ]
+    },
+    {
+      "id": "GT-16",
+      "location": "order_summary_page.dart:74-79, order_summary_page.dart:84",
+      "claim": "Status is stringly typed: the literals 'paid', 'pending', 'cancelled' are compared in two methods with no enum or exhaustive switch, so a new status or a typo falls through silently.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-16",
+        "B:GT-23"
+      ]
+    },
+    {
+      "id": "GT-17",
+      "location": "order_summary_page.dart:111-228",
+      "claim": "build() is about 118 lines assembling header, status, item rows, premium banner, totals and action in one method instead of composing named widgets.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-17",
+        "B:GT-09"
+      ]
+    },
+    {
+      "id": "GT-18",
+      "location": "order_summary_page.dart:121-131, order_summary_page.dart:186-215",
+      "claim": "The label/value row (Padding > Row > Text, Spacer, Text) is copy-pasted for Subtotal, Discount and Total, and the item row repeats the same shape.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-18",
+        "B:GT-10"
+      ]
+    },
+    {
+      "id": "GT-19",
+      "location": "order_summary_page.dart:97-107, order_summary_page.dart:216",
+      "claim": "render() is a widget-building helper method rather than a widget class, so it gets no const construction or rebuild boundary of its own.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-19",
+        "B:GT-20"
+      ]
+    },
+    {
+      "id": "GT-20",
+      "location": "order_summary_page.dart:97, order_summary_page.dart:216",
+      "claim": "render() takes a boolean flag that switches between two outputs, so it does two things and the call render(order, false) is unreadable.",
+      "category": "functions",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-20",
+        "B:GT-19"
+      ]
+    },
+    {
+      "id": "GT-21",
+      "location": "order_summary_page.dart:92-94, order_summary_page.dart:98-100",
+      "claim": "Unreachable branches: render's compact branch never runs because the only caller passes false, and describe()'s null branch never runs because its only caller passes a non-null order.",
+      "category": "functions",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-20",
+        "B:GT-21"
+      ]
+    },
+    {
+      "id": "GT-22",
+      "location": "order_summary_page.dart:122, order_summary_page.dart:137, order_summary_page.dart:154, order_summary_page.dart:177, order_summary_page.dart:181, order_summary_page.dart:187, order_summary_page.dart:197, order_summary_page.dart:207, order_summary_page.dart:218",
+      "claim": "The unexplained spacing value 17 is hard-coded nine times instead of being named once.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-21",
+        "B:GT-11"
+      ]
+    },
+    {
+      "id": "GT-23",
+      "location": "order_summary_page.dart:136, order_summary_page.dart:146",
+      "claim": "The brand colour 0xFF3B5998 is hard-coded twice instead of coming from the theme or a named constant.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-22",
+        "B:GT-12"
+      ]
+    },
+    {
+      "id": "GT-24",
+      "location": "order_summary_page.dart:99, order_summary_page.dart:118, order_summary_page.dart:138, order_summary_page.dart:160, order_summary_page.dart:166, order_summary_page.dart:178",
+      "claim": "Font sizes, colours and gaps are raw literals in inline styles instead of theme text styles or spacing constants.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-23",
+        "B:GT-13"
+      ]
+    },
+    {
+      "id": "GT-25",
+      "location": "order_summary_page.dart:117-141",
+      "claim": "Rows are built by mutating a list with add() in a loop and an if, then spread in, where collection-for and collection-if would declare them in place.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-24",
+        "B:GT-33"
+      ]
+    },
+    {
+      "id": "GT-26",
+      "location": "order_summary_page.dart:66-67, order_summary_page.dart:192, order_summary_page.dart:202, order_summary_page.dart:212",
+      "claim": "The subtotal is recomputed by walking the items several times per build: discount() calls getTotal() twice and is itself called twice.",
+      "category": "performance",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-25",
+        "B:GT-16"
+      ]
+    },
+    {
+      "id": "GT-27",
+      "location": "order_summary_page.dart:53, order_summary_page.dart:116",
+      "claim": "Two comments restate the code that follows and add nothing.",
+      "category": "comments",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-26",
+        "B:GT-29"
+      ]
+    },
+    {
+      "id": "GT-28",
+      "location": "order_summary_page.dart:59",
+      "claim": "A commented-out older total calculation is left in the method body.",
+      "category": "comments",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-27",
+        "B:GT-27"
+      ]
+    },
+    {
+      "id": "GT-29",
+      "location": "order_summary_page.dart:109",
+      "claim": "A vague TODO above build() says neither what to fix nor why, and names no owner or reference.",
+      "category": "comments",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-28",
+        "B:GT-28"
+      ]
+    },
+    {
+      "id": "GT-30",
+      "location": "order_summary_page.dart:231-238",
+      "claim": "The private widget _SectionGap is never used: dead code.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-29",
+        "B:GT-24"
+      ]
+    },
+    {
+      "id": "GT-31",
+      "location": "order_summary_page.dart:247-251",
+      "claim": "OrderSnapshot compares and hashes items by list identity, so snapshots with equal contents are unequal.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": true,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-30",
+        "B:GT-25"
+      ]
+    },
+    {
+      "id": "GT-32",
+      "location": "order_summary_page.dart:240-252",
+      "claim": "OrderSnapshot is a model class in a page file, unused here.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-31",
+        "B:GT-26"
+      ]
+    },
+    {
+      "id": "GT-33",
+      "location": "order_summary_page.dart:24-30, order_summary_page.dart:35-45",
+      "claim": "The order is loaded from both a watch stream and a one-shot fetch, both writing order and loading, so a stale fetch can overwrite a newer stream value and the fetch is redundant.",
+      "category": "runtime-behaviour",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-05",
+        "B:GT-30"
+      ]
+    },
+    {
+      "id": "GT-34",
+      "location": "order_summary_page.dart:15, order_summary_page.dart:19, order_summary_page.dart:112",
+      "claim": "One state is encoded as a late Order plus a separate loading bool; only convention keeps build() from reading order before assignment, and a slip becomes a LateInitializationError.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-34",
+        "B:GT-31"
+      ]
+    },
+    {
+      "id": "GT-35",
+      "location": "order_summary_page.dart:72",
+      "claim": "Dates are hand-formatted d/m/y with no padding or locale.",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-32",
+        "B:GT-36"
+      ]
+    },
+    {
+      "id": "GT-36",
+      "location": "order_summary_page.dart:127, order_summary_page.dart:192, order_summary_page.dart:202, order_summary_page.dart:212",
+      "claim": "Money is a double and formatted inconsistently: item prices interpolated raw, totals with toStringAsFixed(2).",
+      "category": "errors-data",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-33",
+        "B:GT-34"
+      ]
+    },
+    {
+      "id": "GT-37",
+      "location": "order_summary_page.dart:138, order_summary_page.dart:145, order_summary_page.dart:190, order_summary_page.dart:200, order_summary_page.dart:210, order_summary_page.dart:221",
+      "claim": "User-facing strings are hard-coded rather than localised.",
+      "category": "architecture",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "A:GT-35",
+        "B:GT-37"
+      ]
+    },
+    {
+      "id": "GT-38",
+      "location": "order_summary_page.dart:157-159",
+      "claim": "The avatar NetworkImage has no error or placeholder handling.",
+      "category": "flutter-widgets",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "A:GT-36"
+      ]
+    },
+    {
+      "id": "GT-39",
+      "location": "order_summary_page.dart:112-114",
+      "claim": "While loading, build returns a bare Center with no Scaffold or AppBar, so the page chrome appears only when data arrives.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": true,
+      "drafts": [
+        "B:GT-32"
+      ]
+    },
+    {
+      "id": "GT-40",
+      "location": "order_summary_page.dart:16, order_summary_page.dart:149",
+      "claim": "The ScrollController is attached but never read or driven, a resource that only adds disposal work.",
+      "category": "flutter-widgets",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "B:GT-35"
+      ]
+    },
+    {
+      "id": "GT-41",
+      "location": "order_summary_page.dart:72-95",
+      "claim": "formatDate, statusLabel and describe are pure functions kept as State instance methods, which makes them look stateful and keeps them from unit tests.",
+      "category": "classes-solid",
+      "kind": "shape-visible",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "B:GT-36"
+      ]
+    },
+    {
+      "id": "GT-42",
+      "location": "order_summary_page.dart:24-45",
+      "claim": "Data fetching and state live in the StatefulWidget; choosing a state-management approach is an architecture decision.",
+      "category": "architecture",
+      "kind": "out-of-scope",
+      "required": false,
+      "unsafeToEdit": false,
+      "drafts": [
+        "B:GT-38"
+      ]
+    }
+  ]
+}
