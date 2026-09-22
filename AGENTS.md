@@ -82,14 +82,35 @@ adding its suffix in both places, in the same pull request.
 
 ## Scripts
 
-`scripts/` holds two tools. Both run on Node 18+ with no install step.
+`scripts/` holds the tools below. Every one runs on Node 18+ with no install step. They fall into
+two groups, and the line between them matters more than any single script:
+
+**Runtime: what a run reads and executes.** `SKILL.md`, `references/`, and one script:
+
+| Script | Role |
+|---|---|
+| `scan-dart.mjs` | Measures Dart files for the skill to cite. Signals only, never findings. `SKILL.md` tells every run to execute it. |
+
+**Maintenance: what keeps the repository and its evals honest.** No run is told to use these,
+and a run never needs them:
 
 | Script | Role |
 |---|---|
 | `validate-skill.mjs` | Enforces this file's contract. Run it before every commit; CI runs it too. |
-| `scan-dart.mjs` | Measures Dart files for the skill to cite. Signals only, never findings. |
+| `check-report.mjs` | Checks a report against the parts of the report contract that need no judgment. |
+| `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
+| `generate-eval-summary.mjs` | Renders the results table in `evals/README.md` from the records. |
+| `make-baseline.mjs` | Records what the deterministic tooling says, so a later change can be compared, not argued. |
+| `make-eval-projects.mjs` | Lays each scenario out as a standalone project, and `--verify` reports what a run changed. |
 
-Both keep their side effects behind a `main()` guard, so every function they hold can be
+A change to the runtime group changes what the skill does, and sends every scenario back for a
+re-run. A change to the maintenance group moves nothing a run reads, but that holds only when the
+run cannot see it. So **a measured run uses an install holding the runtime group alone**, exported
+from a commit with `git archive <sha> SKILL.md references scripts/scan-dart.mjs`. It never uses a
+clone of this repository, where it would find the maintenance scripts, the scenarios and their
+recorded results, and could use them.
+
+Every script keeps its side effects behind a `main()` guard, so every function it holds can be
 imported and tested. A script that runs work at import time cannot be tested, and an
 untestable script does not belong here.
 
@@ -107,12 +128,20 @@ Rules for anything added here:
 
 ## Tests
 
-`node --test` runs everything. Two levels, both on Node built-ins:
+`node --test` runs everything. One suite per script, at two levels, all on Node built-ins.
+`test/README.md` says what each covers:
 
-| Suite | Level | Covers |
-|---|---|---|
-| `test/scan-dart.test.mjs` | unit | Comment and string blanking, brace matching, parameter counting, generated-file detection, duplication merging |
-| `test/validate-skill.test.mjs` | integration | Every gate, by copying the repository, breaking one thing, and asserting exit code 1 |
+| Suite | Level |
+|---|---|
+| `test/scan-dart.test.mjs` | unit |
+| `test/check-report.test.mjs` | unit |
+| `test/check-evals.test.mjs` | unit |
+| `test/validate-skill.test.mjs` | integration |
+| `test/make-eval-projects.test.mjs` | integration |
+| `test/make-baseline.test.mjs` | integration |
+
+`generate-eval-summary.mjs` has no suite of its own. CI runs it with `--check`, which fails if the
+committed table is not what the records produce.
 
 **Every gate is proven to fail.** A validator that only prints `All checks passed` reads as
 evidence while proving nothing, so each gate has a test that breaks the repository on purpose
