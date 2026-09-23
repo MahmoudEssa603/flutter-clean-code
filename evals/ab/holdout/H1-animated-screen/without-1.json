@@ -1,0 +1,61 @@
+{
+  "scenario": "H1-animated-screen",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "5ed8db9cbb",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — holdout, pre-change baseline",
+  "source": {
+    "licence": "MIT",
+    "path": "lib/ui/screens/intro/intro_screen.dart",
+    "repo": "gskinnerTeam/flutter-wonderous-app",
+    "lines": 383,
+    "sha": "747b945a7e5239356bf2664261aa2f3b020b8898"
+  },
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T06:01:42.837Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-baseline/H1-animated-screen/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 20,
+    "trueFindings": 13,
+    "trueFindingsAdjusted": 13,
+    "partials": 1,
+    "duplicates": 2,
+    "falsePositives": 4,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 4,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequired": [
+      "H1-02"
+    ],
+    "missedRequiredAbsent": [
+      "H1-02"
+    ],
+    "missedRequiredStatedElsewhere": []
+  },
+  "edits": {
+    "sourcesUnchanged": true,
+    "sourceCheck": "unchanged",
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 7363,
+    "thinkingTokens": 4618,
+    "cacheReadTokens": 93997,
+    "toolCalls": 2,
+    "wallSeconds": 95,
+    "usd": 0.5208535
+  }
+}

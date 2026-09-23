@@ -1,0 +1,61 @@
+{
+  "scenario": "H4-plugin-api",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "1d71413bc1",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — holdout, pre-change baseline",
+  "source": {
+    "licence": "MIT",
+    "path": "geolocator/lib/geolocator.dart",
+    "repo": "Baseflow/flutter-geolocator",
+    "lines": 281,
+    "sha": "209f35634ec7616cf822f8854a109b1f7782941a"
+  },
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T06:09:38.511Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-baseline/H4-plugin-api/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 16,
+    "trueFindings": 7,
+    "trueFindingsAdjusted": 7,
+    "partials": 1,
+    "duplicates": 0,
+    "falsePositives": 8,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 6,
+    "falsePositivesAssertNoDefect": 2,
+    "missedRequired": [
+      "H4-02"
+    ],
+    "missedRequiredAbsent": [
+      "H4-02"
+    ],
+    "missedRequiredStatedElsewhere": []
+  },
+  "edits": {
+    "sourcesUnchanged": true,
+    "sourceCheck": "unchanged",
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 1
+  },
+  "cost": {
+    "outputTokens": 9021,
+    "thinkingTokens": 6012,
+    "cacheReadTokens": 329963,
+    "toolCalls": 7,
+    "wallSeconds": 152,
+    "usd": 0.7748565
+  }
+}

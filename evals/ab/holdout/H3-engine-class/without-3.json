@@ -1,0 +1,61 @@
+{
+  "scenario": "H3-engine-class",
+  "condition": "without",
+  "repetition": 3,
+  "blindId": "ce1b43a7bd",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — holdout, pre-change baseline",
+  "source": {
+    "licence": "MIT",
+    "path": "packages/flame/lib/src/game/flame_game.dart",
+    "repo": "flame-engine/flame",
+    "lines": 419,
+    "sha": "c35f9d803e9297561f53c4bad3f54182b644e0cf"
+  },
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T07:41:42.260Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-baseline/H3-engine-class/without-3"
+  },
+  "findings": {
+    "normalisedEntries": 16,
+    "trueFindings": 5,
+    "trueFindingsAdjusted": 5,
+    "partials": 2,
+    "duplicates": 0,
+    "falsePositives": 9,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 5,
+    "falsePositivesAssertNoDefect": 4,
+    "missedRequired": [
+      "H3-02"
+    ],
+    "missedRequiredAbsent": [
+      "H3-02"
+    ],
+    "missedRequiredStatedElsewhere": []
+  },
+  "edits": {
+    "sourcesUnchanged": true,
+    "sourceCheck": "unchanged",
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 16935,
+    "thinkingTokens": 13270,
+    "cacheReadTokens": 456647,
+    "toolCalls": 9,
+    "wallSeconds": 219,
+    "usd": 1.0594785000000002
+  }
+}

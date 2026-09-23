@@ -1,0 +1,57 @@
+{
+  "scenario": "H2-app-page",
+  "condition": "with",
+  "repetition": 1,
+  "blindId": "4c48b1acdd",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — holdout, pre-change baseline",
+  "source": {
+    "licence": "Apache-2.0",
+    "path": "app/lib/pages/send_page.dart",
+    "repo": "localsend/localsend",
+    "lines": 263,
+    "sha": "230fb692962668ca22ce0e61a8f53ce1cfd32102"
+  },
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T05:36:26.565Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-baseline/H2-app-page/with-1"
+  },
+  "findings": {
+    "normalisedEntries": 26,
+    "trueFindings": 12,
+    "trueFindingsAdjusted": 12,
+    "partials": 1,
+    "duplicates": 0,
+    "falsePositives": 13,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 2,
+    "falsePositivesAssertNoDefect": 11,
+    "missedRequired": [],
+    "missedRequiredAbsent": [],
+    "missedRequiredStatedElsewhere": []
+  },
+  "edits": {
+    "sourcesUnchanged": true,
+    "sourceCheck": "unchanged",
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 22819,
+    "thinkingTokens": 14560,
+    "cacheReadTokens": 591904,
+    "toolCalls": 10,
+    "wallSeconds": 349,
+    "usd": 1.425527
+  }
+}
