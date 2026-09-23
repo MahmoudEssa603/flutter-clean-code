@@ -25,6 +25,7 @@ node --test
 node scripts/validate-skill.mjs
 node scripts/scan-dart.mjs evals/fixtures
 node scripts/check-dart-examples.mjs
+node scripts/check-fixture-reuse.mjs
 ```
 
 `node --test` runs the unit suite over the scanner's parsing and the integration suite over the
@@ -71,6 +72,12 @@ before block teaches less than a 12-line one.
 
 Keep the before and after in separate fenced blocks, both labelled, so a reader skimming the file
 can tell them apart without reading the code.
+
+**Write the example in a domain no scenario uses.** The examples were once built from the eval
+fixtures, down to the method names, so a run could read its answers instead of finding them.
+`node scripts/check-fixture-reuse.mjs` compares every distinctive name, string, colour and number
+in `evals/fixtures/` against `SKILL.md` and `references/`, and fails on a match that is not an
+SDK name.
 
 ## Changing the scanner
 

@@ -32,6 +32,8 @@ jobs:
         run: node scripts/validate-skill.mjs
       - name: smoke-test the scanner on the fixtures
         run: node scripts/scan-dart.mjs evals/fixtures
+      - name: no example is built from an eval fixture
+        run: node scripts/check-fixture-reuse.mjs
       - name: the eval registry holds together — no PASS over a partial expectation
         run: node scripts/check-evals.mjs
       - name: the results table matches the records it is generated from

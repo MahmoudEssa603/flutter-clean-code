@@ -1,6 +1,6 @@
 # Tests
 
-Eight suites at two levels, all on Node built-ins only. There is nothing to install.
+Nine suites at two levels, all on Node built-ins only. There is nothing to install.
 
 ```bash
 node --test                      # everything
@@ -10,7 +10,9 @@ node --test test/scan-dart.test.mjs
 | File | Level | Covers |
 |---|---|---|
 | `scan-dart.test.mjs` | unit | The scanner's parsing: comment and string blanking, brace matching, parameter counting, generated-file detection, duplication merging |
-| `check-dart-examples.test.mjs` | unit and integration | The report contract: the three judgements on every finding and one value each, the 20-finding cap, what counts as a location, the sections that must exist, a heading and a diff block for every batch, and the re-run exemption from the numbering checks |
+| `check-report.test.mjs` | unit | The report contract: the three judgements on every finding and one value each, the 20-finding cap, what counts as a location, the sections that must exist, a heading and a diff block for every batch, and the re-run exemption from the numbering checks |
+| `check-dart-examples.test.mjs` | unit and integration | The snippet check: what is pulled out of the markdown, what an elision is filled with, how a fragment is wrapped and where it is split — and that a snippet with a syntax error fails the run |
+| `check-fixture-reuse.test.mjs` | unit and integration | The fixture-reuse check: what counts as a distinctive name, string, colour or number, how a string literal is read, and that an example built from a fixture fails the run |
 | `check-run.test.mjs` | unit | The measured-run check: a WITH run loaded the evaluation install and ran only its scanner, with `~`, shell variables and relative paths resolved; an unresolvable path holds the run; a WITHOUT run shows no trace of the skill; usage is counted once per API message |
 | `check-evals.test.mjs` | unit | The eval registry: no PASS sitting over a recorded partial or failure, no scenario without a record, and a verdict short of PASS that says what fell short |
 | `validate-skill.test.mjs` | integration | Every gate in `validate-skill.mjs`, by copying the repository, breaking one thing, and asserting the exit code is 1 |

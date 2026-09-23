@@ -7,7 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, cpSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,6 +22,21 @@ import {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SCRIPT = join(ROOT, 'scripts', 'check-dart-examples.mjs');
+
+/** Runs a script against a copy of the repository, with one file broken in the copy. */
+function inBrokenCopy(script, mutate) {
+  const dir = mkdtempSync(join(tmpdir(), 'fcc-check-'));
+  try {
+    cpSync(ROOT, dir, {
+      recursive: true,
+      filter: (src) => !src.includes(`${ROOT}\\.git`) && !src.includes(`${ROOT}/.git`),
+    });
+    mutate(dir);
+    return spawnSync(process.execPath, [join(dir, 'scripts', script)], { cwd: dir, encoding: 'utf8' });
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
 
 const hasDart = () => {
   const run = spawnSync('dart', ['--version'], { encoding: 'utf8', shell: process.platform === 'win32' });
@@ -109,29 +124,15 @@ test('the repository as committed has no unparsable snippet', { skip: hasDart() 
 });
 
 test('a snippet with a syntax error is reported, and the run fails', { skip: hasDart() ? false : 'dart is not on PATH' }, () => {
-  // The check reads this repository's own files, so the broken snippet is put in one of them and
-  // taken out again. A gate that is never seen to fail is not evidence of anything.
-  const target = join(ROOT, 'references', 'monorepo-scope.md');
-  const original = spawnSync('git', ['show', 'HEAD:references/monorepo-scope.md'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-    maxBuffer: 1024 * 1024 * 8,
+  // The check reads a repository's own files, so the broken snippet goes into a copy of this one.
+  // A gate never seen to fail is not evidence of anything.
+  const run = inBrokenCopy('check-dart-examples.mjs', (dir) => {
+    appendFileSync(join(dir, 'references', 'monorepo-scope.md'), '\n```dart\nfinal broken = ((;\n```\n');
   });
-  assert.equal(original.status, 0, 'the file has to be readable from git to be restored');
 
-  const scratch = mkdtempSync(join(tmpdir(), 'dart-examples-test-'));
-  try {
-    writeFileSync(join(scratch, 'saved.md'), original.stdout);
-    writeFileSync(target, `${original.stdout}\n\`\`\`dart\nfinal broken = ((;\n\`\`\`\n`);
-
-    const run = spawnSync('node', [SCRIPT], { cwd: ROOT, encoding: 'utf8' });
-    assert.equal(run.status, 1, 'an unparsable snippet fails the run');
-    assert.match(run.stdout, /no reading parses it/);
-    assert.match(run.stdout, /references\/monorepo-scope\.md:\d+/);
-  } finally {
-    writeFileSync(target, original.stdout);
-    rmSync(scratch, { recursive: true, force: true });
-  }
+  assert.equal(run.status, 1, 'an unparsable snippet fails the run');
+  assert.match(run.stdout, /no reading parses it/);
+  assert.match(run.stdout, /references[/\\]monorepo-scope\.md:\d+/);
 });
 
 test('an unknown flag is refused rather than ignored', () => {

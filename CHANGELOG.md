@@ -84,6 +84,17 @@ the last one is holding whatever it shipped until the next. See the bump table i
   is told to use them, and a measured run cannot see them.
 
 ### Added
+- `scripts/check-fixture-reuse.mjs` checks that no example is built from an eval fixture. That
+  rule was written into `AGENTS.md` the day the examples were moved out of the fixtures, and it
+  asked for a scan nothing performed. It compares only what is distinctive — a name of two or
+  more words, a string of two or more words, a colour, a number nobody picks twice — so a fixture
+  calling `build` or declaring `total` shares a word with the language, not with an example, and
+  an SDK name like `copyWith` is exempt by name. The tree as it stands shares nothing. Run
+  against the commit before the examples were moved, it reports 46 reuses of 15 tokens, among
+  them the method name `SKILL.md` used for its own misleading-name example, `_SectionGap`,
+  `OrderStatus`, the fixture's brand colour and its odd `17` padding. CI runs it on both
+  platforms.
+
 - `scripts/check-dart-examples.mjs` asks the Dart SDK whether every snippet in `SKILL.md` and
   `references/` parses. The checklist has asked for valid Dart 3 since the first release and
   nothing enforced it, which mattered the moment every example was rewritten to get the eval

@@ -85,7 +85,11 @@ the file three scenarios review, and `SKILL.md` used that file's own `getUser()`
 of a misleading name. A run could then read its answers instead of finding them, and no
 measurement taken that way means anything. After any edit under `references/`, scan the Dart
 fixtures' identifiers, strings and colours against `SKILL.md` and `references/`: the only
-matches may be SDK names and rules stated in general terms.
+matches may be SDK names and rules stated in general terms. `node scripts/check-fixture-reuse.mjs`
+does that scan: it compares only what is distinctive — a name of two or more words, a string of
+two or more words, a colour, a number nobody picks twice — so a fixture calling `build` shares a
+word with the language, not with the example. Run over the tree as it was before the examples
+were moved, it finds 46 reuses of 15 tokens, including the method name `SKILL.md` itself used.
 
 **Generated Dart is never audited.** `.g.dart`, `.freezed.dart`, `.mocks.dart`, `.gr.dart`,
 `.config.dart`, `.gen.dart`, `.pb*.dart`, and any file carrying a `GENERATED CODE` banner are
@@ -110,6 +114,7 @@ and a run never needs them:
 |---|---|
 | `validate-skill.mjs` | Enforces this file's contract. Run it before every commit; CI runs it too. |
 | `check-dart-examples.mjs` | Asks the Dart SDK whether every snippet in `SKILL.md` and `references/` parses. |
+| `check-fixture-reuse.mjs` | Checks that no example is built from an eval fixture. |
 | `check-report.mjs` | Checks a report against the parts of the report contract that need no judgment. |
 | `check-run.mjs` | Checks from a transcript that a measured run used the evaluation install, or no skill at all, and records its identity and cost. |
 | `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
@@ -153,6 +158,7 @@ built-ins. `test/README.md` says what each covers:
 |---|---|
 | `test/scan-dart.test.mjs` | unit |
 | `test/check-dart-examples.test.mjs` | unit and integration |
+| `test/check-fixture-reuse.test.mjs` | unit and integration |
 | `test/check-report.test.mjs` | unit |
 | `test/check-evals.test.mjs` | unit |
 | `test/check-run.test.mjs` | unit |
@@ -248,6 +254,7 @@ Run before every tag. Everything here must pass locally, not just in CI.
 - [ ] no sibling-skill, tool, or project name anywhere (see Self-containment rule)
 - [ ] vocabulary table respected; no banned synonym introduced
 - [ ] node scripts/check-dart-examples.mjs                 — every snippet parses, SDK present
+- [ ] node scripts/check-fixture-reuse.mjs                 — no example is built from a fixture
 - [ ] the evals in evals/ were run by hand against the current SKILL.md
 - [ ] eval results recorded honestly: "ran, passed" or "not run"
 - [ ] metadata.version bumped and matching the tag about to be created
