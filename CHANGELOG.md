@@ -51,7 +51,11 @@ the last one is holding whatever it shipped until the next. See the bump table i
   order — title, the five header fields, the Summary table, each finding as its own `### CC-nnn`
   section with four labelled fields carrying one value each, then the batches — and says that
   ratings folded into a heading is a different report. Five paragraphs in Steps 5 and 6 were
-  compressed to pay for it; the body is still 500 lines and no rule was dropped.
+  compressed to pay for it; the body is still 500 lines and no rule was dropped. Re-run, the five
+  that regressed all pass, and the two controls that were already passing still do. The evidence
+  is `03` and `09`: both passed **without opening the template at all**, which is the path D5 had
+  broken. The other three read it this time where they had not before, so their improvement is
+  confounded and is recorded rather than counted. Measured in `evals/report-contract.md`.
 
 - **One repeated literal is one signal now (E2).** `scan-dart.mjs` printed a line per occurrence,
   so `EdgeInsets.all(17)` filled nine of the fixture's twenty-three signals and the padding in
