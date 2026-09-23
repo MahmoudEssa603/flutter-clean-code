@@ -84,6 +84,19 @@ the last one is holding whatever it shipped until the next. See the bump table i
   is told to use them, and a measured run cannot see them.
 
 ### Added
+- `scripts/check-dart-examples.mjs` asks the Dart SDK whether every snippet in `SKILL.md` and
+  `references/` parses. The checklist has asked for valid Dart 3 since the first release and
+  nothing enforced it, which mattered the moment every example was rewritten to get the eval
+  fixtures out of them. A snippet is a fragment, not a file, so each is parsed as a file, as class
+  members, as statements, as a clause without its `try` and as a list of expressions, whole and
+  then part by part, with `...` elisions filled in; it passes under any one reading and a typo
+  parses under none. Run over the 84 snippets as they stand, all 84 parse. Syntax is all it
+  answers — resolving the names would mean shipping a project to resolve them against. Without
+  `dart` on PATH it says nothing was checked and does not report a pass. `AGENTS.md`,
+  `CONTRIBUTING.md` and `test/README.md` also stopped pointing at a fixture header comment that
+  was deliberately deleted: the planted defects are listed in `evals/README.md`, because a fixture
+  that announces it is one measures nothing.
+
 - `scripts/check-run.mjs` also refuses a run that said nothing after its last tool call. An
   interactive calibration run restarted itself mid-way and produced no report, and every other
   check passed it: the skill had loaded from the right install and no forbidden scanner ran. A

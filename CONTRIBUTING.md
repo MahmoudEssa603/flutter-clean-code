@@ -24,6 +24,7 @@ Four invariants. A pull request that breaks one of them will not merge, however 
 node --test
 node scripts/validate-skill.mjs
 node scripts/scan-dart.mjs evals/fixtures
+node scripts/check-dart-examples.mjs
 ```
 
 `node --test` runs the unit suite over the scanner's parsing and the integration suite over the
@@ -61,8 +62,11 @@ Removing a checklist item needs one thing: a case where it produced a wrong or n
 
 ## Changing examples
 
-Every snippet in `references/dart-examples.md` must be valid Dart 3 that the analyzer accepts,
-apart from deliberate `...` elisions. Show the smallest code that carries the point. A 60-line
+Every snippet in `references/dart-examples.md` must be real Dart 3, apart from deliberate `...`
+elisions. `node scripts/check-dart-examples.mjs` asks the SDK: a snippet is a fragment, so it is
+parsed as a file, as class members, as statements, as a clause and as a list of expressions, and
+it passes under any one of them. Without the Dart SDK on PATH the check says so and checks
+nothing — it never reports a pass. Show the smallest code that carries the point. A 60-line
 before block teaches less than a 12-line one.
 
 Keep the before and after in separate fenced blocks, both labelled, so a reader skimming the file
@@ -76,9 +80,10 @@ can tell them apart without reading the code.
   gate.
 - Every threshold carries a comment naming the rule in `SKILL.md` it serves. A number nobody can
   justify is a number nobody should trust.
-- A new signal needs four things in the same pull request: a unit test proving it fires, a unit
-  test proving it stays quiet, a case in `evals/fixtures/order_summary_page.dart`, and a line
-  in that fixture's header comment.
+- A new or changed signal needs four things in the same pull request: a unit test proving it
+  fires, a unit test proving it stays quiet, a case in `evals/fixtures/order_summary_page.dart`,
+  and a line in that fixture's table under Fixtures in [evals/README.md](evals/README.md). A
+  changed signal also re-records the baseline and sends every scenario back for a re-run.
 - Side effects stay behind the `main()` guard so every function remains importable and
   testable.
 
@@ -87,9 +92,10 @@ When that is not enough for a new signal, report less rather than guessing.
 
 ## Changing the eval fixtures
 
-Do not clean up `evals/fixtures/`. Those files are deliberately unclean and every planted problem
-is listed in the header comment of `order_summary_page.dart`. If you add a planted finding, add it
-to that header comment and to the scenario that checks for it, in the same pull request.
+Do not clean up `evals/fixtures/`. Those files are deliberately unclean, and every planted
+problem is listed in [evals/README.md](evals/README.md) under Fixtures — not in the files
+themselves, which read as ordinary code on purpose. If you add a planted finding, add it to that
+table and to the scenario that checks for it, in the same pull request.
 
 ## Review
 

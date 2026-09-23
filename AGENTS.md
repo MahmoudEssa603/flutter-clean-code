@@ -69,9 +69,12 @@ authored on Windows and consumed on Linux and macOS.
 **No time-sensitive statements.** No "as of 2026", no "the new API", no version-dated advice in
 the skill body. Behaviour that changed belongs under an `Old patterns` heading or nowhere.
 
-**Examples are runnable Dart.** Every snippet in `references/dart-examples.md` must be valid
-Dart 3 that a reader could paste into a file and have the analyzer accept, apart from the
-deliberate `...` elisions. No pseudo-code.
+**Examples are real Dart, checked by the SDK.** No pseudo-code. A snippet is a fragment, not a
+file — a class member on its own, statements out of a method, a widget tree, a catch clause
+without its try — so `node scripts/check-dart-examples.mjs` parses each one under every reading a
+fragment can have, whole and then part by part, with `...` elisions filled in. A snippet that
+parses under none of them has a typo. Syntax is all this can answer: these illustrate, and
+resolving their names would mean shipping a project to resolve them against.
 
 **Prose lines wrap at 100 columns.** Tables and code blocks are exempt.
 
@@ -106,6 +109,7 @@ and a run never needs them:
 | Script | Role |
 |---|---|
 | `validate-skill.mjs` | Enforces this file's contract. Run it before every commit; CI runs it too. |
+| `check-dart-examples.mjs` | Asks the Dart SDK whether every snippet in `SKILL.md` and `references/` parses. |
 | `check-report.mjs` | Checks a report against the parts of the report contract that need no judgment. |
 | `check-run.mjs` | Checks from a transcript that a measured run used the evaluation install, or no skill at all, and records its identity and cost. |
 | `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
@@ -148,6 +152,7 @@ built-ins. `test/README.md` says what each covers:
 | Suite | Level |
 |---|---|
 | `test/scan-dart.test.mjs` | unit |
+| `test/check-dart-examples.test.mjs` | unit and integration |
 | `test/check-report.test.mjs` | unit |
 | `test/check-evals.test.mjs` | unit |
 | `test/check-run.test.mjs` | unit |
@@ -242,7 +247,7 @@ Run before every tag. Everything here must pass locally, not just in CI.
 - [ ] every references/ file is linked from SKILL.md and from nowhere else
 - [ ] no sibling-skill, tool, or project name anywhere (see Self-containment rule)
 - [ ] vocabulary table respected; no banned synonym introduced
-- [ ] every Dart snippet is valid Dart 3
+- [ ] node scripts/check-dart-examples.mjs                 — every snippet parses, SDK present
 - [ ] the evals in evals/ were run by hand against the current SKILL.md
 - [ ] eval results recorded honestly: "ran, passed" or "not run"
 - [ ] metadata.version bumped and matching the tag about to be created

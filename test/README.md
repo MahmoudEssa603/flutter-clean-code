@@ -1,6 +1,6 @@
 # Tests
 
-Seven suites at two levels, all on Node built-ins only. There is nothing to install.
+Eight suites at two levels, all on Node built-ins only. There is nothing to install.
 
 ```bash
 node --test                      # everything
@@ -10,7 +10,7 @@ node --test test/scan-dart.test.mjs
 | File | Level | Covers |
 |---|---|---|
 | `scan-dart.test.mjs` | unit | The scanner's parsing: comment and string blanking, brace matching, parameter counting, generated-file detection, duplication merging |
-| `check-report.test.mjs` | unit | The report contract: the three judgements on every finding and one value each, the 20-finding cap, what counts as a location, the sections that must exist, a heading and a diff block for every batch, and the re-run exemption from the numbering checks |
+| `check-dart-examples.test.mjs` | unit and integration | The report contract: the three judgements on every finding and one value each, the 20-finding cap, what counts as a location, the sections that must exist, a heading and a diff block for every batch, and the re-run exemption from the numbering checks |
 | `check-run.test.mjs` | unit | The measured-run check: a WITH run loaded the evaluation install and ran only its scanner, with `~`, shell variables and relative paths resolved; an unresolvable path holds the run; a WITHOUT run shows no trace of the skill; usage is counted once per API message |
 | `check-evals.test.mjs` | unit | The eval registry: no PASS sitting over a recorded partial or failure, no scenario without a record, and a verdict short of PASS that says what fell short |
 | `validate-skill.test.mjs` | integration | Every gate in `validate-skill.mjs`, by copying the repository, breaking one thing, and asserting the exit code is 1 |
@@ -35,7 +35,8 @@ A new signal needs four things in the same pull request, the same four
 1. A unit test here that proves it fires.
 2. A unit test here that proves it stays quiet.
 3. A case in `evals/fixtures/order_summary_page.dart` that triggers it.
-4. A line in that fixture's header comment saying what was planted.
+4. A line in that fixture's table under Fixtures in [evals/README.md](../evals/README.md),
+   saying what was planted. Not in the file: a fixture that announces it is one measures nothing.
 
 ## Known limitations, tested on purpose
 
