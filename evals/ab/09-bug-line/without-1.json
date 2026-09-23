@@ -1,0 +1,48 @@
+{
+  "scenario": "09-bug-line",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "7a25564aa5",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23",
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T00:22:16.415Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-baseline/09-bug-line/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 6,
+    "trueFindings": 4,
+    "trueFindingsAdjusted": 4,
+    "partials": 1,
+    "duplicates": 0,
+    "falsePositives": 1,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequired": [],
+    "missedRequiredAbsent": [],
+    "missedRequiredStatedElsewhere": []
+  },
+  "edits": {
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 1416,
+    "thinkingTokens": 404,
+    "cacheReadTokens": 90946,
+    "toolCalls": 2,
+    "wallSeconds": 24,
+    "usd": 0.31365299999999996
+  }
+}

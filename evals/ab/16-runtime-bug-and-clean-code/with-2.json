@@ -1,0 +1,69 @@
+{
+  "scenario": "16-runtime-bug-and-clean-code",
+  "condition": "with",
+  "repetition": 2,
+  "blindId": "d98e54515c",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23",
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T01:01:54.883Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-baseline/16-runtime-bug-and-clean-code/with-2"
+  },
+  "findings": {
+    "normalisedEntries": 30,
+    "trueFindings": 20,
+    "trueFindingsAdjusted": 26,
+    "partials": 2,
+    "duplicates": 3,
+    "falsePositives": 5,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 4,
+    "missedRequired": [
+      "GT-02",
+      "GT-05",
+      "GT-10",
+      "GT-12",
+      "GT-18",
+      "GT-21",
+      "GT-23",
+      "GT-28",
+      "GT-29"
+    ],
+    "missedRequiredAbsent": [
+      "GT-02",
+      "GT-05",
+      "GT-10"
+    ],
+    "missedRequiredStatedElsewhere": [
+      "GT-12",
+      "GT-18",
+      "GT-21",
+      "GT-23",
+      "GT-28",
+      "GT-29"
+    ]
+  },
+  "edits": {
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 30938,
+    "thinkingTokens": 18175,
+    "cacheReadTokens": 515535,
+    "toolCalls": 11,
+    "wallSeconds": 390,
+    "usd": 1.6615875
+  }
+}

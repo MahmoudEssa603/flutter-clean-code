@@ -1,0 +1,94 @@
+{
+  "scenario": "16-runtime-bug-and-clean-code",
+  "condition": "without",
+  "repetition": 2,
+  "blindId": "f9860242b8",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23",
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T01:13:01.314Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-baseline/16-runtime-bug-and-clean-code/without-2"
+  },
+  "findings": {
+    "normalisedEntries": 18,
+    "trueFindings": 14,
+    "trueFindingsAdjusted": 20,
+    "partials": 0,
+    "duplicates": 1,
+    "falsePositives": 3,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 2,
+    "missedRequired": [
+      "GT-02",
+      "GT-05",
+      "GT-06",
+      "GT-07",
+      "GT-10",
+      "GT-12",
+      "GT-18",
+      "GT-20",
+      "GT-21",
+      "GT-23",
+      "GT-27",
+      "GT-28",
+      "GT-29",
+      "GT-30"
+    ],
+    "missedRequiredAbsent": [
+      "GT-05",
+      "GT-06",
+      "GT-10",
+      "GT-12",
+      "GT-18",
+      "GT-20",
+      "GT-27",
+      "GT-29"
+    ],
+    "missedRequiredStatedElsewhere": [
+      "GT-02",
+      "GT-07",
+      "GT-21",
+      "GT-23",
+      "GT-28",
+      "GT-30"
+    ]
+  },
+  "edits": {
+    "codeFilesChanged": [
+      "lib/features/orders/order_summary_page.dart"
+    ],
+    "reportFilesWritten": [],
+    "addedLines": 278,
+    "removedLines": 185,
+    "unsafeItemsTouched": [
+      "GT-01",
+      "GT-02",
+      "GT-03",
+      "GT-04",
+      "GT-05",
+      "GT-15",
+      "GT-31",
+      "GT-33",
+      "GT-35",
+      "GT-36",
+      "GT-38",
+      "GT-39"
+    ],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 40636,
+    "thinkingTokens": 19153,
+    "cacheReadTokens": 1853426,
+    "toolCalls": 26,
+    "wallSeconds": 554,
+    "usd": 2.6908630000000002
+  }
+}

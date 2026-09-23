@@ -1,0 +1,93 @@
+{
+  "scenario": "07-test-quality",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "e1044cdd2c",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23",
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T00:19:55.592Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-baseline/07-test-quality/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 20,
+    "trueFindings": 19,
+    "trueFindingsAdjusted": 25,
+    "partials": 1,
+    "duplicates": 0,
+    "falsePositives": 0,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 0,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequired": [
+      "GT-02",
+      "GT-05",
+      "GT-06",
+      "GT-07",
+      "GT-10",
+      "GT-12",
+      "GT-14",
+      "GT-16",
+      "GT-17",
+      "GT-18",
+      "GT-20",
+      "GT-21",
+      "GT-22",
+      "GT-23",
+      "GT-27",
+      "GT-28",
+      "GT-29",
+      "GT-34",
+      "GT-T03",
+      "GT-T05",
+      "GT-T14"
+    ],
+    "missedRequiredAbsent": [
+      "GT-02",
+      "GT-07",
+      "GT-10",
+      "GT-12",
+      "GT-14",
+      "GT-16",
+      "GT-17",
+      "GT-18",
+      "GT-20",
+      "GT-21",
+      "GT-22",
+      "GT-23",
+      "GT-27",
+      "GT-T05",
+      "GT-T14"
+    ],
+    "missedRequiredStatedElsewhere": [
+      "GT-05",
+      "GT-06",
+      "GT-28",
+      "GT-29",
+      "GT-34",
+      "GT-T03"
+    ]
+  },
+  "edits": {
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 9386,
+    "thinkingTokens": 5437,
+    "cacheReadTokens": 369667,
+    "toolCalls": 8,
+    "wallSeconds": 138,
+    "usd": 0.8234135
+  }
+}

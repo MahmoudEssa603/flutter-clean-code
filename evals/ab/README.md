@@ -4,6 +4,25 @@
 > correction after the freeze is recorded with its reason and its date, and every result graded
 > before it is re-graded.
 
+> **Amendment, 2026-09-23, after the first 24 runs.** Two rules were measuring something other
+> than what they were written for, and all four graders reported it independently before any
+> result was read. Rather than re-grade, both are recorded per item alongside the strict grade, so
+> every number can be read either way. Nothing was deleted.
+>
+> 1. **One entry, at most one item** penalises an output for grouping. A report that puts nine
+>    `EdgeInsets.all(17)` sites in one finding names all nine, and strictly scores one Full match
+>    and eight missed items. Each grader classified every missed required item as `absent` (the
+>    output never says it) or `stated_elsewhere` (it says it inside an entry credited to a
+>    neighbour, at a usable location). The **adjusted** count treats `stated_elsewhere` as
+>    identified.
+> 2. **False positive** conflated three things: a claim that is untrue, a claim that is true but
+>    not in the key, and an entry that asserts no defect at all — a hand-back, an open question, a
+>    deliberate non-finding. Each grader split every false positive three ways. The strict count
+>    stays; `untrue claims` is the one that measures error.
+>
+> The per-item classifications live beside the grades in each run's record, and
+> [RESULTS.md](RESULTS.md) prints both columns for every metric.
+
 This protocol answers one question: how much better does the same model do on the same task
 with the skill than without it? It measures against a ground truth written before any run,
 never against the skill's own report format.

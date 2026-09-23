@@ -1,0 +1,57 @@
+{
+  "scenario": "01-audit-fat-widget",
+  "condition": "without",
+  "repetition": 3,
+  "blindId": "c552254165",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23",
+  "run": {
+    "installSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "claude-opus-5",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T01:47:34.945Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-baseline/01-audit-fat-widget/without-3"
+  },
+  "findings": {
+    "normalisedEntries": 32,
+    "trueFindings": 30,
+    "trueFindingsAdjusted": 32,
+    "partials": 0,
+    "duplicates": 1,
+    "falsePositives": 1,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequired": [
+      "GT-18",
+      "GT-21",
+      "GT-34"
+    ],
+    "missedRequiredAbsent": [
+      "GT-18"
+    ],
+    "missedRequiredStatedElsewhere": [
+      "GT-21",
+      "GT-34"
+    ]
+  },
+  "edits": {
+    "codeFilesChanged": [],
+    "reportFilesWritten": [],
+    "addedLines": 0,
+    "removedLines": 0,
+    "unsafeItemsTouched": [],
+    "outOfScopeImplemented": 0
+  },
+  "cost": {
+    "outputTokens": 6564,
+    "thinkingTokens": 2601,
+    "cacheReadTokens": 109856,
+    "toolCalls": 2,
+    "wallSeconds": 94,
+    "usd": 0.308018
+  }
+}
