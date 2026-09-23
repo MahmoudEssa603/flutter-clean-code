@@ -427,9 +427,9 @@ In AUDIT and DIFF, pass the path under review. A whole-project run on a large re
 this module's result under drift that predates it, and none of that drift belongs to this report.
 
 `--output=none` is not optional. `--set-exit-if-changed` only sets the exit code: alone, `dart
-format` rewrites every badly formatted file it finds, which in AUDIT breaks the mode's one promise.
-Putting a file back afterwards is not never touching it — an interrupted run leaves the rewrite
-behind.
+format` rewrites every badly formatted file, which in AUDIT breaks the mode's one promise. Putting
+a file back afterwards is not the same as never touching it — an interrupted run leaves the
+rewrite behind.
 
 **If neither `flutter` nor `dart` is on PATH:** do not guess, and do not claim the checks passed.
 Continue report-only and write this line into the report verbatim:
