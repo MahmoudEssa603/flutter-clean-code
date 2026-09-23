@@ -1,9 +1,9 @@
 {
   "scenario": "01-audit-fat-widget",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Eight of eight and all four must_nots. Expectation 3, PARTIAL at 1.6.0, is now met outright: CC-014 reports the 118-line build() as a Flutter finding, proposes named widget classes over _buildX() methods, and gives all three reasons — const, a key, and a name in DevTools. Expectation 4 is CC-001 under Naming, which names the hidden write to _cachedTotal. Expectation 5 is CC-012, which reports the padding and colour literals and sends the choice of replacement values to a design system in as many words. Expectation 6 is CC-006 under Errors & data, asked as a question at Low confidence because invoice_service.dart is not in scope. The report passes check-report.mjs at 16 findings, and the workspace diff is empty, so must_not 1 and 4 hold from the disk rather than the reply. Re-counted: scanner 23 signals, build() 111-228 = 118 lines, Color(0xFF3B5998) twice — all as claimed. One measured claim is wrong and is recorded rather than scored, because no expectation rests on it: CC-012 says EdgeInsets.all(17) appears ten times and then lists the nine correct lines; the file has nine. The same slip appeared at 1.6.0 in scenario 14."
+  "note": "Run of the release candidate, which carries D5, D6, D7 and the grouped literal signal. Eight of eight and all four must_nots. Expectation 3 is CC-015: the 118-line build() as a Flutter finding, named widget classes rather than _buildX() methods, and all three reasons — const, keys and a name in DevTools. Expectation 4 is CC-003, which names the write to _cachedTotal behind a query name; CC-004 reports getUser() beside it. Expectation 5 is CC-013, and the choice of replacement values goes to a design system. Expectation 6 is CC-008 at Low confidence, because invoice_service.dart is named on the Not checked line and was never read. Expectation 7 holds by check-report.mjs at 19 findings. Expectations 1, 2 and 8 hold from the header, the empty workspace diff and the Arabic prose with English identifiers. must_not 2 holds: dart format's drift is named under Verification and under analyzer coverage, and no finding rests on it. The two claims worth re-counting are both right, and both are the scanner's new shape: 14 signals in this file, and EdgeInsets.all(17) nine times — the count six of nineteen earlier runs got wrong while listing the right nine lines."
 }

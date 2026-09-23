@@ -1,9 +1,9 @@
 {
   "scenario": "10-localisation-detection",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Three of three and all three must_nots. The run reaches the right conclusion by the harder route: no l10n.yaml, no .arb and no flutter_localizations, but translations_kit in pubspec.yaml, two registered i18n asset files carrying real French, and tr() already used in the file. Expectation 2 is met literally — grep -rn \"tr(\" lib/ ran before the decision. The three English literals are reported as CC-001 with the three line numbers, not collapsed into an Out of Scope line, which is what must_not 2 forbids; the finding is one entry covering three locations rather than three entries, and the cost is stated concretely as a half-translated screen in French. must_not 3 holds: the fix routes through the project's own lookup call and adds keys to the existing asset files. The report passes check-report.mjs."
+  "note": "Three of three and all three must_nots. The project is recognised as localised from the package and its assets, and the decision is made after grepping the lookup call across lib/ — `grep -rn \"tr(\" lib/` is in the transcript, which is expectation 2 exactly. Each hardcoded string is a finding with its own location, not a deferred project decision, and the report says why in one line: the file is not missing localisation, it is applying it inconsistently, which is worse, because nothing signals that the three literals were an oversight rather than a choice. The illustration it gives — a French reader seeing \"Paiement\", then \"3 articles\", then \"Shipping is calculated at the next step\" — is the cost stated rather than the rule restated. Nothing was modified and the report passes check-report.mjs at 5 findings."
 }

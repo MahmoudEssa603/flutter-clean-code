@@ -1,9 +1,9 @@
 {
   "scenario": "11-unresolved-dependencies",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Four of four and all four must_nots. pub get fails on an unreachable internal git dependency, and the Verification section names the command, the host and the exit code. No diagnostics existed to mine, and the report says so instead of implying the commands ran. The audit continues on static reading plus the scanner, with 19 findings, and findings that would need a resolving analyzer say so and keep their locations. must_not 1 holds because no diagnostic count is quoted as a quality measure — the run states plainly that the analyzer never saw the file. The report passes check-report.mjs."
+  "note": "Four of four and all four must_nots. The Verification section names the failure precisely — flutter analyze could not run because resolution failed at `git clone --mirror https://example.invalid/internal/ui_kit.git`, exit 128, host not resolved — and states that no diagnostics were produced and none were mined for findings. That is expectations 1, 2 and 3 in three lines, and must_nots 1, 2 and 3 with them. The audit continues on static reading plus the scanner, whose numbers are cited as measured rather than estimated: 1 file, 14 signals, and a 6-line block repeated three times at lines 186, 196 and 206. dart format is reported as pre-existing drift with the file confirmed untouched by md5. Nineteen findings, so must_not 4 holds — the audit was not abandoned. The report passes check-report.mjs and the workspace diff is empty."
 }

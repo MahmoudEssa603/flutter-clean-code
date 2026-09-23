@@ -1,9 +1,9 @@
 {
   "scenario": "17-activation-on-a-mixed-request",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -11,13 +11,12 @@
     "recorded": true,
     "total": 2,
     "partial": 0,
-    "fail": 0,
-    "notApplicable": 2
+    "fail": 0
   },
   "mustNot": {
     "recorded": "all held",
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. The skill activated on the description alone. The query named neither the skill nor a slash command, and check-run.mjs records a Skill call and the injected base directory pointing at the evaluation install, so expectations 1 and 2 are met and this run counts as a hit rather than a miss. Expectations 3 and 4 are instructions to the grader, not behaviour to grade, so they are not counted. The reply hands back the Riverpod migration first and then delivers a 12-finding audit with seven unapplied batches, which is the conduct scenario 15 owns and this one does not grade. Recorded, not scored: check-report.mjs fails on two problems — CC-012 carries no Effort, and Batch 7 has no diff block."
+  "note": "The skill loaded without being named: check-run.mjs records the load indicator on a run whose condition is implicit, which is the one thing this scenario measures. Expectations 1 and 2 are counted; 3 and 4 are how the result is to be read, not behaviour to grade, and both must_nots are about the grading rather than the run. The reply is not graded here — 15 owns that, with the skill named — but it is recorded that the run produced a conforming report at 10 findings that passes check-report.mjs, and changed nothing on disk."
 }

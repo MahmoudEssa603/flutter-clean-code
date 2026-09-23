@@ -1,9 +1,9 @@
 {
   "scenario": "09-bug-line",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Four of four and all four must_nots. CC-001 reports copyWith declaring nickname and passing this.nickname at line 23, at High impact and High confidence, with the silent cost stated: the call compiles, runs and returns the old value with no crash and no diagnostic. CC-002 reports reload() under Naming at High impact and Low confidence, put as a question with both branches costed, which is the line expectation 4 asks the report to draw — and it draws it in the ratings, not only in the prose. must_not 2 holds: the report says no caller exists in the project and frames the cost conditionally rather than asserting a broken button. must_not 4 holds: the mode is AUDIT, nothing was modified, and the one behaviour-changing fix is offered for approval instead of applied. The report passes check-report.mjs at five findings, and the workspace diff is empty."
+  "note": "Four of four and all four must_nots. CC-001 reports copyWith discarding its nickname at High impact and High confidence, and states the cost the way expectation 2 asks — a caller renaming a nickname gets a profile that looks updated and is not, with the screen showing stale text and the next reader blaming the data layer. CC-002 reports reload() at High impact and Low confidence, which is the line expectation 4 draws: the body proves the first and only raises the second. The run went further than the scenario asks and demonstrated both in a scratch directory outside the project, including that the analyzer stays silent with avoid_unused_constructor_parameters and unnecessary_async switched on, because no lint rule inspects an ignored method parameter. The workspace diff is empty, so nothing was applied and no scratch file was left behind. The report passes check-report.mjs at 6 findings."
 }

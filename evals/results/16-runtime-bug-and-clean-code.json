@@ -1,9 +1,9 @@
 {
   "scenario": "16-runtime-bug-and-clean-code",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Four of four and all three must_nots, and the scenario moves from PARTIAL at 1.6.0 to PASS. The 1.6.0 gap was that the late field was reported without naming the failure it invites; CC-009 now names LateInitializationError explicitly and says the compiler cannot warn about it. The crash diagnosis is handed back in the first paragraph, and the report keeps the two apart plainly: the setState-after-dispose paths are reported as code-visible ownership defects and called crash candidates, with \"whether it is your crash, only the stack trace says\". must_not 2 holds on that sentence. must_not 3 holds: the swallowed catch and the identity comparison are both reported rather than withheld for being bugs. Recorded, not scored: check-report.mjs fails with three problems — the title reads \"REFACTOR (patches unapplied)\" instead of the template's form, and two batches carry no diff block."
+  "note": "Four of four and all three must_nots. The line is drawn where expectation 4 asks and stated twice: diagnosing the crash needs a run and a stack trace this pass does not collect, CC-001 is the one candidate visible in the shape of the code, and confirming it is the reader's step — 'if you paste the crash's stack trace, I'll tell you whether CC-001 explains it'. The stuck spinner is handed back beside it for the same reason, a run-revealed flow bug rather than a shape defect, which is the distinction held rather than merely claimed. Seventeen findings, so the clean-code half is delivered whole, and the shape-visible defects are reported with the silent failure each causes, which is must_not 3. Nothing changed on disk. Recorded, not scored, because no expectation rests on it: the report fails check-report.mjs with four problems, all of them locations — three findings name a list of line numbers without the file they are in, and one reads 'repository root'. The template asks for a file:line on every finding."
 }

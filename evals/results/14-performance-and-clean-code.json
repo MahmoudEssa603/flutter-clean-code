@@ -1,9 +1,9 @@
 {
   "scenario": "14-performance-and-clean-code",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Three of three and all four must_nots. The performance half is handed back in the first paragraph for want of profiling evidence, and the three constructs most likely to be behind it are listed under Out of Scope unfixed, so the half is set aside visibly rather than dropped. must_not 2 holds: the report names no root cause and says outright that whether the recomputation is the jank is a profiling question. Expectation 3 is met in the form the scenario allows — the repeated subtotal computation is reported as a duplication cost, and this time the count is right: six times per build, which is the number 1.6.0's run of this scenario got wrong. must_not 4 holds; every finding carries exactly one Confidence. Recorded, not scored: check-report.mjs fails on four batches with no diff block."
+  "note": "Three of three and all four must_nots. The performance half is set aside in three Out of Scope lines, each naming what evidence would be needed: no frame timings, rebuild counts or memory trace were collected; the eager Column build is a layout decision that needs a profile; the uncached NetworkImage is the same. Expectation 3's optional half is taken and taken correctly — getTotal's write is reported as a query that lies about being one, with build() calling it six times per frame stated as the reach of the side effect rather than as the cause of the slowness. must_not 4 holds: no finding carries two Confidence values, checked across the report. Twenty findings, nothing changed on disk, and the report passes check-report.mjs."
 }

@@ -1,16 +1,16 @@
 {
   "scenario": "12-rerun-rejudges",
-  "verdict": "PASS",
-  "date": "2026-09-22",
+  "verdict": "PARTIAL",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
   "expectations": {
     "recorded": true,
     "total": 5,
-    "partial": 0,
+    "partial": 1,
     "fail": 0
   },
   "mustNot": {
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Five of five and all four must_nots. The seeded August report is found and opened with a Since last pass table that gives a row to every inherited finding. CC-002 keeps its number and is re-judged: Confidence drops to Low, it moves from Functions to Naming, and the earlier pass's retry-button costing is withdrawn in as many words as a runtime claim about a caller that exists nowhere. CC-003 is withdrawn on evidence — the earlier \"two dead files\" came from a text search, a directory listing settles it at zero, and the changed count is stated rather than quietly matched. The previously misfiled \"no tests\" observation is promoted into the findings as CC-006. New findings start at CC-004, past the highest inherited id. All seven principle rows are present, including honest zeros. The report was written beside the seeded one under docs/reviews/ and passes check-report.mjs. The report was written to docs/reviews/CLEAN-CODE-AUDIT-profile-2026-09-22.md in the run's project, and is kept with the run record under D:/eval-records/baseline-1.7.0/."
+  "note": "Four of five, one partial, and all four must_nots. The re-run machinery is done well: the previous report is opened, a Since last pass table judges every finding again, CC-003 is withdrawn out loud rather than dropped, and new work numbers on past the highest existing id. Expectation 3 is the partial, and only its second half. The run withdraws the previous pass's costing exactly as asked, and says why in as many words — the retry button it described does not exist, there is no caller of reload() anywhere in the repository, and a consequence reachable only by pressing a button falls outside this pass. But it then keeps CC-002 at Confidence High, where the expectation calls for a Low-confidence question. Its argument is stated, not careless: 'the body proves the name wrong regardless of who calls it'. SKILL.md answers that case directly — Confidence is Low 'when the body proves something is wrong but not which side of it is, where your claim is which side and stays Low however plain the defect is' — and a method named reload() guarded by a cache is that shape: the name may be wrong, or the guard may be. Naming it as the name is a claim about which side. This is a rule misapplied, not a wrong scenario: scenario 09's run in the same sweep reported the same method at Low confidence as a question, from the same surface, so the rule reads clearly enough to be followed and was not here."
 }

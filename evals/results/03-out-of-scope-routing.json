@@ -1,9 +1,9 @@
 {
   "scenario": "03-out-of-scope-routing",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Five of five and all three must_nots. The reply opens with a section that hands back both halves it does not own before the report starts: the rebuild question for want of profiling evidence, and the choice of colour and spacing values as a design-system decision. The literals themselves are still reported, as CC-012 under Flutter, which is the split expectation 3 asks for, and CC-012's count is right this time — nine EdgeInsets.all(17) and two colours. The audit covers all seven areas with 18 findings. must_not 1 holds: what gets named as a destination is profiling, a design system and state management, never a skill, plugin or tool. Recorded, not scored: the scenario declares AUDIT and the run chose REFACTOR with batches, all NOT APPLIED, for a query that says \"clean this code\"; no expectation grades the mode here. Recorded, not scored: check-report.mjs fails with three batches missing a diff block."
+  "note": "Five of five and all three must_nots, answered in Arabic with identifiers, paths and the ratings in English. The Out of Scope table hands back seven observations, each with one line of reason: the rebuild question needs profiling this pass does not collect, the palette and tokens are a design-system decision, the ownership of order and loading is state-management work, and the hardcoded strings wait on a project that has no localisation at all. The literals themselves stay findings, which is the split expectation 3 asks for — CC-011 for the nine EdgeInsets.all(17) and CC-012 for the two colours — and the count is right. All seven principle areas carry a row and 19 findings, so the audit is delivered whole rather than refused for the parts it does not own. must_not 1 holds: what is named as a destination is profiling, a design system, state management and localisation, never a skill, plugin or tool. The workspace diff is empty and the report passes check-report.mjs."
 }

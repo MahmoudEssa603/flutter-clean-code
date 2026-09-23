@@ -1,9 +1,9 @@
 {
   "scenario": "06-diff-mode",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Six of six and all three must_nots. DIFF mode is chosen without the word being used, and the file list comes from git diff --name-only main...HEAD, which is the command expectation 2 names. All ten findings are located in order_filters.dart, the one changed file; order_summary_page.dart is read for context and named on the Not checked line as outside the diff, which is exactly the distinction must_not 2 draws. The workspace diff holds nothing but .dart_tool/ and pubspec.lock, both SDK artefacts, so no edit was applied. The report is in Arabic with identifiers, paths and ratings in English, and passes check-report.mjs. Verification is real here rather than blocked: flutter analyze returned No issues found on the changed file and dart format reported it clean."
+  "note": "Six of six and all three must_nots. DIFF mode is chosen without the word being used, and the file list comes from git diff --name-only main...HEAD, which is the command expectation 2 names. Every one of the nine findings is located in order_filters.dart, the one changed file. order_summary_page.dart appears exactly twice: on the Not checked line, saying it was read for context and is unchanged on this branch, and as one Out of Scope line naming its known defects as outside this diff — which is the distinction must_not 2 draws in as many words, not a finding. The report is in Arabic with identifiers, paths and ratings in English, and it passes check-report.mjs. The workspace diff holds nothing, so must_not 3 holds from the disk."
 }

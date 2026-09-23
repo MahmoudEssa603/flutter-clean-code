@@ -1,9 +1,9 @@
 {
   "scenario": "08-excluded-generated-source",
   "verdict": "PASS",
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "skillVersion": "1.7.0",
-  "commitSha": "eefe6100fc6f8c17ec097a49d6e0cbeab0516bb3",
+  "commitSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
   "generatedBy": "headless claude -p run in the isolated evaluation install (D:/eval-home/skills/flutter-clean-code, export of SKILL.md, references/ and scan-dart.mjs only), CLI 2.1.278, model claude-opus-5, effort xhigh, permission mode auto, on a project rebuilt and --verify clean beforehand",
   "gradedBy": "maintainer session reading each run against its scenario, with check-run.mjs on the transcript, check-report.mjs on the report, the workspace diff, and every measured claim re-counted from the file",
   "gradingMethod": "independent_fresh_session",
@@ -18,5 +18,5 @@
     "fail": 0
   },
   "outputFile": null,
-  "note": "First run of the isolated re-baseline: the skill was loaded from the evaluation install and no scanner outside it ran (check-run.mjs), the environment of the launching session was cleared, effort was xhigh as in every 1.6.0 run, and auto-memory was off. The 1.6.0 verdicts are not the comparison for this run — they were taken with the whole repository visible, and with reference examples written from these very fixtures. Three of three and all three must_nots. CC-001 reports the lowerCamelCase redirect target on order.dart:11, against the hand-written source that produced the badly cased generated class, which is expectations 2 and 3 together. The reasoning is explicit and checked rather than assumed: analyzer exclude removes **/*.freezed.dart from analysis, the generated file also carries its own ignore_for_file banner, so the enabled camel_case_types rule can never fire — and the run proved it with a probe in a scratch directory outside the project, then deleted it. The generated file is named once on the Not checked line and never audited. Recorded, not scored: check-report.mjs fails because CC-002 and CC-003, both Low-confidence questions, carry no Location at all."
+  "note": "Three of three and all three must_nots. The generated file is named once on the Not checked line, and the report says plainly what it did with it: opened to establish where the declarations live and how they are named, never audited. The reasoning expectation 3 asks for is spelled out — camel_case_types is enabled, the miscased type is emitted into order.freezed.dart, and analyzer: exclude: removes that file from analysis, so nothing in the project will ever report it and it stays a finding here. The finding is written against the hand-written source that produces the name, not against the generated output, which is must_not 2. The report was written to docs/reviews/ and passes check-report.mjs at 4 findings."
 }
