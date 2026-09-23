@@ -345,3 +345,31 @@ test('a rating translated into Arabic is a wrong value, not a missing field', ()
   assert.match(failures, /Impact is "عالٍ"/);
   assert.doesNotMatch(failures, /has no Impact/);
 });
+
+test('a header label may carry its colon outside the bold, or a dash', () => {
+  // A run wrote `**Scope** — lib/features/orders/...` where the template shows `**Scope:**`.
+  // SKILL.md names the header lines and says nothing about their punctuation, and the label and
+  // the value are the same either way.
+  const dashed = report([finding(1)])
+    .replace('**Scope:**', '**Scope** —')
+    .replace('**Evidence:**', '**Evidence** —')
+    .replace('**Conventions:**', '**Conventions** —');
+  assert.deepEqual(checkReport(dashed).failures, []);
+});
+
+test('four fields on one line is a layout, not four values', () => {
+  // A run put Impact, Effort, Confidence and Location on one line. Confidence is read to the end
+  // of its line on purpose — "High (the name) / Low (the intent)" is the case it exists for — and
+  // that had swallowed the Location field beside it.
+  const oneLine = report([finding(1)]).replace(
+    '**Confidence:** High',
+    '**Confidence:** High · **Location:** `lib/a.dart:12`',
+  );
+  assert.deepEqual(checkReport(oneLine).failures, []);
+
+  const twoValues = report([finding(1)]).replace(
+    '**Confidence:** High',
+    '**Confidence:** High (the name) / Low (the intent)',
+  );
+  assert.match(checkReport(twoValues).failures.join(String.fromCharCode(10)), /carries one value and nothing else/);
+});

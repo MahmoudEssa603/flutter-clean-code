@@ -10,6 +10,13 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [1.7.0]
 
 ### Fixed
+- `scripts/check-report.mjs` refused two layouts that carry exactly what the contract asks for.
+  A run wrote `**Scope** — lib/...` with the colon outside the bold, and another put all four
+  finding fields on one line, where Confidence is read to the end of its line on purpose — to
+  catch "High (the name) / Low (the intent)" — and swallowed the Location beside it. A label may
+  carry its colon either way now, and a value ends at a separator before the next label. The
+  two-rating case still fails, and a bold value still passes.
+
 - `scripts/check-report.mjs` ran out of Arabic spellings for a fourth time, and reported a correct
   report as 56 problems. Scenario 03 wrote `## الخلاصة` where the list held only `الملخص`,
   `**الموقع:**` where it held only `المكان`, and `## خارج نطاق هذه المراجعة` — no definite article
@@ -121,6 +128,14 @@ the last one is holding whatever it shipped until the next. See the bump table i
   is told to use them, and a measured run cannot see them.
 
 ### Added
+- `scripts/make-dossier.mjs` gathers one grading dossier per scenario from a directory of run
+  records: the scenario's own words, the run's identity and cost, what it changed on disk, what it
+  executed, what `check-report.mjs` says, and the report itself. Grading used to mean assembling
+  that by hand each time, and three wrong readings came out of it in one sweep — a report taken
+  from the reply when the run had written a file, a seeded previous report read instead of the new
+  one, and a preamble left in front of a title so the header fields fell outside the window they
+  are read in. It decides nothing: there is no verdict anywhere in what it writes.
+
 - `scripts/check-fixture-reuse.mjs` checks that no example is built from an eval fixture. That
   rule was written into `AGENTS.md` the day the examples were moved out of the fixtures, and it
   asked for a scan nothing performed. It compares only what is distinctive — a name of two or

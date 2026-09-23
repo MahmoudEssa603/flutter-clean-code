@@ -120,6 +120,7 @@ and a run never needs them:
 | `check-evals.mjs` | Validates the result registry in `evals/results/`, and says whether any model-facing file changed since the verdicts were graded. |
 | `generate-eval-summary.mjs` | Renders the results table in `evals/README.md` from the records. |
 | `make-baseline.mjs` | Records what the deterministic tooling says, so a later change can be compared, not argued. |
+| `make-dossier.mjs` | Gathers one grading dossier per scenario from a directory of run records: the report, the identity, what changed, and the contract check. It decides nothing. |
 | `make-eval-projects.mjs` | Lays each scenario out as a standalone project. `--verify` reports whether a run changed it, `--diff` shows how. |
 
 A change to the runtime group changes what the skill does, and sends every scenario back for a
@@ -163,6 +164,7 @@ built-ins. `test/README.md` says what each covers:
 | `test/check-evals.test.mjs` | unit |
 | `test/check-run.test.mjs` | unit |
 | `test/validate-skill.test.mjs` | integration |
+| `test/make-dossier.test.mjs` | unit |
 | `test/make-eval-projects.test.mjs` | integration |
 | `test/make-baseline.test.mjs` | integration |
 

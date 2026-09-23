@@ -81,7 +81,11 @@ const FINDING_FIELDS = {
 // An Arabic report may also keep a term in English and put the article in front of it, which is
 // ordinary Arabic technical prose: a real run wrote `**الـ Conventions:**`. The article is
 // optional everywhere, so one spelling covers both renderings.
-const labelled = (spellings) => `\\*\\*(?:الـ\\s*)?(?:${spellings.join('|')}):\\*\\*`;
+// A label is bold and then a separator. The colon may sit inside the bold or outside it, and a
+// run wrote `**Scope** — lib/...` where the template shows `**Scope:**`: same label, same value,
+// and nothing model-facing asks for one over the other.
+const labelled = (spellings) =>
+  `\\*\\*(?:الـ\\s*)?(?:${spellings.join('|')}):?\\*\\*\\s*(?:[—–-]\\s*)?`;
 const headerField = (spellings) => new RegExp(labelled(spellings));
 
 export function checkReport(text, label = 'report') {
@@ -205,7 +209,15 @@ export function checkReport(text, label = 'report') {
 
     if (!confidence) fail(`${id} has no Confidence`);
     else {
-      const value = confidence[1].replace(/\*/g, '').trim().replace(/[.·]+$/, '').trim();
+      // Four fields on one line is a layout, not four values: `High · **Location:** ...` carries
+      // one Confidence. A separator followed by a bold label ends the value; a bold value does
+      // not, because nothing separates it from its own label.
+      const value = confidence[1]
+        .split(/\s*[·•|]\s*(?=\*\*)/)[0]
+        .replace(/\*/g, '')
+        .trim()
+        .replace(/[.·]+$/, '')
+        .trim();
       if (!CONFIDENCE.includes(value)) {
         // Two shapes reach here and the advice differs. A second rating ("High (the name) / Low
         // (the intent)") is a finding that cannot decide itself and wants splitting. Provenance
