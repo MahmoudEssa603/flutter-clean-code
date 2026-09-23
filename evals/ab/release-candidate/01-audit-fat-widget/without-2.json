@@ -1,0 +1,43 @@
+{
+  "scenario": "01-audit-fat-widget",
+  "condition": "without",
+  "repetition": 2,
+  "blindId": "c1e68b513b",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T21:15:40.2392521Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-rc/01-audit-fat-widget/without-2"
+  },
+  "findings": {
+    "normalisedEntries": 34,
+    "trueFindings": 28,
+    "partials": 0,
+    "duplicates": 1,
+    "falsePositives": 5,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 5,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequiredStrict": 3,
+    "missedRequiredAdjusted": 1,
+    "missedRequired": [
+      "GT-10",
+      "GT-18",
+      "GT-21"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 0.6633995,
+    "wallSeconds": 165
+  }
+}

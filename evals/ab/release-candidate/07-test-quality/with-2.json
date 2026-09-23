@@ -1,0 +1,54 @@
+{
+  "scenario": "07-test-quality",
+  "condition": "with",
+  "repetition": 2,
+  "blindId": "a6fd282e28",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T20:55:18.0696596Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-rc/07-test-quality/with-2"
+  },
+  "findings": {
+    "normalisedEntries": 42,
+    "trueFindings": 29,
+    "partials": 2,
+    "duplicates": 6,
+    "falsePositives": 5,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 2,
+    "falsePositivesAssertNoDefect": 3,
+    "missedRequiredStrict": 12,
+    "missedRequiredAdjusted": 3,
+    "missedRequired": [
+      "GT-02",
+      "GT-05",
+      "GT-10",
+      "GT-17",
+      "GT-20",
+      "GT-23",
+      "GT-28",
+      "GT-29",
+      "GT-T04",
+      "GT-T05",
+      "GT-T12",
+      "GT-T13"
+    ]
+  },
+  "edits": {
+    "filesChanged": [
+      "docs/reviews/CLEAN-CODE-AUDIT-orders-2026-09-24.md"
+    ],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 2.471009,
+    "wallSeconds": 534
+  }
+}

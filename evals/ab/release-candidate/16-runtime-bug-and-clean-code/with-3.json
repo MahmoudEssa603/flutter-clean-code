@@ -1,0 +1,48 @@
+{
+  "scenario": "16-runtime-bug-and-clean-code",
+  "condition": "with",
+  "repetition": 3,
+  "blindId": "5d9c79d285",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T21:45:56.0027631Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-rc/16-runtime-bug-and-clean-code/with-3"
+  },
+  "findings": {
+    "normalisedEntries": 33,
+    "trueFindings": 19,
+    "partials": 1,
+    "duplicates": 6,
+    "falsePositives": 7,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 2,
+    "falsePositivesAssertNoDefect": 5,
+    "missedRequiredStrict": 8,
+    "missedRequiredAdjusted": 2,
+    "missedRequired": [
+      "GT-02",
+      "GT-05",
+      "GT-10",
+      "GT-18",
+      "GT-21",
+      "GT-23",
+      "GT-28",
+      "GT-29"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 1.6486995000000002,
+    "wallSeconds": 383
+  }
+}

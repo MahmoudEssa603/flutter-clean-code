@@ -1,0 +1,59 @@
+{
+  "scenario": "07-test-quality",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "405c3e77b7",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T20:39:50.9688599Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-rc/07-test-quality/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 21,
+    "trueFindings": 20,
+    "partials": 0,
+    "duplicates": 0,
+    "falsePositives": 1,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequiredStrict": 19,
+    "missedRequiredAdjusted": 10,
+    "missedRequired": [
+      "GT-06",
+      "GT-07",
+      "GT-10",
+      "GT-14",
+      "GT-16",
+      "GT-17",
+      "GT-18",
+      "GT-20",
+      "GT-23",
+      "GT-27",
+      "GT-28",
+      "GT-29",
+      "GT-30",
+      "GT-31",
+      "GT-34",
+      "GT-T02",
+      "GT-T04",
+      "GT-T05",
+      "GT-T11"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 1.072931,
+    "wallSeconds": 213
+  }
+}

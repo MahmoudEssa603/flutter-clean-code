@@ -1,0 +1,39 @@
+{
+  "scenario": "09-bug-line",
+  "condition": "with",
+  "repetition": 2,
+  "blindId": "2cc99dcafb",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-23T21:04:12.9692201Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/ab-rc/09-bug-line/with-2"
+  },
+  "findings": {
+    "normalisedEntries": 10,
+    "trueFindings": 5,
+    "partials": 0,
+    "duplicates": 0,
+    "falsePositives": 5,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 1,
+    "falsePositivesAssertNoDefect": 4,
+    "missedRequiredStrict": 0,
+    "missedRequiredAdjusted": 0,
+    "missedRequired": []
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 1.1493765,
+    "wallSeconds": 245
+  }
+}
