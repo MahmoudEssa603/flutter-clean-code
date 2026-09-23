@@ -112,21 +112,6 @@ export function findStale({ results, currentVersion }) {
     .map((r) => ({ scenario: r.scenario, verdict: r.verdict, gradedAgainst: r.skillVersion }));
 }
 
-/**
- * Verdicts that name the current version while the current surface has already moved past it.
- *
- * findStale compares version strings, and a version string only moves at a release. Editing
- * SKILL.md between releases therefore leaves every verdict claiming a surface that is no longer
- * in the tree, with nothing in the comparison able to see it — the check goes quiet exactly when
- * it has something to say. This asks git instead, and asks it whether or not the number moved.
- */
-export function verdictsOnMovedSurface({ results, currentVersion, changedPaths }) {
-  if (!currentVersion || !changedPaths || changedPaths.length === 0) return [];
-  return results
-    .filter((r) => r.verdict !== 'NOT_RUN' && r.skillVersion === currentVersion)
-    .map((r) => r.scenario);
-}
-
 // Every release moves the version line, and no scenario has ever depended on it. Comparing raw
 // bytes would therefore mark all twelve verdicts stale on any release at all, which is a warning
 // that fires every time and so gets read as noise. Line endings are normalised for the same
@@ -258,14 +243,43 @@ function reportStale(results, currentVersion) {
 
   // The version string only moves at a release, so the comparison above cannot see an edit made
   // between two of them. Ask git directly, and report a moved surface even when the number agrees.
-  const changedSinceCurrent = surfaceChangedSince(currentVersion);
-  const unverified = verdictsOnMovedSurface({ results, currentVersion, changedPaths: changedSinceCurrent });
-  if (unverified.length === 0) return;
+  const lines = surfaceNote({
+    results,
+    currentVersion,
+    changedPaths: surfaceChangedSince(currentVersion),
+  });
+  if (lines.length === 0) return;
 
   console.log('');
-  console.log(`  ${listPaths(changedSinceCurrent)} changed since v${currentVersion}, which is still the declared version.`);
-  console.log(`  ${unverified.length} verdict(s) name that version and describe a surface no longer in the tree.`);
-  console.log('  Re-run them before the next tag, or record why the change cannot reach them.');
+  for (const line of lines) console.log(`  ${line}`);
+}
+
+/**
+ * What to say about verdicts that name the declared version, given what moved under them.
+ *
+ * Three answers, and the third is the one that gets lost: the declared version is tagged only at
+ * the release, so for a whole development cycle there is nothing to compare against. This used
+ * to return silence there, which reads as "nothing moved" on exactly the days the surface is
+ * being moved. Returns the lines to print, without their indent.
+ */
+export function surfaceNote({ results, currentVersion, changedPaths }) {
+  if (!currentVersion) return [];
+  const naming = results.filter((r) => r.verdict !== 'NOT_RUN' && r.skillVersion === currentVersion);
+  if (naming.length === 0) return [];
+
+  if (changedPaths === null) {
+    return [
+      `v${currentVersion} is not tagged here, so whether the surface moved since cannot be told.`,
+      `${naming.length} verdict(s) name it. Re-run them before the tag, or record why not.`,
+    ];
+  }
+  if (changedPaths.length === 0) return [];
+
+  return [
+    `${listPaths(changedPaths)} changed since v${currentVersion}, which is still the declared version.`,
+    `${naming.length} verdict(s) name that version and describe a surface no longer in the tree.`,
+    'Re-run them before the next tag, or record why the change cannot reach them.',
+  ];
 }
 
 /**

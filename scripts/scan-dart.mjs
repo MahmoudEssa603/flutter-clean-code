@@ -339,6 +339,27 @@ function lineMatches(source, regex, haystack = source) {
   return hits;
 }
 
+// The value a literal signal is about: the constructor call with its numbers, so that the same
+// padding written on nine lines is recognised as one value. Anything the pattern does not cover
+// falls back to the whole line, which groups only with an identical line.
+const LITERAL_VALUE = /EdgeInsets\.\w+\([^)]*\)|Duration\([^)]*\)|Color\(0x[0-9a-fA-F]+\)|SizedBox\([^)]*\)/;
+
+// One repeated value is one thing to fix, not nine, so repeats collapse into a single signal
+// carrying every line. SKILL.md > Flutter asks for the literals to be named once; a report that
+// has to count nine printed lines to say how many there are gets the count wrong, which six of
+// nineteen measured runs did while listing the right lines.
+export function groupLiterals(hits) {
+  const byValue = new Map();
+  for (const hit of hits) {
+    const value = (LITERAL_VALUE.exec(hit.text) ?? [hit.text])[0];
+    if (!byValue.has(value)) byValue.set(value, { value, line: hit.line, text: hit.text, lines: [] });
+    byValue.get(value).lines.push(hit.line);
+  }
+  return [...byValue.values()]
+    .map((group) => ({ ...group, count: group.lines.length }))
+    .sort((a, b) => a.line - b.line);
+}
+
 // --- duplication -------------------------------------------------------------
 // Comments and string literals are already blanked, so two subtrees that differ
 // only in their labels still match. That is deliberate: a copy-pasted widget
@@ -464,10 +485,12 @@ export function scanFile(path, source = readFileSync(path, 'utf8'), { includeGen
     // string that quotes an example — a doc comment, a README embedded in a constant — is not a
     // `late` field or a bare `catch`, and reading the raw text reported it as one.
     // A literal number or ARGB colour sitting inside a layout constructor.
-    magicLiterals: lineMatches(
-      source,
-      /(EdgeInsets\.\w+\(\s*\d|Duration\(\s*\w+:\s*\d|Color\(0x|SizedBox\((width|height):\s*\d{2,})/,
-      code,
+    magicLiterals: groupLiterals(
+      lineMatches(
+        source,
+        /(EdgeInsets\.\w+\(\s*\d|Duration\(\s*\w+:\s*\d|Color\(0x|SizedBox\((width|height):\s*\d{2,})/,
+        code,
+      ),
     ),
     lateFields: lineMatches(source, /^\s*late\s+(?!final\b)/, code),
     bareCatch: lineMatches(source, /\bcatch\s*\(\s*[\w$]+\s*\)/, code),
@@ -625,7 +648,16 @@ function main(argv) {
     for (const m of file.lateFields) console.log(`  late        line ${m.line}: ${m.text}`);
     for (const m of file.bareCatch) console.log(`  catch       line ${m.line}: ${m.text}`);
     for (const m of file.collectionEquality) console.log(`  == on list  line ${m.line}: ${m.text}`);
-    for (const m of file.magicLiterals) console.log(`  literal     line ${m.line}: ${m.text}`);
+    for (const m of file.magicLiterals) {
+      if (m.count === 1) {
+        console.log(`  literal     line ${m.line}: ${m.text}`);
+        continue;
+      }
+      // Twelve lines is enough to see the spread; a file with forty copies says so and stops.
+      const shown = m.lines.slice(0, 12).join(', ');
+      const more = m.lines.length > 12 ? `, +${m.lines.length - 12} more` : '';
+      console.log(`  literal     ${m.value} x${m.count} — lines ${shown}${more}`);
+    }
     for (const m of file.ownerlessTodo) console.log(`  todo        line ${m.line}: ${m.text}`);
     for (const m of file.commentedOutCode) console.log(`  dead code   line ${m.line}: ${m.text}`);
 

@@ -17,6 +17,7 @@ import {
   findFunctions,
   findStateClasses,
   findTrivialWidgets,
+  groupLiterals,
   isGenerated,
   normaliseLines,
   scanFile,
@@ -479,4 +480,58 @@ test('a reported line is quoted from the source, not from the blanked copy', () 
   const source = ["  late String name = 'Sara';"].join('\n');
   const [hit] = scanFile('lib/a.dart', source).lateFields;
   assert.equal(hit.text, "late String name = 'Sara';");
+});
+
+test('one value repeated on many lines is one literal signal, with its count', () => {
+  const source = [
+    'class Rows extends StatelessWidget {',
+    '  Widget build(BuildContext context) {',
+    '    return Column(children: [',
+    '      Padding(padding: const EdgeInsets.all(17), child: Text(a)),',
+    '      Padding(padding: const EdgeInsets.all(17), child: Text(b)),',
+    '      Padding(padding: const EdgeInsets.all(17), child: Text(c)),',
+    '    ]);',
+    '  }',
+    '}',
+  ].join('\n');
+
+  const [group, ...rest] = scanFile('lib/rows.dart', source).magicLiterals;
+  assert.equal(rest.length, 0, 'three copies of one value are one signal');
+  assert.equal(group.value, 'EdgeInsets.all(17)');
+  assert.equal(group.count, 3);
+  assert.deepEqual(group.lines, [4, 5, 6]);
+  assert.equal(group.line, 4, 'the group is located at its first occurrence');
+});
+
+test('different literal values stay separate signals', () => {
+  const source = [
+    'class Card extends StatelessWidget {',
+    '  Widget build(BuildContext context) {',
+    '    return Container(',
+    '      padding: const EdgeInsets.all(17),',
+    '      color: const Color(0xFF3B5998),',
+    '      child: const SizedBox(width: 24),',
+    '    );',
+    '  }',
+    '}',
+  ].join('\n');
+
+  const literals = scanFile('lib/card.dart', source).magicLiterals;
+  assert.deepEqual(
+    literals.map((m) => m.value),
+    ['EdgeInsets.all(17)', 'Color(0xFF3B5998)', 'SizedBox(width: 24)'],
+  );
+  assert.deepEqual(literals.map((m) => m.count), [1, 1, 1]);
+});
+
+test('groupLiterals falls back to the whole line when it knows no value', () => {
+  const grouped = groupLiterals([
+    { line: 3, text: 'someUnknownCall(17),' },
+    { line: 9, text: 'someUnknownCall(17),' },
+    { line: 12, text: 'otherCall(17),' },
+  ]);
+
+  assert.equal(grouped.length, 2, 'identical lines group; different ones do not');
+  assert.deepEqual(grouped[0].lines, [3, 9]);
+  assert.equal(grouped[1].count, 1);
 });

@@ -1,11 +1,11 @@
 {
   "skillVersion": "1.7.0",
-  "commitSha": "18305455cef1894d4e2503c4fda3ab99f9433794",
-  "date": "2026-09-22",
+  "commitSha": "5ab87d1872dd77b5614def824fd90ac70889b9f4",
+  "date": "2026-09-23",
   "scanner": {
     "filesScanned": 7,
-    "totalSignals": 32,
-    "signalsPerFile": 4.57,
+    "totalSignals": 20,
+    "signalsPerFile": 2.86,
     "generatedSkipped": [
       "order.freezed.dart"
     ],
@@ -57,7 +57,7 @@
       {
         "path": "order_summary_page.dart",
         "lines": 253,
-        "signals": 23,
+        "signals": 14,
         "build": {
           "name": "build",
           "line": 111,
@@ -91,56 +91,49 @@
         ],
         "magicLiterals": [
           {
+            "value": "EdgeInsets.all(17)",
             "line": 122,
-            "text": "padding: const EdgeInsets.all(17),"
+            "text": "padding: const EdgeInsets.all(17),",
+            "lines": [
+              122,
+              137,
+              154,
+              177,
+              181,
+              187,
+              197,
+              207,
+              218
+            ],
+            "count": 9
           },
           {
+            "value": "Color(0xFF3B5998)",
             "line": 136,
-            "text": "color: const Color(0xFF3B5998),"
+            "text": "color: const Color(0xFF3B5998),",
+            "lines": [
+              136,
+              146
+            ],
+            "count": 2
           },
           {
-            "line": 137,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 146,
-            "text": "backgroundColor: const Color(0xFF3B5998),"
-          },
-          {
-            "line": 154,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
+            "value": "SizedBox(width: 16)",
             "line": 160,
-            "text": "const SizedBox(width: 16),"
+            "text": "const SizedBox(width: 16),",
+            "lines": [
+              160
+            ],
+            "count": 1
           },
           {
-            "line": 177,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 181,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 187,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 197,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 207,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 218,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
+            "value": "SizedBox(height: 24)",
             "line": 236,
-            "text": "return const SizedBox(height: 24);"
+            "text": "return const SizedBox(height: 24);",
+            "lines": [
+              236
+            ],
+            "count": 1
           }
         ],
         "lateFields": [
@@ -177,7 +170,7 @@
       {
         "path": "cart_screen.dart",
         "lines": 84,
-        "signals": 5,
+        "signals": 2,
         "build": {
           "name": "build",
           "line": 39,
@@ -192,20 +185,16 @@
         "trivialWidgets": [],
         "magicLiterals": [
           {
+            "value": "EdgeInsets.all(17)",
             "line": 46,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 50,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 60,
-            "text": "padding: const EdgeInsets.all(17),"
-          },
-          {
-            "line": 70,
-            "text": "padding: const EdgeInsets.all(17),"
+            "text": "padding: const EdgeInsets.all(17),",
+            "lines": [
+              46,
+              50,
+              60,
+              70
+            ],
+            "count": 4
           }
         ],
         "lateFields": [],

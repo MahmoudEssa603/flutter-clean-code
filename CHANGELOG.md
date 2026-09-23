@@ -10,6 +10,14 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [1.7.0]
 
 ### Fixed
+- `scripts/check-evals.mjs` said nothing about the surface moving under the version it declares,
+  for the whole of every development cycle. The check compares the tree against tag
+  `v<version>`, and between two releases that tag does not exist yet, so the comparison returned
+  "cannot tell" and the caller — which only knew how to name scenarios — printed nothing. Silence
+  there reads as a clean bill of health on exactly the days the surface is being changed. The
+  message is a function now, `surfaceNote`, with all three of its answers tested: moved, unmoved,
+  and cannot tell. It replaces `verdictsOnMovedSurface`, which could return only the first two.
+
 - `scripts/check-report.mjs` now scores the batches, half of 1.6.0's known gap on diff hunks.
   `references/report-template.md` gives every batch its own `### Batch N — <type>` heading and a
   fenced `diff` block, and nothing checked either. A Batches section with no batch heading now
@@ -32,6 +40,18 @@ the last one is holding whatever it shipped until the next. See the bump table i
   describes.
 
 ### Changed
+- **One repeated literal is one signal now (E2).** `scan-dart.mjs` printed a line per occurrence,
+  so `EdgeInsets.all(17)` filled nine of the fixture's twenty-three signals and the padding in
+  `build()` outranked the missing `dispose()`. Over the compliance baseline and the 24 A/B runs,
+  `literal` was 242 of the 430 signal lines printed and the report cited 31% of them, where every
+  structural signal ran between 94% and 100%; on the holdout's real files it was 30 of 51. The cost
+  showed up as arithmetic: of the nineteen runs that stated how many times the value appears, six
+  got it wrong, while listing the right nine lines underneath. Repeats now collapse into one
+  signal that states the count and every line — `EdgeInsets.all(17) x9 — lines 122, 137, …` — and
+  a value seen once prints exactly as before. The fixture falls from 32 signals to 20 with nothing
+  lost, and the baseline is re-recorded in this change. Whether reports get the count right after
+  it is the re-run, not a claim made here.
+
 - **`SKILL.md` states the report contract's two most-broken rules, instead of leaving them to
   the template (D5).** The isolated re-baseline measured where reports actually fail: six of the
   eight runs that proposed batches wrote them as a table with no `### Batch` heading and no

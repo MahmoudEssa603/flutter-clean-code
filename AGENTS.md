@@ -163,9 +163,12 @@ evidence while proving nothing, so each gate has a test that breaks the reposito
 and asserts the run fails with the right message. One test asserts the opposite — that the
 repository as committed passes — so a gate firing on everything is caught too.
 
-**A new scanner signal needs four things, in one pull request:** a unit test proving it fires,
-a unit test proving it stays quiet, a case in `evals/fixtures/order_summary_page.dart`, and a
-line in that fixture's header comment.
+**A new or changed scanner signal needs four things, in one pull request:** a unit test proving
+it fires, a unit test proving it stays quiet, a case in `evals/fixtures/order_summary_page.dart`,
+and a line in that fixture's table under Fixtures in `evals/README.md`. The table is where the
+planted defects are written down, because a fixture that announces it is one measures nothing.
+A changed signal also re-records the baseline, in the same pull request, and sends every
+scenario back for a re-run: the scanner is the one script a run executes.
 
 **Known limitations are tested, not remembered.** `findFunctions` cannot measure an arrow
 body, and a test asserts that. A limitation with a test stays visible; a limitation in someone

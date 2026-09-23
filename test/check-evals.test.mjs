@@ -15,7 +15,7 @@ import {
   queriesWithoutTrigger,
   read,
   surfaceChangedSince,
-  verdictsOnMovedSurface,
+  surfaceNote,
 } from '../scripts/check-evals.mjs';
 import { renderSummary } from '../scripts/generate-eval-summary.mjs';
 
@@ -123,31 +123,38 @@ test('a verdict goes unverified when the surface moves under its own version', (
   const results = [record({ skillVersion: '1.3.2' }), record({ scenario: '02-b' })];
 
   assert.deepEqual(findStale({ results, currentVersion: '1.3.2' }), []);
-  assert.deepEqual(
-    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] }),
-    ['01-a', '02-b'],
-  );
+  const note = surfaceNote({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] });
+  assert.match(note[0], /SKILL\.md changed since v1\.3\.2/);
+  assert.match(note[1], /^2 verdict\(s\) name that version/);
 });
 
 test('an unmoved surface leaves every verdict alone, and NOT_RUN is never named', () => {
   const results = [record({ scenario: '03-c', verdict: 'NOT_RUN', note: 'not run' }), record()];
 
-  assert.deepEqual(
-    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: [] }),
-    [],
-  );
-  assert.deepEqual(
-    verdictsOnMovedSurface({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] }),
-    ['01-a'],
+  assert.deepEqual(surfaceNote({ results, currentVersion: '1.3.2', changedPaths: [] }), []);
+  assert.match(
+    surfaceNote({ results, currentVersion: '1.3.2', changedPaths: ['SKILL.md'] })[1],
+    /^1 verdict\(s\) name that version/,
+    'the NOT_RUN row is not counted',
   );
 });
 
-test('"cannot tell" is not "nothing moved" — a null surface answer names nothing', () => {
-  // surfaceChangedSince returns null when git cannot answer. Passing that through as an empty
-  // list would turn a shallow clone into a clean bill of health for every verdict in the table.
+test('"cannot tell" is not "nothing moved" — a null answer says so out loud', () => {
+  // surfaceChangedSince returns null when git cannot answer, and between two releases it always
+  // does: the declared version has no tag yet. Silence there reads as a clean bill of health on
+  // exactly the days the surface is being changed.
+  const note = surfaceNote({ results: [record()], currentVersion: '1.3.2', changedPaths: null });
+  assert.match(note[0], /not tagged here.*cannot be told/);
+  assert.match(note[1], /^1 verdict\(s\) name it/);
+
   assert.deepEqual(
-    verdictsOnMovedSurface({ results: [record()], currentVersion: '1.3.2', changedPaths: null }),
+    surfaceNote({
+      results: [record({ verdict: 'NOT_RUN', note: 'not run' })],
+      currentVersion: '1.3.2',
+      changedPaths: null,
+    }),
     [],
+    'a table of NOT_RUN rows claims nothing, so there is nothing to warn about',
   );
 });
 
