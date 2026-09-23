@@ -426,10 +426,10 @@ flutter test <path>                # or: dart test
 In AUDIT and DIFF, pass the path under review. A whole-project run on a large repository buries
 this module's result under drift that predates it, and none of that drift belongs to this report.
 
-`--output=none` is not optional. `--set-exit-if-changed` only changes the exit code: on its own,
-`dart format` still rewrites every file it finds badly formatted, which in AUDIT breaks the one
-promise the mode makes. Reformatting a file and putting it back afterwards is not the same as
-never having touched it — an interrupted run leaves the rewrite behind.
+`--output=none` is not optional. `--set-exit-if-changed` only sets the exit code: alone, `dart
+format` rewrites every badly formatted file it finds, which in AUDIT breaks the mode's one promise.
+Putting a file back afterwards is not never touching it — an interrupted run leaves the rewrite
+behind.
 
 **If neither `flutter` nor `dart` is on PATH:** do not guess, and do not claim the checks passed.
 Continue report-only and write this line into the report verbatim:
@@ -445,9 +445,9 @@ failed, and continue report-only.
 If `dart format` reports changes in files this pass never touched, leave them alone. That is
 pre-existing formatting drift and it belongs to the analyzer, not to this report.
 
-These commands write build artefacts — `.dart_tool/`, a lockfile — and that is the SDK doing its
-job, not you modifying the project. Leave whatever they leave. Deleting a lockfile to tidy up is
-the one way this step can do real harm.
+These commands write build artefacts — `.dart_tool/`, a lockfile — the SDK doing its job, not you
+modifying the project. Leave whatever they leave: deleting a lockfile to tidy up is the one way this
+step can do real harm.
 
 ### Step 6 — Report
 
@@ -455,9 +455,18 @@ Emit the report in the format defined by
 [references/report-template.md](references/report-template.md). For the depth and tone of a
 finding, read [references/example-report.md](references/example-report.md), a full worked audit.
 
-**Say what you did not check.** Every report carries a `Not checked:` line: generated files
-skipped, files outside the scope ladder, modules queued for later, findings dropped by the cap. A
-report without its own limits reads as complete when it is not.
+**The skeleton is the contract.** The title reads `# Clean Code — <AUDIT|DIFF|REFACTOR> — <module>`
+and nothing else, no qualifier in parentheses. Under it: `Scope`, `Evidence`, `Conventions`,
+`Verification`, `Not checked`. Then `## Summary`, a table of the seven areas. Then every finding as
+its own `### CC-nnn` section carrying `Impact`, `Effort`, `Confidence` and `Location` as labelled
+fields, one value each and no qualifier — a rating needing a sentence to explain it is a finding at
+the lower rating. Then every batch under its own `### Batch N — <type>` heading with its key hunks
+in a fenced ```diff block: a table is not a batch section, and nobody approves a hunk they cannot
+see. Ratings folded into a heading, or a header line left out, is a different report.
+
+**Say what you did not check** on that line: generated files skipped, files outside the scope
+ladder, modules queued for later, findings dropped by the cap. A report without its own limits
+reads as complete when it is not.
 
 **Where it goes:**
 
@@ -466,20 +475,11 @@ report without its own limits reads as complete when it is not.
   creating the directory if needed, and say the path in your reply.
 - If the user asked for an inline answer, honour that regardless of scope.
 
-**The title and every batch are part of the contract.** The title reads
-`# Clean Code — <AUDIT|DIFF|REFACTOR> — <module>` and carries nothing else, no qualifier in
-parentheses. Every batch gets its own `### Batch N — <type>` heading and its key hunks in a
-fenced ```diff block: a table listing batches is not a batch section, and nobody approves a hunk
-they cannot see.
-
 **The markdown in the repository is the report.** Rendering it elsewhere — a page, a slide, a
-ticket — is the user's to ask for afterwards, never your call and never a substitute. No medium
-relaxes the contract: every finding keeps its number, its three ratings and its `file:line`, the
-`Not checked:` line travels with it, and the cap holds at twenty.
-
-If `docs/reviews/` already holds reports under another naming scheme, follow it and say so; a
-directory carrying two conventions is worse than either. Re-running on the same module the same
-day overwrites that file instead of adding a second one.
+ticket — is the user's to ask for afterwards, never your call and never a substitute: the
+skeleton travels with it and the cap holds at twenty. If `docs/reviews/` already holds reports
+under another naming scheme, follow it and say so. Re-running on the same module the same day
+overwrites that file.
 
 ---
 

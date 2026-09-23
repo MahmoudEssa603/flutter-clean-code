@@ -40,6 +40,19 @@ the last one is holding whatever it shipped until the next. See the bump table i
   describes.
 
 ### Changed
+- **Step 6 states the report's skeleton, not only its title and its batches (D6).** The full
+  sweep of the seventeen scenarios measured D5: passing the contract went from four of sixteen to
+  eleven, and five went the other way. Four of those five never opened
+  `references/report-template.md`, so the only thing carrying the format was `SKILL.md`'s own
+  words — and D5 had replaced "its Impact, its Effort, its Confidence" with "its three ratings"
+  and dropped "in the header" from the `Not checked` line. Working from memory, `09` then put all
+  three ratings in the finding's heading and left out the header lines and the Summary table
+  entirely, where the same scenario had passed cleanly before. Step 6 now names the skeleton in
+  order — title, the five header fields, the Summary table, each finding as its own `### CC-nnn`
+  section with four labelled fields carrying one value each, then the batches — and says that
+  ratings folded into a heading is a different report. Five paragraphs in Steps 5 and 6 were
+  compressed to pay for it; the body is still 500 lines and no rule was dropped.
+
 - **One repeated literal is one signal now (E2).** `scan-dart.mjs` printed a line per occurrence,
   so `EdgeInsets.all(17)` filled nine of the fixture's twenty-three signals and the padding in
   `build()` outranked the missing `dispose()`. Over the compliance baseline and the 24 A/B runs,
@@ -60,10 +73,9 @@ the last one is holding whatever it shipped until the next. See the bump table i
   them: the title line and its exact form, and a heading plus a `diff` block per batch, with the
   reason — nobody approves a hunk they cannot see. The body stays at 500 lines: four paragraphs
   in the same step were compressed to pay for it, and no rule was dropped to make room. Re-run,
-  the six go from twenty-three contract problems to none, and both malformed titles come back in
-  the required form. One of the six no longer proposes batches at all, so five exercise the batch
-  rule and all five keep it, where before five of five had broken it. Finding counts moved inside
-  the spread three repetitions of one scenario already show. Measured in
+  the six batch-proposing scenarios go from twenty-three contract problems to none, and both
+  malformed titles come back in the required form. Over all seventeen, passing went from four of
+  sixteen to eleven — and the five that went the other way are what D6 above answers. Measured in
   `evals/report-contract.md`; the rule is kept.
 - **The skill no longer carries the answers to its own evals.** `references/example-report.md`
   was a full eleven-finding audit of `evals/fixtures/order_summary_page.dart` — the file three
