@@ -452,34 +452,34 @@ the one way this step can do real harm.
 ### Step 6 — Report
 
 Emit the report in the format defined by
-[references/report-template.md](references/report-template.md). For the depth and tone expected
-of a finding, read [references/example-report.md](references/example-report.md) — a full worked
-audit of one file.
+[references/report-template.md](references/report-template.md). For the depth and tone of a
+finding, read [references/example-report.md](references/example-report.md), a full worked audit.
 
-**Say what you did not check.** Every report carries a `Not checked:` line in the header —
-generated files skipped, files outside the scope ladder, modules queued for a later pass,
-findings dropped by the cap. A report without its own limits reads as complete when it is not.
+**Say what you did not check.** Every report carries a `Not checked:` line: generated files
+skipped, files outside the scope ladder, modules queued for later, findings dropped by the cap. A
+report without its own limits reads as complete when it is not.
 
 **Where it goes:**
 
 - One file in scope → answer inline in the conversation; create no file.
-- A feature or a module → write
-  `docs/reviews/CLEAN-CODE-<AUDIT|REFACTOR>-<module>-<YYYY-MM-DD>.md`, creating `docs/reviews/`
-  if needed, and say the path in your reply.
+- A feature or a module → write `docs/reviews/CLEAN-CODE-<AUDIT|REFACTOR>-<module>-<YYYY-MM-DD>.md`,
+  creating the directory if needed, and say the path in your reply.
 - If the user asked for an inline answer, honour that regardless of scope.
 
-**The markdown in the repository is the report.** Rendering it somewhere else — a page, a slide,
-a ticket — is a thing the user may ask for afterwards, never a substitute and never your call:
-the audit of someone's code is theirs to circulate. And no medium relaxes the contract. A finding
-keeps its `CC-` number, its Impact, its Effort, its Confidence and its `file:line` wherever it is
-shown, the `Not checked:` line travels with it, and the cap still holds at twenty. A prettier
-format that quietly drops half of those has published something that is no longer this report.
+**The title and every batch are part of the contract.** The title reads
+`# Clean Code — <AUDIT|DIFF|REFACTOR> — <module>` and carries nothing else, no qualifier in
+parentheses. Every batch gets its own `### Batch N — <type>` heading and its key hunks in a
+fenced ```diff block: a table listing batches is not a batch section, and nobody approves a hunk
+they cannot see.
 
-If `docs/reviews/` already holds reports under a different naming scheme, follow the one that is
-already there and say so in your reply. A directory carrying two conventions is worse than either
-of them.
+**The markdown in the repository is the report.** Rendering it elsewhere — a page, a slide, a
+ticket — is the user's to ask for afterwards, never your call and never a substitute. No medium
+relaxes the contract: every finding keeps its number, its three ratings and its `file:line`, the
+`Not checked:` line travels with it, and the cap holds at twenty.
 
-Re-running on the same module the same day overwrites that file instead of adding a second one.
+If `docs/reviews/` already holds reports under another naming scheme, follow it and say so; a
+directory carrying two conventions is worse than either. Re-running on the same module the same
+day overwrites that file instead of adding a second one.
 
 ---
 

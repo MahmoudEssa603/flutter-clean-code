@@ -31,6 +31,17 @@ the last one is holding whatever it shipped until the next. See the bump table i
   it is: it is the one script a run executes, so changing it moves the surface every verdict
   describes.
 
+### Changed
+- **`SKILL.md` states the report contract's two most-broken rules, instead of leaving them to
+  the template (D5).** The isolated re-baseline measured where reports actually fail: six of the
+  eight runs that proposed batches wrote them as a table with no `### Batch` heading and no
+  fenced `diff` block, and two wrote a title like `REFACTOR (proposed)`. Both rules existed only
+  in `references/report-template.md`, which a run reads once at the start. Step 6 now carries
+  them: the title line and its exact form, and a heading plus a `diff` block per batch, with the
+  reason — nobody approves a hunk they cannot see. The body stays at 500 lines: four paragraphs
+  in the same step were compressed to pay for it, and no rule was dropped to make room. Whether
+  this changes what runs produce is the measurement that follows, not a claim made here.
+
 ### Added
 - `scripts/check-run.mjs` also refuses a run that said nothing after its last tool call. An
   interactive calibration run restarted itself mid-way and produced no report, and every other
