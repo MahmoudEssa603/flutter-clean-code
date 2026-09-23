@@ -194,6 +194,11 @@ table used to hide, and `scripts/check-evals.mjs` now refuses it.
 `NOT_RUN` is a decision, not an omission: a scenario untouched by a change set is recorded as
 `NOT_RUN` with a reason rather than left blank, because a blank row reads like a pass.
 
+Two measurements sit beside the verdicts and answer questions a verdict cannot.
+[report-contract.md](report-contract.md) measures whether stating a rule in `SKILL.md` makes
+reports follow it. [ab/RESULTS.md](ab/RESULTS.md) and [ab/HOLDOUT.md](ab/HOLDOUT.md) measure what
+the skill adds over the same model without it, on these fixtures and on code it has never seen.
+
 <!-- generated: eval-summary -->
 
 **17 PASS** across 17 scenarios.

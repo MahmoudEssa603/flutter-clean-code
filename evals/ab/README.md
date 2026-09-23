@@ -202,3 +202,7 @@ Each run is recorded as `evals/ab/<scenario>/<condition>-<n>.json`. It holds:
 
 The raw transcript, structured result and workspace diff stay outside the repository, in the run's
 record directory. The record points to them.
+
+The holdout runs are recorded the same way, under `evals/ab/holdout/<case>/<condition>-<n>.json`,
+and read in [HOLDOUT.md](HOLDOUT.md). Their sources are not in this repository: they are real
+files from open-source projects, pinned by commit in a manifest beside the runs.

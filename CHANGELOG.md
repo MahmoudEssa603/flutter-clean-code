@@ -59,8 +59,12 @@ the last one is holding whatever it shipped until the next. See the bump table i
   in `references/report-template.md`, which a run reads once at the start. Step 6 now carries
   them: the title line and its exact form, and a heading plus a `diff` block per batch, with the
   reason — nobody approves a hunk they cannot see. The body stays at 500 lines: four paragraphs
-  in the same step were compressed to pay for it, and no rule was dropped to make room. Whether
-  this changes what runs produce is the measurement that follows, not a claim made here.
+  in the same step were compressed to pay for it, and no rule was dropped to make room. Re-run,
+  the six go from twenty-three contract problems to none, and both malformed titles come back in
+  the required form. One of the six no longer proposes batches at all, so five exercise the batch
+  rule and all five keep it, where before five of five had broken it. Finding counts moved inside
+  the spread three repetitions of one scenario already show. Measured in
+  `evals/report-contract.md`; the rule is kept.
 - **The skill no longer carries the answers to its own evals.** `references/example-report.md`
   was a full eleven-finding audit of `evals/fixtures/order_summary_page.dart` — the file three
   scenarios review — with that fixture's line numbers, and it named the path on its first line.
