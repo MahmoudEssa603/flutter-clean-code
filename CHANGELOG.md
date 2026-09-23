@@ -40,6 +40,14 @@ the last one is holding whatever it shipped until the next. See the bump table i
   describes.
 
 ### Changed
+- **The skeleton names every heading (D7).** D6's enumeration listed the title, the header lines,
+  `## Summary`, the finding sections and the batches — and left out `## Findings`,
+  `## Out of Scope` and `## Verification`. On the release-candidate sweep three runs wrote no
+  `## Findings` and no `## Verification` heading, none of which had done that before. The
+  enumeration is the format: what it leaves out, the report leaves out. It now names the four
+  headings in order, with the batches in their place among them. Same lesson as D6, one level
+  down, and the reason the sweep exists.
+
 - **Step 6 states the report's skeleton, not only its title and its batches (D6).** The full
   sweep of the seventeen scenarios measured D5: passing the contract went from four of sixteen to
   eleven, and five went the other way. Four of those five never opened

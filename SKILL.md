@@ -456,13 +456,14 @@ Emit the report in the format defined by
 finding, read [references/example-report.md](references/example-report.md), a full worked audit.
 
 **The skeleton is the contract.** The title reads `# Clean Code — <AUDIT|DIFF|REFACTOR> — <module>`
-and nothing else, no qualifier in parentheses. Under it: `Scope`, `Evidence`, `Conventions`,
-`Verification`, `Not checked`. Then `## Summary`, a table of the seven areas. Then every finding as
-its own `### CC-nnn` section carrying `Impact`, `Effort`, `Confidence` and `Location` as labelled
-fields, one value each and no qualifier — a rating needing a sentence to explain it is a finding at
-the lower rating. Then every batch under its own `### Batch N — <type>` heading with its key hunks
-in a fenced ```diff block: a table is not a batch section, and nobody approves a hunk they cannot
-see. Ratings folded into a heading, or a header line left out, is a different report.
+and nothing else, no qualifier in parentheses. Under it the header lines `Scope`, `Evidence`,
+`Conventions`, `Verification`, `Not checked`. Then these headings, in order: `## Summary`, a table
+of the seven areas; `## Findings`, each one its own `### CC-nnn` section carrying `Impact`,
+`Effort`, `Confidence` and `Location` as labelled fields, one value each and no qualifier — a
+rating needing a sentence to explain it is a finding at the lower rating; `## Batches` in
+REFACTOR, each under its own `### Batch N — <type>` with its key hunks in a fenced ```diff block,
+since a table is not a batch section and nobody approves a hunk they cannot see; `## Out of Scope`;
+`## Verification`. A heading left out, or ratings folded into one, is a different report.
 
 **Say what you did not check** on that line: generated files skipped, files outside the scope
 ladder, modules queued for later, findings dropped by the cap. A report without its own limits
@@ -476,10 +477,9 @@ reads as complete when it is not.
 - If the user asked for an inline answer, honour that regardless of scope.
 
 **The markdown in the repository is the report.** Rendering it elsewhere — a page, a slide, a
-ticket — is the user's to ask for afterwards, never your call and never a substitute: the
-skeleton travels with it and the cap holds at twenty. If `docs/reviews/` already holds reports
-under another naming scheme, follow it and say so. Re-running on the same module the same day
-overwrites that file.
+ticket — is the user's to ask for afterwards, never your call and never a substitute: the skeleton
+travels with it and the cap holds at twenty. If `docs/reviews/` holds reports under another naming
+scheme, follow it and say so; re-running on the same module the same day overwrites that file.
 
 ---
 
