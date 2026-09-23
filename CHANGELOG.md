@@ -41,6 +41,23 @@ the last one is holding whatever it shipped until the next. See the bump table i
   reason — nobody approves a hunk they cannot see. The body stays at 500 lines: four paragraphs
   in the same step were compressed to pay for it, and no rule was dropped to make room. Whether
   this changes what runs produce is the measurement that follows, not a claim made here.
+- **The skill no longer carries the answers to its own evals.** `references/example-report.md`
+  was a full eleven-finding audit of `evals/fixtures/order_summary_page.dart` — the file three
+  scenarios review — with that fixture's line numbers, and it named the path on its first line.
+  `dart-examples.md` and `test-quality.md` were built from the fixtures the same way, and
+  `SKILL.md` used the page's own misnamed `getUser()` as its example of a misleading name. A run
+  on those scenarios could read its answers instead of finding them, so the 1.6.0 verdicts on
+  `01`, `07` and `16` may overstate what the skill does on code it has not seen. Every example
+  now lives in a travel-booking domain, with different names, values and defects; what each one
+  teaches is unchanged, and the worked report is a new audit, ordered by impact and then effort
+  as `SKILL.md` requires. A scan of every identifier, string and colour in the Dart fixtures
+  against `SKILL.md` and `references/` finds only SDK names and the general `copyWith` rule.
+  `AGENTS.md` carries the rule that stops it coming back.
+- `scripts/check-evals.mjs` counts `scripts/scan-dart.mjs` as model-facing, beside `SKILL.md`
+  and `references/`. `SKILL.md` tells every run to execute the scanner and cite its numbers, so a
+  change to its signals changes what a run reports while no Markdown file moves. Without this, a
+  scanner change would leave every verdict marked current. The other scripts stay outside: no run
+  is told to use them, and a measured run cannot see them.
 
 ### Added
 - `scripts/check-run.mjs` also refuses a run that said nothing after its last tool call. An
@@ -68,34 +85,6 @@ the last one is holding whatever it shipped until the next. See the bump table i
   unnecessary or out of scope is decided from the workspace, not from the run's account of
   itself, and that needs the edit. No pristine copy is kept on disk, because a copy beside the
   project is one more thing a run could find.
-
-### Changed
-- **The skill no longer carries the answers to its own evals.** A run in the isolated install read
-  `references/example-report.md`, and its first line named `evals/fixtures/order_summary_page.dart`.
-  It was a full eleven-finding audit of the very file `01`, `07` and `16` review, with the
-  fixture's line numbers. The other references had been built from the fixtures the same way:
-  - `dart-examples.md` held the page's `describe()` word for word, its `_SectionGap`,
-    `EdgeInsets.all(17)`, `Color(0xFF3B5998)`, `// TODO: fix this later`, the swallowed catch
-    and the discount rule;
-  - `test-quality.md` held `07`'s test almost line for line (the `isVisible` loop,
-    `findsNWidgets(9)`, `MockOrder`);
-  - `SKILL.md` used `getUser()`, the page's own misnamed method, as its example of a misleading
-    name.
-
-  A run on those scenarios could read its answers instead of finding them. So the 1.6.0 verdicts
-  on `01`, `07` and `16` may overstate what the skill does on code it has not seen, and an A/B
-  measured this way would have measured the answer sheet. Every example now lives in a
-  travel-booking domain, with different names, values and defects. What each example teaches is
-  unchanged. The worked report is a new audit of `itinerary_screen.dart`, and it now numbers its
-  findings by impact and then effort as `SKILL.md` requires; the old one put an Effort S High
-  ahead of two Effort XS ones. A scan of every identifier, string and colour in the Dart fixtures
-  against `SKILL.md` and `references/` finds only SDK names and the general `copyWith` rule.
-  `SKILL.md` keeps its line count.
-- `scripts/check-evals.mjs` counts `scripts/scan-dart.mjs` as model-facing, beside `SKILL.md`
-  and `references/`. `SKILL.md` tells every run to execute the scanner and cite its numbers, so a
-  change to its signals changes what a run reports while no Markdown file moves. Without this, a
-  scanner change would leave every verdict marked current. The other scripts stay outside: no run
-  is told to use them, and a measured run cannot see them.
 
 ## [1.6.0] — 2026-09-18
 
