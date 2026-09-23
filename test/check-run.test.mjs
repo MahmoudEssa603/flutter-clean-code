@@ -191,3 +191,38 @@ test('the command line refuses unknown flags and a WITH check with no install', 
   assert.equal(main(['run.jsonl', '--condition', 'with']), 1);
   assert.equal(main(['run.jsonl', '--condition', 'maybe']), 1);
 });
+
+test('a run that stopped on a usage limit is not a run, however well it started', () => {
+  // Fifteen runs of one sweep came back holding nothing but "You've hit your session limit ·
+  // resets 6pm (Africa/Cairo)", and one of them was recorded valid: the skill had loaded from the
+  // right install, no forbidden scanner had run, and it had said something, so the
+  // said-nothing rule did not fire either.
+  const entries = [
+    user('/flutter-clean-code review this file'),
+    ...loadedFrom(INSTALL),
+    said('a1', "I'll start by looking at what's in the working directory."),
+    bash('t1', `node ${INSTALL}\\scripts\\scan-dart.mjs lib`),
+    said('a2', "You've hit your session limit · resets 6pm (Africa/Cairo)"),
+  ];
+
+  const result = withRun(entries);
+  assert.equal(result.valid, false);
+  assert.match(result.problems.join('\n'), /stopped on a usage limit, so nothing was measured/);
+});
+
+test('the weekly limit reads the same way, and an ordinary answer still passes', () => {
+  const limited = [
+    user('/flutter-clean-code review this file'),
+    ...loadedFrom(INSTALL),
+    said('a1', "You've hit your weekly limit, resets Sep 25, 8am"),
+  ];
+  assert.equal(withRun(limited).valid, false);
+
+  const fine = [
+    user('/flutter-clean-code review this file'),
+    ...loadedFrom(INSTALL),
+    bash('t1', `node ${INSTALL}\\scripts\\scan-dart.mjs lib`),
+    said('a2', '# Clean Code — AUDIT — orders\n\nThe report, in full.'),
+  ];
+  assert.equal(withRun(fine).valid, true, 'a report that merely mentions limits is not a limit');
+});

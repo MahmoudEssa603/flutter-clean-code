@@ -116,6 +116,10 @@ export function readTranscript(text) {
 /**
  * Everything the record needs from a run's transcript lines, and whether the run is valid.
  */
+// What the host says in a run's own voice when the account has no quota left. Matched on the
+// shape rather than the wording, which differs between the session limit and the weekly one.
+const RAN_OUT_OF_QUOTA = /\byou'?ve hit your (?:session|weekly|usage) limit\b|\busage limit reached\b|\brate.?limit(?:ed)? exceeded\b/i;
+
 export function checkRun(entries, { condition, install = null, home = homedir() }) {
   const problems = [];
   const held = [];
@@ -146,13 +150,17 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
   // caught that, and one calibration run was recorded valid having produced no report at all.
   let lastToolIndex = -1;
   let answerChars = 0;
+  let answer = '';
   assistants.forEach((e, index) => {
     for (const c of Array.isArray(e.message.content) ? e.message.content : []) {
       if (c.type === 'tool_use') {
         toolUses.push({ entry: e, name: c.name, input: c.input ?? {} });
         lastToolIndex = index;
       }
-      if (c.type === 'text' && index > lastToolIndex) answerChars += c.text.length;
+      if (c.type === 'text' && index > lastToolIndex) {
+        answerChars += c.text.length;
+        answer += c.text;
+      }
     }
   });
 
@@ -200,6 +208,12 @@ export function checkRun(entries, { condition, install = null, home = homedir() 
   if (models.length > 1) problems.push(`more than one model answered: ${models.join(', ')}`);
   if (answerChars === 0) {
     problems.push('the run said nothing after its last tool call: it was interrupted or it died');
+  }
+  // The other way a run stops without happening: the account ran out of quota and the host said so
+  // in the run's own voice. Every other check passes such a run — the skill loaded, no forbidden
+  // scanner ran — and fifteen of them in one sweep would read as fifteen measurements.
+  if (RAN_OUT_OF_QUOTA.test(answer)) {
+    problems.push(`the run stopped on a usage limit, so nothing was measured: ${answer.trim().slice(0, 80)}`);
   }
   if (condition === 'with' || condition === 'implicit') {
     const target = normalisePath(install);

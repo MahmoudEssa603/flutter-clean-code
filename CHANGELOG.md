@@ -145,6 +145,14 @@ the last one is holding whatever it shipped until the next. See the bump table i
   was deliberately deleted: the planted defects are listed in `evals/README.md`, because a fixture
   that announces it is one measures nothing.
 
+- `scripts/check-run.mjs` also refuses a run that stopped on a usage limit. A sweep of seventeen
+  ran into the account's session limit: one run finished, the second stopped partway through
+  saying "You've hit your session limit · resets 6pm", and the other fifteen produced that
+  sentence and nothing else. The truncated one was recorded **valid** — the skill had loaded from
+  the right install, no forbidden scanner had run, and it had said something, so the rule below
+  did not fire either. Fifteen of those in one directory would have read as fifteen measurements.
+  Matched on the shape rather than the wording, so the weekly limit reads the same way, and a
+  report that merely mentions a limit still passes.
 - `scripts/check-run.mjs` also refuses a run that said nothing after its last tool call. An
   interactive calibration run restarted itself mid-way and produced no report, and every other
   check passed it: the skill had loaded from the right install and no forbidden scanner ran. A
