@@ -315,3 +315,33 @@ test('Arabic batch headings are read by their key word', () => {
   const missing = withBatches(batch(1, 'Rename', { diff: false })).replace('### Batch 1', '### الدفعة 1');
   assert.match(checkReport(missing).failures.join('\n'), /"### الدفعة 1 — Rename" has no ```diff block/);
 });
+
+test('Summary and Location are read by their root, as a fourth Arabic run wrote them', () => {
+  // Round four. Scenario 03 wrote `## الخلاصة` where the list held only `الملخص`, `**الموقع:**`
+  // where it held only `المكان`, and `## خارج نطاق هذه المراجعة` — no definite article on نطاق.
+  // All three were present and correct, and all three were reported missing.
+  const arabic = report([finding(1)])
+    .replace('## Summary', '## الخلاصة')
+    .replaceAll('**Location:**', '**الموقع:**')
+    .replace('## Out of Scope', '## خارج نطاق هذه المراجعة');
+  assert.deepEqual(checkReport(arabic).failures, []);
+
+  for (const summary of ['## الخلاصة', '## ملخص النتائج', '## التلخيص']) {
+    const translated = report([finding(1)]).replace('## Summary', summary);
+    assert.deepEqual(checkReport(translated).failures, [], summary);
+  }
+  for (const location of ['**الموقع:**', '**المكان:**', '**موضع المشكلة:**']) {
+    const translated = report([finding(1)]).replaceAll('**Location:**', location);
+    assert.deepEqual(checkReport(translated).failures, [], location);
+  }
+});
+
+test('a rating translated into Arabic is a wrong value, not a missing field', () => {
+  // \w is ASCII-only, so an Arabic rating matched nothing and the finding was reported as having
+  // no Impact at all. It has one. references/report-template.md says the ratings keep their
+  // English values, so the report is wrong here — and the message has to say which way.
+  const arabic = report([finding(1)]).replaceAll('**Impact:** High', '**Impact:** عالٍ');
+  const failures = checkReport(arabic).failures.join('\n');
+  assert.match(failures, /Impact is "عالٍ"/);
+  assert.doesNotMatch(failures, /has no Impact/);
+});

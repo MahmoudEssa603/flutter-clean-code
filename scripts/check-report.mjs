@@ -55,10 +55,14 @@ const HEADER_FIELDS = [
 // both and reject the only Arabic scenario in the suite outright. A check that enforces what no
 // model-facing file asks for is the defect fixed in the re-run heading at 1.5.0, again.
 const SECTIONS = [
-  { name: 'Summary', spellings: ['Summary', 'الملخص'] },
+  // Summary is خلاصة as often as ملخص, and a fourth run wrote the one the list did not hold.
+  // Matched by root, as Not checked already was: a list of spellings gets outgrown, and this
+  // is the fourth time one has.
+  { name: 'Summary', spellings: ['Summary', `[^\\s]*(?:خ${HARAKAT}لاص|ل${HARAKAT}خ${HARAKAT}ي?ص)[^\\s]*`] },
   { name: 'Findings', spellings: ['Findings', 'الملاحظات'] },
   // "Outside" is برا, بره or برّه in Egyptian Arabic and خارج in the standard; 06 wrote برّه.
-  { name: 'Out of Scope', spellings: ['Out of Scope', `(?:بر${HARAKAT}[اهة]|خارج)\\s+النطاق`] },
+  // The definite article on نطاق is optional — a run wrote `## خارج نطاق هذه المراجعة`.
+  { name: 'Out of Scope', spellings: ['Out of Scope', `(?:بر${HARAKAT}[اهة]|خارج)\\s+(?:ال)?نطاق`] },
   { name: 'Verification', spellings: ['Verification', 'التحقق'] },
 ];
 
@@ -66,7 +70,9 @@ const FINDING_FIELDS = {
   Impact: ['Impact', 'الأثر'],
   Effort: ['Effort', 'الجهد'],
   Confidence: ['Confidence', 'الثقة'],
-  Location: ['Location', 'المكان'],
+  // Location is الموقع as often as المكان, and both are ordinary Arabic. By root, for the
+  // same reason as Summary above.
+  Location: ['Location', around(`م${HARAKAT}و${HARAKAT}ق${HARAKAT}ع|م${HARAKAT}كان|م${HARAKAT}و${HARAKAT}ض${HARAKAT}ع`)],
 };
 
 // \b is ASCII-only, so it cannot end an Arabic word. "not followed by a letter" works in both
@@ -183,8 +189,8 @@ export function checkReport(text, label = 'report') {
   for (const block of blocks) {
     const id = /^(CC-\d+)/.exec(block)?.[1] ?? 'a finding';
 
-    const impact = new RegExp(`${labelled(FINDING_FIELDS.Impact)}\\s*(\\w+)`).exec(block);
-    const effort = new RegExp(`${labelled(FINDING_FIELDS.Effort)}\\s*(\\w+)`).exec(block);
+    const impact = new RegExp(`${labelled(FINDING_FIELDS.Impact)}\\s*(\\S+)`).exec(block);
+    const effort = new RegExp(`${labelled(FINDING_FIELDS.Effort)}\\s*(\\S+)`).exec(block);
     // Confidence is read to the end of its line, not as the first word on it. Reading one word
     // accepted "High (the name) / Low (the intent)" as High: a real run wrote that, because the
     // name was proven and the intent was not, and no rule told it which to record. SKILL.md now

@@ -10,6 +10,19 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [1.7.0]
 
 ### Fixed
+- `scripts/check-report.mjs` ran out of Arabic spellings for a fourth time, and reported a correct
+  report as 56 problems. Scenario 03 wrote `## الخلاصة` where the list held only `الملخص`,
+  `**الموقع:**` where it held only `المكان`, and `## خارج نطاق هذه المراجعة` — no definite article
+  on نطاق. Summary and Location are matched by root now, as `Not checked` already was, and the
+  article is optional. The fourth miss in this file, and the reason for matching by root rather
+  than by list.
+- `scripts/check-report.mjs` called a translated rating a missing field. `w` is ASCII-only, so
+  `**الأثر:** عالٍ` matched nothing and the finding was reported as having no Impact at all. It
+  has one, and it is the wrong one: `references/report-template.md` now says the three ratings
+  and the evidence level keep their English values, because they are a fixed set the report is
+  read against — `check-report.mjs` and the machine-readable output both consume them — and not
+  prose. The message says which of the two it is.
+
 - `scripts/check-evals.mjs` said nothing about the surface moving under the version it declares,
   for the whole of every development cycle. The check compares the tree against tag
   `v<version>`, and between two releases that tag does not exist yet, so the comparison returned

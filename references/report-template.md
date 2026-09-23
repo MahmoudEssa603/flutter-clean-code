@@ -142,7 +142,9 @@ files, modules queued for a later pass, findings dropped by the 20-per-module ca
 missing SDK made unverifiable.
 
 **Arabic reports keep code in English.** Prose, headings and table cells translate; identifiers,
-paths, commands and code blocks do not.
+paths, commands and code blocks do not. The three ratings and the evidence level keep their
+English values — `High`, `Medium`, `Low`, `XS`, `S`, `M`, `L`, `Full`, `Partial`, `None`. They
+are a fixed set the report is read against, in any language, not prose.
 
 ---
 
