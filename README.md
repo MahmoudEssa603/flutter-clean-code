@@ -97,7 +97,11 @@ Everything here is Node built-ins and needs no install step.
 | `node scripts/check-report.mjs <report.md>` | Checks a finished report against the contract. Exit 0 or a list of what is missing |
 | `node scripts/validate-skill.mjs` | Checks `SKILL.md` against the contract in `AGENTS.md` — fields, limits, links, vocabulary |
 | `node scripts/make-eval-projects.mjs <dir>` | Lays the seventeen evaluation scenarios out as runnable projects; `--verify` reports which ones a run has already rewritten |
-| `node scripts/check-evals.mjs` | Checks the eval registry — no PASS sitting over a partial expectation |
+| `node scripts/check-evals.mjs` | Checks the eval registry — no PASS sitting over a partial expectation, and says when the surface moved under a verdict |
+| `node scripts/check-dart-examples.mjs` | Asks the Dart SDK whether every snippet in `SKILL.md` and `references/` parses |
+| `node scripts/check-fixture-reuse.mjs` | Checks that no example is built from an eval fixture, which would hand a run its answers |
+| `node scripts/check-run.mjs <transcript>` | Checks a measured run from its transcript: which install it loaded, which scanner it ran, and whether it finished |
+| `node scripts/make-dossier.mjs <records> <out>` | Gathers the evidence for grading a run into one file per scenario. It decides nothing |
 | `node scripts/generate-eval-summary.mjs` | Renders the results table from `evals/results/`; `--check` in CI |
 | `node scripts/make-baseline.mjs` | Records what the deterministic tooling reports; `--check` compares |
 | `node --test` | The repository's own suites |
@@ -116,8 +120,9 @@ Flutter-specific cleanliness · Comments & dead weight · Error handling & data 
 Every run starts by measuring. `scripts/scan-dart.mjs` reports `build()` and function lengths,
 nesting depth, positional and boolean parameter counts, `State` classes that create a disposable
 with no `dispose`, bare `catch`, `late` fields, inline layout literals, ownerless TODOs and
-commented-out code — so the report cites numbers instead of impressions. Its output is where to
-look, never what to report.
+commented-out code — so the report cites numbers instead of impressions. One value repeated across
+a file is one signal carrying its count and its lines, because nine copies of a padding are one
+thing to fix. Its output is where to look, never what to report.
 
 **Generated Dart is never audited.** `.g.dart`, `.freezed.dart`, `.mocks.dart`, `.gr.dart` and
 anything carrying a `GENERATED CODE` banner are excluded, because no finding about them can be
@@ -171,7 +176,9 @@ It checks the contract, not the reading. Whether a finding is *correct*, and whe
 *rightly* handed back as out of scope, stays yours — the script prints that every run, so nobody
 mistakes a pass for a verdict on the audit. It reads the contract rather than the tool, so a
 report from any agent is checked the same way, Arabic ones included: the template translates
-prose, headings and the header labels, and both spellings are accepted.
+prose, headings and the header labels, and the checker matches them by root rather than by a list
+of spellings. The three ratings and the evidence level keep their English values in any language —
+they are a fixed set the report is read against, not prose.
 
 ## Other tools
 
@@ -228,6 +235,8 @@ says the measurements are estimates — but the scanner is what turns "this look
 ```bash
 node --test                              # unit and integration suites
 node scripts/validate-skill.mjs          # the repository's own contract
+node scripts/check-dart-examples.mjs     # every snippet parses, asked of the Dart SDK
+node scripts/check-fixture-reuse.mjs     # no example is built from an eval fixture
 node scripts/scan-dart.mjs <path>        # measure any Dart tree, --json for exact numbers
 ```
 
@@ -257,7 +266,11 @@ flutter-clean-code/            the repository root is the skill root
 │   ├── validate-skill.mjs     checks SKILL.md against the contract in AGENTS.md
 │   ├── scan-dart.mjs          the Dart measurement scanner
 │   ├── check-report.mjs       checks a finished report against the contract
+│   ├── check-dart-examples.mjs  parses every Dart snippet with the SDK
+│   ├── check-fixture-reuse.mjs  no example may be built from an eval fixture
+│   ├── check-run.mjs          checks a measured run from its transcript
 │   ├── check-evals.mjs        checks the eval registry, and flags stale verdicts
+│   ├── make-dossier.mjs       gathers a run's evidence for grading
 │   ├── generate-eval-summary.mjs  renders the results table from the records
 │   ├── make-baseline.mjs      records what the deterministic tooling reports
 │   └── make-eval-projects.mjs lays the scenarios out as runnable projects
