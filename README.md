@@ -77,6 +77,7 @@ flowchart TD
     S -->|"a feature or a module"| R["docs/reviews/<br/>CLEAN-CODE-MODE-module-DATE.md"]
     S -->|"a single file"| I["answered inline<br/>no file created"]
     R --> K["check-report.mjs<br/>the contract holds,<br/>or exactly what is missing"]
+    I --> K
 
     style C fill:#1f6feb,stroke:#1f6feb,color:#fff
     style K fill:#238636,stroke:#238636,color:#fff
@@ -160,11 +161,33 @@ A single file in scope is answered inline and creates no file. A feature or a mo
 to `docs/reviews/`, and a second pass on the same module the same day overwrites it rather than
 leaving two.
 
+The shape is fixed, and it is the shape a reader can act on:
+
+```markdown
+# Clean Code — AUDIT — bookings
+
+**Scope:** lib/features/bookings · **Evidence:** Partial
+**Conventions:** analysis_options.yaml
+**Verification:** flutter analyze + flutter test, green
+**Not checked:** booking.freezed.dart (generated) · 4 Low findings dropped by the cap
+
+## Summary            a row per principle area, even at zero
+
+## Findings
+### CC-001 — Move the loyalty credit rule out of the widget
+**Impact:** High · **Effort:** S · **Confidence:** High
+**Location:** `lib/features/bookings/itinerary_screen.dart:76`
+
+## Out of Scope       one line each: the observation, and why it is not this pass's work
+## Verification       which command ran, and what it said
+```
+
 Every finding carries an Impact, an Effort, a Confidence and a `file:line`, ordered by impact
 with the quick wins first. Twenty per module is the cap, and anything past it is counted by
 principle rather than quietly dropped. The header states what was *not* checked — generated files,
 queued modules, a verification that could not run — so a report never reads as more complete than
-it is.
+it is. Ratings folded into a heading, or a header line left out, is a different report: 1.7.0
+spent three measured rounds getting a run to keep this shape when it writes one from memory.
 
 Half of judging one needs no judgment at all, and that half is where the misses happen:
 
