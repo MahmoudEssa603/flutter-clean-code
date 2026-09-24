@@ -1,0 +1,41 @@
+{
+  "scenario": "H5-test-file",
+  "condition": "without",
+  "repetition": 2,
+  "blindId": "a927b5c85c",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-24T02:41:08.8534342Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-rc/H5-test-file/without-2"
+  },
+  "findings": {
+    "normalisedEntries": 16,
+    "trueFindings": 7,
+    "partials": 0,
+    "duplicates": 0,
+    "falsePositives": 9,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 8,
+    "falsePositivesAssertNoDefect": 1,
+    "missedRequiredStrict": 1,
+    "missedRequiredAdjusted": 1,
+    "missedRequired": [
+      "H5-01"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 0.581096,
+    "wallSeconds": 99
+  }
+}

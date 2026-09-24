@@ -207,5 +207,7 @@ The same set re-measured against the 1.7.0 release candidate is recorded under
 `evals/ab/release-candidate/<scenario>/`, and read in [RELEASE-CANDIDATE.md](RELEASE-CANDIDATE.md).
 
 The holdout runs are recorded the same way, under `evals/ab/holdout/<case>/<condition>-<n>.json`,
-and read in [HOLDOUT.md](HOLDOUT.md). Their sources are not in this repository: they are real
+and read in [HOLDOUT.md](HOLDOUT.md); the re-measurement against the release candidate is under
+`evals/ab/holdout-release-candidate/` and read in
+[HOLDOUT-RELEASE-CANDIDATE.md](HOLDOUT-RELEASE-CANDIDATE.md). Their sources are not in this repository: they are real
 files from open-source projects, pinned by commit in a manifest beside the runs.

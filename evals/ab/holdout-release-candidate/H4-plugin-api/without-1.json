@@ -1,0 +1,41 @@
+{
+  "scenario": "H4-plugin-api",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "59d83ae3e5",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-24T01:57:15.3505263Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-rc/H4-plugin-api/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 14,
+    "trueFindings": 8,
+    "partials": 0,
+    "duplicates": 0,
+    "falsePositives": 6,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 5,
+    "falsePositivesAssertNoDefect": 1,
+    "missedRequiredStrict": 1,
+    "missedRequiredAdjusted": 1,
+    "missedRequired": [
+      "H4-02"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 0.7044385,
+    "wallSeconds": 116
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "scenario": "H2-app-page",
+  "condition": "without",
+  "repetition": 1,
+  "blindId": "f788e731b6",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-24T01:50:02.1657543Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-rc/H2-app-page/without-1"
+  },
+  "findings": {
+    "normalisedEntries": 12,
+    "trueFindings": 8,
+    "partials": 1,
+    "duplicates": 0,
+    "falsePositives": 3,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 2,
+    "falsePositivesAssertNoDefect": 1,
+    "missedRequiredStrict": 1,
+    "missedRequiredAdjusted": 0,
+    "missedRequired": [
+      "H2-01"
+    ]
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 0.606064,
+    "wallSeconds": 115
+  }
+}

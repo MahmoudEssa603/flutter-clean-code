@@ -1,0 +1,39 @@
+{
+  "scenario": "H3-engine-class",
+  "condition": "without",
+  "repetition": 2,
+  "blindId": "fd3d5be0df",
+  "protocol": "evals/ab/README.md, frozen 2026-09-23 — re-measurement against the 1.7.0 release candidate",
+  "run": {
+    "installSha": "04ef2b536769d7b7f41ff88806c3c7fd4a0861d3",
+    "cli": "2.1.278 (Claude Code)",
+    "model": "opus",
+    "effort": "xhigh",
+    "entrypoint": "sdk-cli",
+    "permissionMode": "auto",
+    "started": "2026-09-24T02:36:05.8470322Z",
+    "valid": true,
+    "recordDirectory": "D:/eval-records/holdout-rc/H3-engine-class/without-2"
+  },
+  "findings": {
+    "normalisedEntries": 14,
+    "trueFindings": 8,
+    "partials": 0,
+    "duplicates": 1,
+    "falsePositives": 5,
+    "falsePositivesUntrue": 0,
+    "falsePositivesCorrectButUnkeyed": 5,
+    "falsePositivesAssertNoDefect": 0,
+    "missedRequiredStrict": 0,
+    "missedRequiredAdjusted": 0,
+    "missedRequired": []
+  },
+  "edits": {
+    "filesChanged": [],
+    "codeFilesChanged": []
+  },
+  "cost": {
+    "usd": 0.626375,
+    "wallSeconds": 191
+  }
+}
