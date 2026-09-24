@@ -7,7 +7,7 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
-## [1.7.0]
+## [1.7.0] — 2026-09-24
 
 ### Fixed
 - `scripts/check-report.mjs` refused two layouts that carry exactly what the contract asks for.
