@@ -78,6 +78,12 @@ resolving their names would mean shipping a project to resolve them against.
 
 **Prose lines wrap at 100 columns.** Tables and code blocks are exempt.
 
+**A list in the documentation names everything in its directory.** `README.md` and `AGENTS.md`
+name every script, `test/README.md` every suite, and `evals/README.md` under `## Scenarios` every
+scenario. `validate-skill.mjs` compares each list to its directory, because both of these were
+found by eye and neither by a check: the README described seven scripts when there were eleven,
+and the Scenarios table stopped at twelve while the suite had grown to seventeen.
+
 **No example reuses an eval fixture.** Every snippet in `SKILL.md` and `references/` is written
 in a domain no scenario uses, with its own names and values. The examples were once built from
 the fixtures — `references/example-report.md` was a full audit of `evals/fixtures/order_summary_page.dart`,

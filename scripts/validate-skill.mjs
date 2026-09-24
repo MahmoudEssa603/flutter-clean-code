@@ -362,6 +362,46 @@ for (const file of readdirSync(scriptsDir).filter((f) => f.endsWith('.mjs'))) {
   }
 }
 
+// --- the documentation names what is here --------------------------------------
+// Found twice by eye and never by a check: README.md described seven scripts when there were
+// eleven, and evals/README.md's Scenarios table stopped at twelve while the suite had grown to
+// seventeen. A reader trusts these lists, and nothing compared them to the directory.
+const namesEverythingIn = ({ dir, suffix, doc, label, strip = (f) => f, section }) => {
+  const path = join(ROOT, doc);
+  if (!existsSync(path) || !existsSync(join(ROOT, dir))) return;
+  let text = readFileSync(path, 'utf8');
+  // A list is only a list if a reader finds it in one place. Without this, a scenario named in
+  // some other table counted as listed and the check caught two of five.
+  if (section) {
+    const from = text.indexOf(section);
+    if (from === -1) {
+      fail(label, `${doc} has no "${section}" section to list them in`);
+      return;
+    }
+    const to = text.indexOf('\n## ', from + section.length);
+    text = text.slice(from, to === -1 ? undefined : to);
+  }
+  const missing = readdirSync(join(ROOT, dir))
+    .filter((f) => f.endsWith(suffix))
+    .filter((f) => !text.includes(strip(f)));
+  if (missing.length > 0) {
+    const where = section ? `${doc} under "${section}"` : doc;
+    fail(label, `${where} does not name ${missing.map((f) => `${dir}/${f}`).join(', ')}`);
+  }
+};
+
+namesEverythingIn({ dir: 'scripts', suffix: '.mjs', doc: 'README.md', label: 'docs' });
+namesEverythingIn({ dir: 'scripts', suffix: '.mjs', doc: 'AGENTS.md', label: 'docs' });
+namesEverythingIn({ dir: 'test', suffix: '.test.mjs', doc: 'test/README.md', label: 'docs' });
+namesEverythingIn({ dir: 'test', suffix: '.test.mjs', doc: 'AGENTS.md', label: 'docs' });
+namesEverythingIn({
+  dir: 'evals',
+  suffix: '.json',
+  doc: 'evals/README.md',
+  label: 'docs',
+  section: '## Scenarios',
+});
+
 // --- tests -------------------------------------------------------------------
 // The scanner is parsing logic; parsing logic without tests is a guess.
 const testDir = join(ROOT, 'test');

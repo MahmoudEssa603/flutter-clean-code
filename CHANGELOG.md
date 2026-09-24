@@ -10,6 +10,22 @@ the last one is holding whatever it shipped until the next. See the bump table i
 ## [1.7.0] — 2026-09-24
 
 ### Fixed
+- 
+ame              flutter-clean-code
+version           1.7.0
+description       1023/1024 chars
+compatibility     301/500 chars
+body              500/500 lines
+reference links   12
+
+All checks passed. compares each list in the documentation to the directory it
+  describes. Two lists had gone stale and neither was caught by anything:  described
+  seven scripts when the repository held eleven — the four added during 1.7.0 were named nowhere a
+  reader looks — and 's Scenarios table stopped at twelve while the suite had
+  grown to seventeen. Both were found by a person reading the files. The check is scoped to the
+  section a list belongs to, because the results table further down names all seventeen scenarios
+  and an unscoped check found two of the five that were missing.
+
 - `scripts/check-report.mjs` refused two layouts that carry exactly what the contract asks for.
   A run wrote `**Scope** — lib/...` with the colon outside the bold, and another put all four
   finding fields on one line, where Confidence is read to the end of its line on purpose — to

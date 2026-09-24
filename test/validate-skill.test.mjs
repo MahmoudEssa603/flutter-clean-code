@@ -260,3 +260,37 @@ test('every maintenance script refuses a flag it does not know, before doing any
   const after = spawnSync('git', ['status', '--porcelain'], { cwd: REPO, encoding: 'utf8' }).stdout;
   assert.equal(after, before, 'a refused run wrote something');
 });
+
+test('a script the README never names fails the run', () => {
+  // README.md described seven scripts while the repository held eleven, and the four added
+  // during 1.7.0 were named nowhere a reader looks. Nothing compared the list to the directory.
+  const result = runValidatorOn((dir) => {
+    writeFileSync(join(dir, 'scripts', 'check-something-new.mjs'), 'export const x = 1;\n');
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.output, /README\.md does not name scripts\/check-something-new\.mjs/);
+});
+
+test('a scenario missing from the Scenarios table fails, even when named elsewhere', () => {
+  // The table stopped at twelve while the suite grew to seventeen. Scoping the check to the
+  // section matters: the results table further down names all seventeen, so an unscoped check
+  // found two of the five.
+  const result = runValidatorOn((dir) => {
+    const readme = join(dir, 'evals', 'README.md');
+    const text = readFileSync(readme, 'utf8');
+    const from = text.indexOf('## Scenarios');
+    const to = text.indexOf('\n## ', from + 12);
+    const table = text.slice(from, to);
+    writeFileSync(readme, text.replace(table, table.replace(/\n\| `17-[^\n]*\|/, '')));
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.output, /under "## Scenarios" does not name evals\/17-/);
+});
+
+test('a test suite the test README never names fails the run', () => {
+  const result = runValidatorOn((dir) => {
+    writeFileSync(join(dir, 'test', 'check-something-new.test.mjs'), "import test from 'node:test';\n");
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.output, /test\/README\.md does not name test\/check-something-new\.test\.mjs/);
+});

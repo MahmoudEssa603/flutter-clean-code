@@ -107,6 +107,11 @@ The same split is the answer for anyone using the skill for real: name it when i
 | `10-localisation-detection.json` | Localisation is detected from the package in use, not from three markers |
 | `11-unresolved-dependencies.json` | A project that will not resolve is reported, not mined for findings |
 | `12-rerun-rejudges.json` | A re-run keeps the numbers and re-judges the verdicts |
+| `13-architecture-and-clean-code.json` | The clean-code half is delivered; the layer restructure is handed back, and no groundwork for it is laid |
+| `14-performance-and-clean-code.json` | A slowness claim needs profiling this pass does not collect; a calculation running six times per build is still a readability finding |
+| `15-state-migration-and-clean-code.json` | The code is judged under the pattern it uses today, not the one it was asked to move to |
+| `16-runtime-bug-and-clean-code.json` | Defects visible in the shape of the code are findings; diagnosing the crash needs a run, and is handed back |
+| `17-activation-on-a-mixed-request.json` | Whether the description alone loads the skill on a request whose larger half it does not own |
 
 ## Fixtures
 
