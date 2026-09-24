@@ -390,6 +390,38 @@ const namesEverythingIn = ({ dir, suffix, doc, label, strip = (f) => f, section 
   }
 };
 
+// And the other way: a list may not name what is no longer there. A reader who types a command
+// from the README gets "Cannot find module", which is worse than a missing line.
+const namesNothingAbsent = ({ dir, suffix, doc, label, section, pattern }) => {
+  const path = join(ROOT, doc);
+  if (!existsSync(path) || !existsSync(join(ROOT, dir))) return;
+  let text = readFileSync(path, 'utf8');
+  if (section) {
+    const from = text.indexOf(section);
+    if (from === -1) return;
+    const to = text.indexOf('\n## ', from + section.length);
+    text = text.slice(from, to === -1 ? undefined : to);
+  }
+  const present = new Set(readdirSync(join(ROOT, dir)).filter((f) => f.endsWith(suffix)));
+  const named = new Set([...text.matchAll(pattern)].map((m) => m[0]));
+  const gone = [...named].filter((f) => !present.has(f)).sort();
+  if (gone.length > 0) {
+    fail(label, `${doc} names ${gone.join(', ')}, which ${dir}/ does not hold`);
+  }
+};
+
+namesNothingAbsent({ dir: 'scripts', suffix: '.mjs', doc: 'README.md', label: 'docs', pattern: /(?<![\w.-])[a-z][a-z-]*\.mjs/g });
+namesNothingAbsent({ dir: 'scripts', suffix: '.mjs', doc: 'AGENTS.md', label: 'docs', pattern: /(?<![\w.-])[a-z][a-z-]*\.mjs/g });
+namesNothingAbsent({ dir: 'test', suffix: '.test.mjs', doc: 'test/README.md', label: 'docs', pattern: /(?<![\w.-])[a-z][a-z-]*\.test\.mjs/g });
+namesNothingAbsent({
+  dir: 'evals',
+  suffix: '.json',
+  doc: 'evals/README.md',
+  label: 'docs',
+  section: '## Scenarios',
+  pattern: /\d{2}-[a-z-]+\.json/g,
+});
+
 namesEverythingIn({ dir: 'scripts', suffix: '.mjs', doc: 'README.md', label: 'docs' });
 namesEverythingIn({ dir: 'scripts', suffix: '.mjs', doc: 'AGENTS.md', label: 'docs' });
 namesEverythingIn({ dir: 'test', suffix: '.test.mjs', doc: 'test/README.md', label: 'docs' });

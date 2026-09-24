@@ -16,7 +16,15 @@ the last one is holding whatever it shipped until the next. See the bump table i
   a reader looks — and `evals/README.md`'s Scenarios table stopped at twelve while the suite had
   grown to seventeen. Both were found by a person reading the files. The check is scoped to the
   section a list belongs to, because the results table further down names all seventeen scenarios
-  and an unscoped check found two of the five that were missing.
+  and an unscoped check found two of the five that were missing. It runs both ways: a file no
+  list names, and a name no file answers — a reader who types a command for a deleted script gets
+  `Cannot find module`, which is worse than a missing line.
+
+  What it cannot do is written into `AGENTS.md` beside it, because a green validator must not
+  read as "the documentation is correct": it compares names and knows nothing about whether a
+  description is still true. A wrong description is the more common decay — this README called
+  the scanner's literal signal one line per occurrence for as long as that was wrong — so the
+  checklist now asks for the reading the check cannot do.
 
 - `scripts/check-report.mjs` refused two layouts that carry exactly what the contract asks for.
   A run wrote `**Scope** — lib/...` with the colon outside the bold, and another put all four

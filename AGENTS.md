@@ -78,11 +78,20 @@ resolving their names would mean shipping a project to resolve them against.
 
 **Prose lines wrap at 100 columns.** Tables and code blocks are exempt.
 
-**A list in the documentation names everything in its directory.** `README.md` and `AGENTS.md`
-name every script, `test/README.md` every suite, and `evals/README.md` under `## Scenarios` every
-scenario. `validate-skill.mjs` compares each list to its directory, because both of these were
-found by eye and neither by a check: the README described seven scripts when there were eleven,
-and the Scenarios table stopped at twelve while the suite had grown to seventeen.
+**A list in the documentation names everything in its directory, and nothing else.**
+`README.md` and `AGENTS.md` name every script, `test/README.md` every suite, and
+`evals/README.md` under `## Scenarios` every scenario. `validate-skill.mjs` compares each list to
+its directory both ways — a file no list names, and a name no file answers — because both halves
+were found by eye and neither by a check: the README described seven scripts when there were
+eleven, and the Scenarios table stopped at twelve while the suite had grown to seventeen.
+
+**What that check cannot do, and what is therefore still yours.** It compares names. It knows
+nothing about whether a description is still true, and a wrong description is the more common
+decay: the README described the scanner's literal signal as one line per occurrence for as long
+as that was wrong. It does not read `CONTRIBUTING.md`, the write-ups under `evals/ab/`, or any
+prose count — "seventeen scenarios" in a sentence is not checked against seventeen files. **So the
+pre-publication checklist asks you to read the descriptions of anything you changed.** A green
+validator means the lists are complete, never that the documentation is right.
 
 **No example reuses an eval fixture.** Every snippet in `SKILL.md` and `references/` is written
 in a domain no scenario uses, with its own names and values. The examples were once built from
@@ -263,6 +272,8 @@ Run before every tag. Everything here must pass locally, not just in CI.
 - [ ] vocabulary table respected; no banned synonym introduced
 - [ ] node scripts/check-dart-examples.mjs                 — every snippet parses, SDK present
 - [ ] node scripts/check-fixture-reuse.mjs                 — no example is built from a fixture
+- [ ] the README's description of anything you changed still matches what it does — the lists
+      are checked, the sentences are not
 - [ ] the evals in evals/ were run by hand against the current SKILL.md
 - [ ] eval results recorded honestly: "ran, passed" or "not run"
 - [ ] metadata.version bumped and matching the tag about to be created

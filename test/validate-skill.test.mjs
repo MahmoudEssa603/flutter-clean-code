@@ -294,3 +294,22 @@ test('a test suite the test README never names fails the run', () => {
   assert.equal(result.status, 1);
   assert.match(result.output, /test\/README\.md does not name test\/check-something-new\.test\.mjs/);
 });
+
+test('documentation naming a script that is gone fails the run', () => {
+  // The check ran one way only at first: it caught a file the docs had never been told about and
+  // said nothing about a file they still name after it is deleted. A reader who types that
+  // command gets "Cannot find module", which is worse than a missing line.
+  const result = runValidatorOn((dir) => {
+    rmSync(join(dir, 'scripts', 'check-run.mjs'));
+  });
+  assert.equal(result.status, 1);
+  assert.match(result.output, /README\.md names check-run\.mjs, which scripts\/ does not hold/);
+});
+
+test('a test suite name is not mistaken for a script that is missing', () => {
+  // The first cut of that check matched the tail of 'scan-dart.test.mjs' and reported AGENTS.md
+  // as naming a script called test.mjs. The repository as committed has to pass.
+  const result = runValidatorOn();
+  assert.equal(result.status, 0, result.output);
+  assert.doesNotMatch(result.output, /names test\.mjs/);
+});
