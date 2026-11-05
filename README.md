@@ -299,7 +299,8 @@ flutter-clean-code/            the repository root is the skill root
 │   └── make-eval-projects.mjs lays the scenarios out as runnable projects
 ├── AGENTS.md                  governance: vocabulary, conventions, releases
 ├── CHANGELOG.md               one entry per tag, checked against metadata.version
-└── CONTRIBUTING.md            how a change gets merged
+├── CONTRIBUTING.md            how a change gets merged
+└── ROADMAP.md                 what comes next, in order, with the evidence for each item
 ```
 
 Reference files are loaded only when a step calls for them, so the checklist costs nothing until
