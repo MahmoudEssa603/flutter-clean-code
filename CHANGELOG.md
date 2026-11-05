@@ -7,6 +7,19 @@ A release is cut when it is worth installing, not only when `SKILL.md` changes: 
 the last one is holding whatever it shipped until the next. See the bump table in
 [AGENTS.md](AGENTS.md).
 
+## [Unreleased]
+
+### Fixed
+- `scan-dart.mjs --json` read through a pipe arrived cut off at 64 KiB on a large tree — half a
+  document, which is what an agent reading the scanner through a pipe received. On a 1,050-file
+  tree the scanner wrote 136,553 bytes to a file and 65,536 through a pipe, and the piped copy
+  failed to parse at exactly that offset. Every script ended in `process.exit(main(...))`, which
+  ends the process before a full pipe has drained; they now set `process.exitCode` and let Node
+  exit once the output is written, and so does `validate-skill.mjs` on its final failure. A test
+  reads 400 KiB of scanner JSON through a pipe the way a slow reader does, waiting before it
+  reads, and parses it; a second fails on any script that ends with `process.exit(main(...))`.
+  Both fail on the old entry point. `ROADMAP.md` item R1.
+
 ## [1.7.0] — 2026-09-24
 
 ### Fixed

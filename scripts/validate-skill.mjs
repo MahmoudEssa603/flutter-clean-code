@@ -497,7 +497,8 @@ if (failures.size > 0) {
   console.error('');
   for (const text of failures) console.error(`FAIL  ${text}`);
   console.error(`\n${failures.size} check(s) failed.`);
-  process.exit(1);
+  // exitCode, not exit(): exit() ends the process before a piped stdout or stderr has drained.
+  process.exitCode = 1;
+} else {
+  console.log('All checks passed.');
 }
-
-console.log('All checks passed.');

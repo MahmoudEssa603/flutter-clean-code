@@ -122,6 +122,6 @@ const invokedDirectly = (() => {
   }
 })();
 
-if (invokedDirectly) process.exit(main(process.argv.slice(2)));
+if (invokedDirectly) process.exitCode = main(process.argv.slice(2));
 
 export { main };

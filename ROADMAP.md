@@ -82,7 +82,7 @@ a sibling is the user's router's job.
 
 Bugs and broken promises. No new rule.
 
-### R1 · Scanner JSON is cut off at 64 KiB through a pipe — *verified*
+### R1 · Scanner JSON is cut off at 64 KiB through a pipe — *verified* · done
 
 - **Why.** On a 1,050-file tree `scan-dart.mjs --json` writes 136,553 bytes to a file and 65,536
   through a pipe; the piped copy fails `JSON.parse` at position 65,536. An agent reading the scanner

@@ -158,7 +158,7 @@ function main(argv) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  process.exit(main(process.argv.slice(2)));
+  process.exitCode = main(process.argv.slice(2));
 }
 
 export { main };

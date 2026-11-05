@@ -4,8 +4,18 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmdirSync, symlinkSync, unlinkSync } from 'node:fs';
+import { spawn, spawnSync } from 'node:child_process';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmdirSync,
+  rmSync,
+  symlinkSync,
+  unlinkSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -534,4 +544,57 @@ test('groupLiterals falls back to the whole line when it knows no value', () => 
   assert.equal(grouped.length, 2, 'identical lines group; different ones do not');
   assert.deepEqual(grouped[0].lines, [3, 9]);
   assert.equal(grouped[1].count, 1);
+});
+
+// --- output read through a pipe ------------------------------------------------
+// An agent reads the scanner through a pipe, and does not always read at once. process.exit() ends
+// the process before a full pipe has drained, so on a real project the JSON arrived cut off at
+// 64 KiB: half a document, which parses as nothing. A reader that waits before reading fills the
+// pipe the same way, every time.
+
+test('--json read through a pipe by a slow reader arrives whole', async () => {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const fixture = readFileSync(join(root, 'evals', 'fixtures', 'order_summary_page.dart'), 'utf8');
+  const dir = mkdtempSync(join(tmpdir(), 'scan-dart-pipe-'));
+
+  try {
+    for (let i = 0; i < 150; i++) {
+      mkdirSync(join(dir, `feature_${i}`));
+      writeFileSync(join(dir, `feature_${i}`, 'order_summary_page.dart'), fixture);
+    }
+
+    const child = spawn(
+      process.execPath,
+      [join(root, 'scripts', 'scan-dart.mjs'), dir, '--json', '--top', '1000'],
+      { stdio: ['ignore', 'pipe', 'inherit'] },
+    );
+    child.stdout.pause();
+
+    // Read nothing until the scanner has ended, or has had ample time to fill the pipe and wait.
+    const exited = new Promise((done) => child.once('exit', done));
+    await Promise.race([exited, new Promise((done) => setTimeout(done, 2500))]);
+
+    const chunks = [];
+    child.stdout.on('data', (chunk) => chunks.push(chunk));
+    child.stdout.resume();
+    const status = await new Promise((done) => child.once('close', done));
+    const stdout = Buffer.concat(chunks).toString('utf8');
+
+    assert.equal(status, 0);
+    assert.ok(stdout.length > 256 * 1024, `only ${stdout.length} bytes: too small to fill a pipe`);
+    const parsed = JSON.parse(stdout);
+    assert.equal(parsed.filesScanned, 150);
+    assert.equal(parsed.files.length, 150);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('no script ends the process before its output has drained', () => {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+  const scripts = readdirSync(join(root, 'scripts')).filter((f) => f.endsWith('.mjs'));
+  const offenders = scripts.filter((f) =>
+    /process\.exit\(\s*main\(/.test(readFileSync(join(root, 'scripts', f), 'utf8')),
+  );
+  assert.deepEqual(offenders, [], 'set process.exitCode instead of calling process.exit(main(...))');
 });
